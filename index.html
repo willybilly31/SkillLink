@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skillink : Partage tes talents</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f5ff',
+              100: '#e0ebff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- React & Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* Custom Scrollbar & Animations */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 9999px; }
+    .animate-fade-in { animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white transition-colors duration-200">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo } = React;
+
+    // =========================================================================
+    // INITIAL DATABASE SEED (Simulates DB Tables: users, profiles, skills, etc.)
+    // =========================================================================
+    const INITIAL_DB = {
+      users: [
+        { id: 'u_me', username: 'alexandre_d', name: 'Alexandre Dupont', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', bio: 'Élève de 3ème passionné de robotique et de guitare. Toujours chaud pour apprendre !', role: 'user' },
+        { id: 'u_1', username: 'lucas_m', name: 'Lucas Martin', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80', bio: 'Passionné de Python et créateur de mini-jeux 2D.', role: 'user' },
+        { id: 'u_2', username: 'camille_r', name: 'Camille Roux', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', bio: 'Illustration numérique sur Procreate et graphisme.', role: 'user' },
+        
+        // Profiles IA Démo
+        { id: 'ai_alex', username: 'alex_bot', name: 'Alex (IA)', isAi: true, avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80', bio: ' Mentor IA spécialisé en Programmation & Développement Web. Pose-moi tes questions sur Python, HTML, JS !', role: 'ai' },
+        { id: 'ai_sophie', username: 'sophie_bot', name: 'Sophie (IA)', isAi: true, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', bio: ' Mentor IA spécialisée en Dessin, UX/UI et Design Graphique. Prête à analyser tes créations !', role: 'ai' },
+        { id: 'ai_noah', username: 'noah_bot', name: 'Noah (IA)', isAi: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', bio: ' Mentor IA en Électronique, Arduino & IoT. Je t’aide à câbler tes projets sans tout faire sauter.', role: 'ai' },
+        { id: 'ai_maya', username: 'maya_bot', name: 'Maya (IA)', isAi: true, avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80', bio: ' Mentor IA en Musique, Solfège et Composition sur M.A.O. On crée des sons ensemble ?', role: 'ai' }
+      ],
+      skills: [
+        { id: 'sk_1', name: 'Programmation', icon: 'fa-code' },
+        { id: 'sk_2', name: 'Dessin & Design', icon: 'fa-palette' },
+        { id: 'sk_3', name: 'Électronique', icon: 'fa-microchip' },
+        { id: 'sk_4', name: 'Musique', icon: 'fa-music' },
+        { id: 'sk_5', name: 'Langues', icon: 'fa-language' },
+        { id: 'sk_6', name: 'Vidéo & Montage', icon: 'fa-video' }
+      ],
+      user_skills: [
+        { userId: 'u_me', skillName: 'Programmation', level: 'Intermédiaire' },
+        { userId: 'u_me', skillName: 'Musique', level: 'Débutant' },
+        { userId: 'u_1', skillName: 'Programmation', level: 'Avancé' },
+        { userId: 'u_2', skillName: 'Dessin & Design', level: 'Expert' },
+        { userId: 'ai_alex', skillName: 'Programmation', level: 'Expert' },
+        { userId: 'ai_sophie', skillName: 'Dessin & Design', level: 'Expert' },
+        { userId: 'ai_noah', skillName: 'Électronique', level: 'Expert' },
+        { userId: 'ai_maya', skillName: 'Musique', level: 'Expert' }
+      ],
+      posts: [
+        {
+          id: 'post_1',
+          userId: 'u_2',
+          content: 'Voici mon dernier concept de redesign pour une appli de gestion de révisions scolaires ! Vos avis sur la palette de couleurs ? 🎨✨',
+          image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=800&q=80',
+          category: 'Dessin & Design',
+          createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+          likes: ['u_me', 'u_1'],
+          comments: [
+            { id: 'c_1', userId: 'u_me', text: 'Les contrastes sont super lisibles ! Quel logiciel as-tu utilisé ?', createdAt: new Date(Date.now() - 3600000).toISOString() }
+          ]
+        },
+        {
+          id: 'post_2',
+          userId: 'ai_alex',
+          content: ' Astuce Dev du jour : En Python, privilégiez les list comprehensions pour rendre votre code plus concis et rapide. Exemple : [x**2 for x in range(10)]. Avez-vous déjà testé ?',
+          image: null,
+          category: 'Programmation',
+          createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
+          likes: ['u_me'],
+          comments: []
+        }
+      ],
+      help_requests: [
+        {
+          id: 'req_1',
+          userId: 'u_me',
+          title: 'Aide sur les boucles FOR en Python',
+          description: 'Je n’arrive pas à faire fonctionner ma boucle pour parcourir un dictionnaire sans erreur de clé. Quelqu’un a 10 min pour m’expliquer ?',
+          category: 'Programmation',
+          status: 'open',
+          createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+          replies: [
+            { id: 'r_1', userId: 'ai_alex', text: 'Salut ! Pour parcourir un dictionnaire, utilise `.items()` : `for cle, valeur in mon_dict.items():`. Essaye ça et dis-moi !', createdAt: new Date(Date.now() - 3600000 * 3).toISOString() }
+          ]
+        },
+        {
+          id: 'req_2',
+          userId: 'u_1',
+          title: 'Choix de microcontrôleur pour projet domotique',
+          description: 'Hesitation entre une carte Arduino UNO et une ESP32 pour contrôler des LED à distance via Wi-Fi.',
+          category: 'Électronique',
+          status: 'resolved',
+          createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
+          replies: [
+            { id: 'r_2', userId: 'ai_noah', text: 'Prends directement l’ESP32 ! Elle intègre le Wi-Fi et le Bluetooth nativement, parfait pour la domotique.', createdAt: new Date(Date.now() - 3600000 * 20).toISOString() }
+          ]
+        }
+      ],
+      conversations: [
+        { id: 'conv_alex', participantId: 'ai_alex', lastMessage: 'N’hésite pas si tu as besoin d’un exemple de code !', updatedAt: new Date().toISOString(), unread: false },
+        { id: 'conv_camille', participantId: 'u_2', lastMessage: 'Merci pour ton retour sur mes designs !', updatedAt: new Date(Date.now() - 3600000 * 12).toISOString(), unread: true }
+      ],
+      messages: [
+        { id: 'm_1', conversationId: 'conv_alex', senderId: 'u_me', text: 'Bonjour Alex, peux-tu m’aider à démarrer en JavaScript ?', timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString() },
+        { id: 'm_2', conversationId: 'conv_alex', senderId: 'ai_alex', text: 'Bonjour Alexandre ! Avec grand plaisir. Pour démarrer, connais-tu la différence entre var, let et const ?', timestamp: new Date(Date.now() - 1000 * 60 * 14).toISOString() },
+        { id: 'm_3', conversationId: 'conv_camille', senderId: 'u_2', text: 'Merci pour ton retour sur mes designs !', timestamp: new Date(Date.now() - 3600000 * 12).toISOString() }
+      ],
+      notifications: [
+        { id: 'notif_1', userId: 'u_me', title: 'Nouveau message', body: 'Camille Roux vous a envoyé un message.', read: false, type: 'message', createdAt: new Date(Date.now() - 3600000 * 12).toISOString() },
+        { id: 'notif_2', userId: 'u_me', title: 'J’aime sur votre post', body: 'Lucas Martin a aimé votre profil.', read: true, type: 'like', createdAt: new Date(Date.now() - 3600000 * 18).toISOString() }
+      ],
+      reports: [],
+      blocks: []
+    };
+
+    // Helper DB Storage Engine
+    const loadDB = () => {
+      const saved = localStorage.getItem('skillink_db_v1');
+      if (saved) {
+        try { return JSON.parse(saved); } catch(e) { console.error(e); }
+      }
+      return INITIAL_DB;
+    };
+
+    const saveDB = (db) => {
+      localStorage.setItem('skillink_db_v1', JSON.stringify(db));
+    };
+
+    // =========================================================================
+    // MAIN APP COMPONENT
+    // =========================================================================
+    function App() {
+      const [db, setDb] = useState(loadDB);
+      const [currentUser, setCurrentUser] = useState(db.users[0]);
+      const [activeTab, setActiveTab] = useState('feed');
+      const [theme, setTheme] = useState(localStorage.getItem('skillink_theme') || 'dark');
+      
+      // Filter & Modals States
+      const [searchQuery, setSearchQuery] = useState('');
+      const [selectedCategory, setSelectedCategory] = useState('Tous');
+      const [selectedConversationId, setSelectedConversationId] = useState('conv_alex');
+      const [activeProfileModalUser, setActiveProfileModalUser] = useState(null);
+      
+      // Action Modals
+      const [showNewPostModal, setShowNewPostModal] = useState(false);
+      const [showNewHelpModal, setShowNewHelpModal] = useState(false);
+      const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+      const [showReportModal, setShowReportModal] = useState(null); // target item or user
+      const [showAuthModal, setShowAuthModal] = useState(false);
+
+      // Toast Alerts
+      const [toast, setToast] = useState(null);
+
+      const triggerToast = (msg, type = 'info') => {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 3000);
+      };
+
+      // Sync DB with localStorage
+      useEffect(() => {
+        saveDB(db);
+      }, [db]);
+
+      // Apply Theme Class
+      useEffect(() => {
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        localStorage.setItem('skillink_theme', theme);
+      }, [theme]);
+
+      const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+
+      // Unread notifications count
+      const unreadNotifsCount = useMemo(() => {
+        return db.notifications.filter(n => n.userId === currentUser.id && !n.read).length;
+      }, [db.notifications, currentUser]);
+
+      // Unread messages count
+      const unreadMessagesCount = useMemo(() => {
+        return db.conversations.filter(c => c.unread).length;
+      }, [db.conversations]);
+
+      // -----------------------------------------------------------------------
+      // DATA MUTATIONS & HANDLERS
+      // -----------------------------------------------------------------------
+      const handleLikePost = (postId) => {
+        setDb(prev => {
+          const updatedPosts = prev.posts.map(post => {
+            if (post.id === postId) {
+              const hasLiked = post.likes.includes(currentUser.id);
+              const newLikes = hasLiked
+                ? post.likes.filter(id => id !== currentUser.id)
+                : [...post.likes, currentUser.id];
+              return { ...post, likes: newLikes };
+            }
+            return post;
+          });
+          return { ...prev, posts: updatedPosts };
+        });
+      };
+
+      const handleAddComment = (postId, text) => {
+        if (!text.trim()) return;
+        const newComment = {
+          id: 'c_' + Date.now(),
+          userId: currentUser.id,
+          text: text.trim(),
+          createdAt: new Date().toISOString()
+        };
+        setDb(prev => ({
+          ...prev,
+          posts: prev.posts.map(p => p.id === postId ? { ...p, comments: [...p.comments, newComment] } : p)
+        }));
+        triggerToast('Commentaire ajouté !', 'success');
+      };
+
+      const handleDeletePost = (postId) => {
+        setDb(prev => ({
+          ...prev,
+          posts: prev.posts.filter(p => p.id !== postId)
+        }));
+        triggerToast('Publication supprimée.', 'info');
+      };
+
+      const handleCreatePost = (content, image, category) => {
+        const newPost = {
+          id: 'post_' + Date.now(),
+          userId: currentUser.id,
+          content,
+          image: image || null,
+          category: category || 'Général',
+          createdAt: new Date().toISOString(),
+          likes: [],
+          comments: []
+        };
+        setDb(prev => ({ ...prev, posts: [newPost, ...prev.posts] }));
+        setShowNewPostModal(false);
+        triggerToast('Publication publiée avec succès !', 'success');
+      };
+
+      const handleCreateHelpRequest = (title, description, category) => {
+        const newReq = {
+          id: 'req_' + Date.now(),
+          userId: currentUser.id,
+          title,
+          description,
+          category,
+          status: 'open',
+          createdAt: new Date().toISOString(),
+          replies: []
+        };
+        setDb(prev => ({ ...prev, help_requests: [newReq, ...prev.help_requests] }));
+        setShowNewHelpModal(false);
+        triggerToast('Demande d’aide créée !', 'success');
+      };
+
+      const handleReplyHelpRequest = (reqId, text) => {
+        if (!text.trim()) return;
+        const reply = {
+          id: 'r_' + Date.now(),
+          userId: currentUser.id,
+          text: text.trim(),
+          createdAt: new Date().toISOString()
+        };
+        setDb(prev => ({
+          ...prev,
+          help_requests: prev.help_requests.map(r => r.id === reqId ? { ...r, replies: [...r.replies, reply] } : r)
+        }));
+        triggerToast('Réponse envoyée !', 'success');
+      };
+
+      const handleResolveHelpRequest = (reqId) => {
+        setDb(prev => ({
+          ...prev,
+          help_requests: prev.help_requests.map(r => r.id === reqId ? { ...r, status: 'resolved' } : r)
+        }));
+        triggerToast('Demande marquée comme résolue 🎉', 'success');
+      };
+
+      const handleDeleteHelpRequest = (reqId) => {
+        setDb(prev => ({
+          ...prev,
+          help_requests: prev.help_requests.filter(r => r.id !== reqId)
+        }));
+        triggerToast('Demande supprimée.', 'info');
+      };
+
+      // AI Contextual Response Handler
+      const triggerAiResponse = (convId, userMessageText, targetAi) => {
+        setTimeout(() => {
+          let aiText = "C'est une super question ! Peux-tu me donner plus de détails sur ce que tu cherches à réaliser ?";
+          const msgLower = userMessageText.toLowerCase();
+
+          if (targetAi.id === 'ai_alex') {
+            if (msgLower.includes('python') || msgLower.includes('code') || msgLower.includes('script')) {
+              aiText = "En Python, la lisibilité est essentielle ! Utilises-tu une boucle `for` ou une fonction ? Montre-moi ton bout de code si tu veux qu'on le débogue ensemble ! 💻";
+            } else if (msgLower.includes('js') || msgLower.includes('javascript') || msgLower.includes('web')) {
+              aiText = "JavaScript est génial pour rendre les sites vivants ! Tu travailles avec du HTML/CSS classique ou un framework comme React ?";
+            } else {
+              aiText = "Je suis Alex, ton mentor Dev. Que souhaites-tu programmer aujourd'hui ? (Python, JavaScript, Algorithmes...)";
+            }
+          } else if (targetAi.id === 'ai_sophie') {
+            if (msgLower.includes('couleur') || msgLower.includes('design') || msgLower.includes('palette')) {
+              aiText = "Pour les couleurs, applique la règle des 60-30-10 : 60% couleur dominante, 30% secondaire, et 10% couleur d'accentuation pour les boutons ! 🎨";
+            } else {
+              aiText = "Salut ! Je suis Sophie. Tu travailles sur un dessin numérique, un logo ou l'interface d'une application ?";
+            }
+          } else if (targetAi.id === 'ai_noah') {
+            if (msgLower.includes('arduino') || msgLower.includes('capteur') || msgLower.includes('led')) {
+              aiText = "N'oublie pas de toujours vérifier la résistance de tes LED (autour de 220 ohms) pour éviter de griller les broches Arduino ! ⚡";
+            } else {
+              aiText = "Salut ! Noah à l'appareil. Quel montage électronique es-tu en train de préparer ?";
+            }
+          } else if (targetAi.id === 'ai_maya') {
+            aiText = "La musique, c'est de la passion ! Tu joues d'un instrument en particulier ou tu composes sur ordinateur (MAO) ? 🎵";
+          }
+
+          const responseMsg = {
+            id: 'm_' + Date.now(),
+            conversationId: convId,
+            senderId: targetAi.id,
+            text: aiText,
+            timestamp: new Date().toISOString()
+          };
+
+          setDb(prev => {
+            const newMsgs = [...prev.messages, responseMsg];
+            const updatedConvs = prev.conversations.map(c => c.id === convId ? { ...c, lastMessage: aiText, updatedAt: new Date().toISOString() } : c);
+            return { ...prev, messages: newMsgs, conversations: updatedConvs };
+          });
+        }, 1200);
+      };
+
+      const handleSendMessage = (convId, text) => {
+        if (!text.trim()) return;
+        const msg = {
+          id: 'm_' + Date.now(),
+          conversationId: convId,
+          senderId: currentUser.id,
+          text: text.trim(),
+          timestamp: new Date().toISOString()
+        };
+
+        const conv = db.conversations.find(c => c.id === convId);
+        const partner = db.users.find(u => u.id === conv?.participantId);
+
+        setDb(prev => ({
+          ...prev,
+          messages: [...prev.messages, msg],
+          conversations: prev.conversations.map(c => c.id === convId ? { ...c, lastMessage: text, updatedAt: new Date().toISOString() } : c)
+        }));
+
+        if (partner && partner.isAi) {
+          triggerAiResponse(convId, text, partner);
+        }
+      };
+
+      const handleStartConversation = (targetUserId) => {
+        let conv = db.conversations.find(c => c.participantId === targetUserId);
+        if (!conv) {
+          conv = {
+            id: 'conv_' + Date.now(),
+            participantId: targetUserId,
+            lastMessage: 'Conversation démarrée',
+            updatedAt: new Date().toISOString(),
+            unread: false
+          };
+          setDb(prev => ({ ...prev, conversations: [conv, ...prev.conversations] }));
+        }
+        setSelectedConversationId(conv.id);
+        setActiveTab('messages');
+        setActiveProfileModalUser(null);
+      };
+
+      const handleUpdateProfile = (updatedData) => {
+        const updatedUser = { ...currentUser, ...updatedData };
+        setCurrentUser(updatedUser);
+        setDb(prev => ({
+          ...prev,
+          users: prev.users.map(u => u.id === currentUser.id ? updatedUser : u),
+          user_skills: [
+            ...prev.user_skills.filter(s => s.userId !== currentUser.id),
+            ...updatedData.skills.map(s => ({ userId: currentUser.id, skillName: s.name, level: s.level }))
+          ]
+        }));
+        setShowEditProfileModal(false);
+        triggerToast('Profil mis à jour !', 'success');
+      };
+
+      const handleBlockUser = (userId) => {
+        setDb(prev => ({ ...prev, blocks: [...prev.blocks, { userId: currentUser.id, blockedId: userId }] }));
+        triggerToast('Utilisateur bloqué.', 'info');
+        setActiveProfileModalUser(null);
+      };
+
+      const handleReport = (type, targetId, reason) => {
+        const report = { id: 'rep_' + Date.now(), reporterId: currentUser.id, type, targetId, reason, createdAt: new Date().toISOString() };
+        setDb(prev => ({ ...prev, reports: [...prev.reports, report] }));
+        setShowReportModal(null);
+        triggerToast('Signalement transmis aux modérateurs. Merci !', 'success');
+      };
+
+      const handleMarkNotifRead = (id) => {
+        setDb(prev => ({
+          ...prev,
+          notifications: prev.notifications.map(n => n.id === id ? { ...n, read: true } : n)
+        }));
+      };
+
+      const handleMarkAllNotifsRead = () => {
+        setDb(prev => ({
+          ...prev,
+          notifications: prev.notifications.map(n => ({ ...n, read: true }))
+        }));
+        triggerToast('Toutes les notifications sont marquées comme lues.', 'info');
+      };
+
+      // Filter blocked content
+      const blockedIds = useMemo(() => db.blocks.filter(b => b.userId === currentUser.id).map(b => b.blockedId), [db.blocks, currentUser]);
+
+      const visiblePosts = useMemo(() => {
+        return db.posts
+          .filter(p => !blockedIds.includes(p.userId))
+          .filter(p => selectedCategory === 'Tous' || p.category === selectedCategory)
+          .filter(p => searchQuery === '' || p.content.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase()));
+      }, [db.posts, blockedIds, selectedCategory, searchQuery]);
+
+      const visibleHelpRequests = useMemo(() => {
+        return db.help_requests
+          .filter(r => !blockedIds.includes(r.userId))
+          .filter(r => selectedCategory === 'Tous' || r.category === selectedCategory)
+          .filter(r => searchQuery === '' || r.title.toLowerCase().includes(searchQuery.toLowerCase()) || r.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      }, [db.help_requests, blockedIds, selectedCategory, searchQuery]);
+
+      const visibleUsers = useMemo(() => {
+        return db.users
+          .filter(u => u.id !== currentUser.id && !blockedIds.includes(u.id))
+          .filter(u => {
+            if (!searchQuery) return true;
+            const userSkills = db.user_skills.filter(s => s.userId === u.id).map(s => s.skillName.toLowerCase());
+            return u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                   u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                   userSkills.some(s => s.includes(searchQuery.toLowerCase()));
+          });
+      }, [db.users, currentUser, blockedIds, searchQuery, db.user_skills]);
+
+      // -----------------------------------------------------------------------
+      // UI RENDER HELPERS
+      // -----------------------------------------------------------------------
+      return (
+        <div class="min-h-screen flex flex-col md:flex-row bg-slate-50 dark:bg-slate-900">
+          
+          <!-- TOAST NOTIFICATION -->
+          {toast && (
+            <div class="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl bg-indigo-600 text-white animate-fade-in">
+              <i class="fa-solid fa-circle-info"></i>
+              <span class="text-sm font-medium">{toast.msg}</span>
+            </div>
+          )}
+
+          <!-- SIDEBAR (DESKTOP) -->
+          <aside class="hidden md:flex flex-col w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4 sticky top-0 h-screen justify-between z-20">
+            <div>
+              <!-- Logo -->
+              <div class="flex items-center gap-3 px-3 py-2 mb-8">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-violet-500 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-brand-500/30">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                  <h1 class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-violet-500 bg-clip-text text-transparent">Skillink</h1>
+                  <p class="text-xs text-slate-400 font-medium">Partage tes talents</p>
+                </div>
+              </div>
+
+              <!-- Nav Links -->
+              <nav class="space-y-1">
+                {[
+                  { id: 'feed', label: 'Accueil / Fil', icon: 'fa-house' },
+                  { id: 'discover', label: 'Découvrir', icon: 'fa-compass' },
+                  { id: 'help', label: 'Demandes d’aide', icon: 'fa-hand-holding-hand' },
+                  { id: 'messages', label: 'Messages', icon: 'fa-paper-plane', badge: unreadMessagesCount },
+                  { id: 'notifications', label: 'Notifications', icon: 'fa-bell', badge: unreadNotifsCount },
+                  { id: 'profile', label: 'Mon Profil', icon: 'fa-user' },
+                  { id: 'settings', label: 'Paramètres', icon: 'fa-gear' }
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    class={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                      activeTab === item.id 
+                        ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400 font-bold' 
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                    }`}
+                  >
+                    <div class="flex items-center gap-3">
+                      <i class={`fa-solid ${item.icon} text-lg w-5 text-center`}></i>
+                      <span>{item.label}</span>
+                    </div>
+                    {item.badge > 0 && (
+                      <span class="bg-brand-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            <!-- Current User Badge Footer -->
+            <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('profile')}>
+                <img src={currentUser.avatar} class="w-10 h-10 rounded-full object-cover ring-2 ring-brand-500/30" />
+                <div class="overflow-hidden">
+                  <p class="text-sm font-bold truncate">{currentUser.name}</p>
+                  <p class="text-xs text-slate-400 truncate">@{currentUser.username}</p>
+                </div>
+              </div>
+              <button onClick={toggleTheme} class="p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <i class={`fa-solid ${theme === 'dark' ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'}`}></i>
+              </button>
+            </div>
+          </aside>
+
+          <!-- MOBILE HEADER & BOTTOM NAV -->
+          <header class="md:hidden sticky top-0 z-30 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-violet-500 flex items-center justify-center text-white font-bold text-sm">
+                <i class="fa-solid fa-bolt"></i>
+              </div>
+              <span class="font-extrabold text-lg text-brand-600 dark:text-brand-400">Skillink</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onClick={toggleTheme} class="p-2 rounded-lg text-slate-400">
+                <i class={`fa-solid ${theme === 'dark' ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'}`}></i>
+              </button>
+              <img src={currentUser.avatar} class="w-8 h-8 rounded-full object-cover" onClick={() => setActiveTab('profile')} />
+            </div>
+          </header>
+
+          <nav class="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/90 dark:bg-slate-950/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 px-1">
+            {[
+              { id: 'feed', icon: 'fa-house' },
+              { id: 'discover', icon: 'fa-compass' },
+              { id: 'help', icon: 'fa-hand-holding-hand' },
+              { id: 'messages', icon: 'fa-paper-plane', badge: unreadMessagesCount },
+              { id: 'notifications', icon: 'fa-bell', badge: unreadNotifsCount },
+              { id: 'profile', icon: 'fa-user' }
+            ].map(item => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                class={`relative p-3 rounded-xl ${activeTab === item.id ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400'}`}
+              >
+                <i class={`fa-solid ${item.icon} text-xl`}></i>
+                {item.badge > 0 && (
+                  <span class="absolute top-2 right-2 w-2 h-2 bg-brand-600 rounded-full"></span>
+                )}
+              </button>
+            ))}
+          </nav>
+
+          <!-- MAIN CONTENT AREA -->
+          <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-8 pb-24 md:pb-8 min-h-screen">
+            
+            <!-- GLOBAL TOP BAR WITH SEARCH -->
+            <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div class="relative w-full">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input
+                  type="text"
+                  placeholder="Rechercher des talents, membres, questions ou posts..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm shadow-sm transition"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery('')} class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <!-- TAB CONTENT -->
+
+            <!-- 1. FEED / ACCUEIL -->
+            {activeTab === 'feed' && (
+              <div class="space-y-6 animate-fade-in">
+                
+                <!-- Category Filter Pill Bar -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                  <button
+                    onClick={() => setSelectedCategory('Tous')}
+                    class={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+                      selectedCategory === 'Tous' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    Tous les talents
+                  </button>
+                  {db.skills.map(sk => (
+                    <button
+                      key={sk.id}
+                      onClick={() => setSelectedCategory(sk.name)}
+                      class={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-2 transition ${
+                        selectedCategory === sk.name ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      <i class={`fa-solid ${sk.icon}`}></i>
+                      <span>{sk.name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <!-- Create Post Card Trigger -->
+                <div class="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
+                  <img src={currentUser.avatar} class="w-10 h-10 rounded-full object-cover" />
+                  <button
+                    onClick={() => setShowNewPostModal(true)}
+                    class="flex-1 text-left px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-400 text-sm font-medium hover:bg-slate-200/60 dark:hover:bg-slate-800 transition"
+                  >
+                    Partage un projet, un conseil ou une réussite...
+                  </button>
+                  <button onClick={() => setShowNewPostModal(true)} class="bg-brand-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-brand-500/20 hover:bg-brand-700 transition">
+                    Publier
+                  </button>
+                </div>
+
+                <!-- Posts List -->
+                <div class="space-y-4">
+                  {visiblePosts.length === 0 ? (
+                    <div class="text-center py-12 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <i class="fa-solid fa-newspaper text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
+                      <p class="text-slate-500 font-medium">Aucune publication ne correspond à votre recherche.</p>
+                    </div>
+                  ) : (
+                    visiblePosts.map(post => {
+                      const author = db.users.find(u => u.id === post.userId) || currentUser;
+                      const hasLiked = post.likes.includes(currentUser.id);
+
+                      return (
+                        <div key={post.id} class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
+                          <!-- Post Header -->
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3 cursor-pointer" onClick={() => setActiveProfileModalUser(author)}>
+                              <img src={author.avatar} class="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100 dark:ring-slate-800" />
+                              <div>
+                                <div class="flex items-center gap-2">
+                                  <span class="font-bold text-sm">{author.name}</span>
+                                  {author.isAi && (
+                                    <span class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">🤖 IA / Démo</span>
+                                  )}
+                                </div>
+                                <span class="text-xs text-slate-400">@{author.username} • {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                              </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-2">
+                              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-400">
+                                {post.category}
+                              </span>
+                              {post.userId === currentUser.id ? (
+                                <button onClick={() => handleDeletePost(post.id)} class="text-slate-400 hover:text-red-500 p-2">
+                                  <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                              ) : (
+                                <button onClick={() => setShowReportModal({ type: 'post', id: post.id })} class="text-slate-400 hover:text-amber-500 p-2">
+                                  <i class="fa-solid fa-flag"></i>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          <!-- Content -->
+                          <p class="text-sm leading-relaxed whitespace-pre-line">{post.content}</p>
+
+                          {post.image && (
+                            <img src={post.image} class="rounded-xl w-full max-h-96 object-cover border border-slate-200 dark:border-slate-800" />
+                          )}
+
+                          <!-- Like & Comment Action Buttons -->
+                          <div class="flex items-center gap-6 pt-2 border-t border-slate-100 dark:border-slate-900 text-xs text-slate-500 font-semibold">
+                            <button
+                              onClick={() => handleLikePost(post.id)}
+                              class={`flex items-center gap-2 transition ${hasLiked ? 'text-red-500 font-bold' : 'hover:text-slate-800 dark:hover:text-slate-200'}`}
+                            >
+                              <i class={`fa-${hasLiked ? 'solid' : 'regular'} fa-heart text-base`}></i>
+                              <span>{post.likes.length} J'aime</span>
+                            </button>
+
+                            <div class="flex items-center gap-2">
+                              <i class="fa-regular fa-comment text-base"></i>
+                              <span>{post.comments.length} Commentaires</span>
+                            </div>
+                          </div>
+
+                          <!-- Comments Section -->
+                          {post.comments.length > 0 && (
+                            <div class="space-y-2 pt-2 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl">
+                              {post.comments.map(c => {
+                                const cAuthor = db.users.find(u => u.id === c.userId) || currentUser;
+                                return (
+                                  <div key={c.id} class="flex items-start gap-2.5 text-xs">
+                                    <img src={cAuthor.avatar} class="w-6 h-6 rounded-full object-cover mt-0.5" />
+                                    <div class="flex-1 bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                                      <span class="font-bold mr-2">{cAuthor.name}</span>
+                                      <span class="text-slate-600 dark:text-slate-300">{c.text}</span>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          <!-- Add Comment Input -->
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const input = e.target.elements.commentInput;
+                              handleAddComment(post.id, input.value);
+                              input.value = '';
+                            }}
+                            class="flex items-center gap-2 pt-1"
+                          >
+                            <input
+                              name="commentInput"
+                              type="text"
+                              placeholder="Écrire un commentaire..."
+                              class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                            />
+                            <button type="submit" class="bg-brand-600 text-white px-3 py-2 rounded-xl text-xs font-bold">
+                              Envoyer
+                            </button>
+                          </form>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            )}
+
+            <!-- 2. DISCOVER / DÉCOUVRIR -->
+            {activeTab === 'discover' && (
+              <div class="space-y-6 animate-fade-in">
+                <div>
+                  <h2 class="text-xl font-black mb-1">Découvrir les talents</h2>
+                  <p class="text-xs text-slate-400">Trouve des camarades ou des mentors IA pour échanger et progresser.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {visibleUsers.map(u => {
+                    const skills = db.user_skills.filter(s => s.userId === u.id);
+                    return (
+                      <div key={u.id} class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between space-y-4">
+                        <div>
+                          <div class="flex items-center gap-3 mb-3">
+                            <img src={u.avatar} class="w-12 h-12 rounded-full object-cover ring-2 ring-brand-500/20" />
+                            <div>
+                              <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-sm">{u.name}</h3>
+                                {u.isAi && <span class="bg-purple-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">🤖 IA</span>}
+                              </div>
+                              <p class="text-xs text-slate-400">@{u.username}</p>
+                            </div>
+                          </div>
+                          
+                          <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mb-3">{u.bio}</p>
+
+                          <!-- Skill Badges -->
+                          <div class="flex flex-wrap gap-1.5">
+                            {skills.map((s, idx) => (
+                              <span key={idx} class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] font-semibold px-2.5 py-1 rounded-lg text-slate-700 dark:text-slate-300">
+                                {s.skillName} • <span class="text-brand-600 dark:text-brand-400">{s.level}</span>
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex items-center gap-2 pt-2">
+                          <button
+                            onClick={() => setActiveProfileModalUser(u)}
+                            class="flex-1 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 text-xs font-bold py-2.5 rounded-xl transition text-center"
+                          >
+                            Voir profil
+                          </button>
+                          <button
+                            onClick={() => handleStartConversation(u.id)}
+                            class="flex-1 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-md shadow-brand-500/20"
+                          >
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Message</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <!-- 3. HELP REQUESTS / DEMANDES D'AIDE -->
+            {activeTab === 'help' && (
+              <div class="space-y-6 animate-fade-in">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h2 class="text-xl font-black">Demandes d’aide</h2>
+                    <p class="text-xs text-slate-400">Bloqué sur un devoir ou un projet ? Demande à la communauté.</p>
+                  </div>
+                  <button
+                    onClick={() => setShowNewHelpModal(true)}
+                    class="bg-brand-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-brand-500/20 hover:bg-brand-700 transition flex items-center gap-2"
+                  >
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Poser une question</span>
+                  </button>
+                </div>
+
+                <div class="space-y-4">
+                  {visibleHelpRequests.length === 0 ? (
+                    <div class="text-center py-12 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <p class="text-slate-500 font-medium">Aucune demande d’aide en cours.</p>
+                    </div>
+                  ) : (
+                    visibleHelpRequests.map(req => {
+                      const author = db.users.find(u => u.id === req.userId) || currentUser;
+                      const isOwner = req.userId === currentUser.id;
+
+                      return (
+                        <div key={req.id} class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
+                          <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                              <img src={author.avatar} class="w-10 h-10 rounded-full object-cover" />
+                              <div>
+                                <h3 class="font-bold text-sm">{req.title}</h3>
+                                <p class="text-xs text-slate-400">par {author.name} • {new Date(req.createdAt).toLocaleDateString()}</p>
+                              </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                              <span class={`text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase ${
+                                req.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+                              }`}>
+                                {req.status === 'resolved' ? 'Résolu' : 'En attente'}
+                              </span>
+                              {isOwner && req.status !== 'resolved' && (
+                                <button onClick={() => handleResolveHelpRequest(req.id)} class="text-xs bg-emerald-600 text-white px-3 py-1 rounded-lg font-bold">
+                                  Marquer Résolu
+                                </button>
+                              )}
+                              {isOwner && (
+                                <button onClick={() => handleDeleteHelpRequest(req.id)} class="text-slate-400 hover:text-red-500 p-1">
+                                  <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{req.description}</p>
+
+                          <!-- Replies -->
+                          {req.replies.length > 0 && (
+                            <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-900">
+                              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Réponses ({req.replies.length})</h4>
+                              {req.replies.map(r => {
+                                const rAuthor = db.users.find(u => u.id === r.userId) || currentUser;
+                                return (
+                                  <div key={r.id} class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl flex items-start gap-3">
+                                    <img src={rAuthor.avatar} class="w-7 h-7 rounded-full object-cover" />
+                                    <div>
+                                      <div class="flex items-center gap-2">
+                                        <span class="font-bold text-xs">{rAuthor.name}</span>
+                                        {rAuthor.isAi && <span class="bg-purple-600 text-white text-[9px] font-bold px-1 rounded">🤖 IA</span>}
+                                      </div>
+                                      <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">{r.text}</p>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          <!-- Add Reply Form -->
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const input = e.target.elements.replyInput;
+                              handleReplyHelpRequest(req.id, input.value);
+                              input.value = '';
+                            }}
+                            class="flex items-center gap-2 pt-2"
+                          >
+                            <input
+                              name="replyInput"
+                              type="text"
+                              placeholder="Proposer de l'aide..."
+                              class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                            />
+                            <button type="submit" class="bg-slate-800 dark:bg-slate-700 text-white px-3 py-2 rounded-xl text-xs font-bold">
+                              Répondre
+                            </button>
+                          </form>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            )}
+
+            <!-- 4. MESSAGES / MESSAGERIE -->
+            {activeTab === 'messages' && (
+              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm h-[650px] flex overflow-hidden animate-fade-in">
+                <!-- Conversations List -->
+                <div class="w-1/3 border-r border-slate-200 dark:border-slate-800 flex flex-col">
+                  <div class="p-4 border-b border-slate-200 dark:border-slate-800 font-bold text-sm">
+                    Conversations
+                  </div>
+                  <div class="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-900">
+                    {db.conversations.map(conv => {
+                      const partner = db.users.find(u => u.id === conv.participantId);
+                      if (!partner) return null;
+                      const isSelected = selectedConversationId === conv.id;
+
+                      return (
+                        <div
+                          key={conv.id}
+                          onClick={() => setSelectedConversationId(conv.id)}
+                          class={`p-3.5 flex items-center gap-3 cursor-pointer transition ${
+                            isSelected ? 'bg-brand-500/10 border-l-4 border-brand-600' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
+                          }`}
+                        >
+                          <img src={partner.avatar} class="w-10 h-10 rounded-full object-cover" />
+                          <div class="overflow-hidden flex-1">
+                            <div class="flex items-center justify-between">
+                              <span class="font-bold text-xs truncate">{partner.name}</span>
+                              {partner.isAi && <span class="text-[9px] bg-purple-500/20 text-purple-400 font-bold px-1 rounded">IA</span>}
+                            </div>
+                            <p class="text-xs text-slate-400 truncate mt-0.5">{conv.lastMessage}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <!-- Chat Box -->
+                <div class="flex-1 flex flex-col justify-between">
+                  {(() => {
+                    const currentConv = db.conversations.find(c => c.id === selectedConversationId);
+                    const partner = db.users.find(u => u.id === currentConv?.participantId);
+                    const convMessages = db.messages.filter(m => m.conversationId === selectedConversationId);
+
+                    if (!partner) return <div class="p-8 text-center text-slate-400">Sélectionnez une conversation</div>;
+
+                    return (
+                      <>
+                        <!-- Chat Header -->
+                        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                          <div class="flex items-center gap-3 cursor-pointer" onClick={() => setActiveProfileModalUser(partner)}>
+                            <img src={partner.avatar} class="w-9 h-9 rounded-full object-cover" />
+                            <div>
+                              <h3 class="font-bold text-sm flex items-center gap-2">
+                                {partner.name}
+                                {partner.isAi && <span class="bg-purple-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">🤖 Assistant IA</span>}
+                              </h3>
+                              <p class="text-[11px] text-slate-400">@{partner.username}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Messages Stream -->
+                        <div class="flex-1 p-4 overflow-y-auto space-y-3">
+                          {convMessages.map(m => {
+                            const isMe = m.senderId === currentUser.id;
+                            return (
+                              <div key={m.id} class={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                                <div class={`max-w-[75%] p-3 rounded-2xl text-xs leading-relaxed ${
+                                  isMe ? 'bg-brand-600 text-white rounded-br-none' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-none'
+                                }`}>
+                                  <p>{m.text}</p>
+                                  <span class={`text-[9px] block text-right mt-1 ${isMe ? 'text-brand-200' : 'text-slate-400'}`}>
+                                    {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <!-- Chat Input Form -->
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const input = e.target.elements.msgText;
+                            handleSendMessage(selectedConversationId, input.value);
+                            input.value = '';
+                          }}
+                          class="p-3 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2"
+                        >
+                          <input
+                            name="msgText"
+                            type="text"
+                            placeholder={`Écrire à ${partner.name}...`}
+                            class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                          />
+                          <button type="submit" class="bg-brand-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-brand-500/20">
+                            <i class="fa-solid fa-paper-plane"></i>
+                          </button>
+                        </form>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+            )}
+
+            <!-- 5. NOTIFICATIONS -->
+            {activeTab === 'notifications' && (
+              <div class="space-y-6 animate-fade-in">
+                <div class="flex items-center justify-between">
+                  <h2 class="text-xl font-black">Centre de Notifications</h2>
+                  <button onClick={handleMarkAllNotifsRead} class="text-xs text-brand-600 font-bold hover:underline">
+                    Tout marquer comme lu
+                  </button>
+                </div>
+
+                <div class="space-y-3">
+                  {db.notifications.map(n => (
+                    <div
+                      key={n.id}
+                      onClick={() => handleMarkNotifRead(n.id)}
+                      class={`p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between transition cursor-pointer ${
+                        !n.read ? 'bg-brand-500/5 border-brand-500/30' : 'bg-white dark:bg-slate-950'
+                      }`}
+                    >
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center">
+                          <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div>
+                          <h4 class="font-bold text-xs">{n.title}</h4>
+                          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{n.body}</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-slate-400">{new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- 6. PROFILE / MON PROFIL -->
+            {activeTab === 'profile' && (
+              <div class="space-y-6 animate-fade-in">
+                <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm relative overflow-hidden">
+                  <div class="h-28 bg-gradient-to-r from-brand-600 to-violet-600 -mx-6 -mt-6 mb-12"></div>
+                  <div class="absolute top-16 left-6">
+                    <img src={currentUser.avatar} class="w-20 h-20 rounded-full object-cover ring-4 ring-white dark:ring-slate-950 shadow-md" />
+                  </div>
+
+                  <div class="flex justify-between items-start pt-2">
+                    <div>
+                      <h2 class="text-xl font-black">{currentUser.name}</h2>
+                      <p class="text-xs text-slate-400">@{currentUser.username}</p>
+                    </div>
+                    <button
+                      onClick={() => setShowEditProfileModal(true)}
+                      class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-bold px-4 py-2 rounded-xl transition"
+                    >
+                      Modifier le profil
+                    </button>
+                  </div>
+
+                  <p class="text-xs text-slate-600 dark:text-slate-300 mt-4 leading-relaxed">{currentUser.bio}</p>
+
+                  <!-- Skills Section -->
+                  <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-900">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Mes Talents & Niveaux</h3>
+                    <div class="flex flex-wrap gap-2">
+                      {db.user_skills.filter(s => s.userId === currentUser.id).map((sk, idx) => (
+                        <span key={idx} class="bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-bold px-3 py-1.5 rounded-xl">
+                          {sk.skillName} • <span class="underline">{sk.level}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Personal Posts -->
+                <div class="space-y-3">
+                  <h3 class="font-bold text-sm">Mes Publications</h3>
+                  {db.posts.filter(p => p.userId === currentUser.id).map(post => (
+                    <div key={post.id} class="bg-white dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
+                      <p>{post.content}</p>
+                      <div class="flex items-center justify-between text-slate-400 text-[10px]">
+                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                        <span>{post.likes.length} J'aime</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- 7. SETTINGS / PARAMÈTRES -->
+            {activeTab === 'settings' && (
+              <div class="space-y-6 animate-fade-in">
+                <h2 class="text-xl font-black">Paramètres</h2>
+
+                <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-900">
+                  <div class="p-4 flex items-center justify-between">
+                    <div>
+                      <h4 class="font-bold text-xs">Thème d'affichage</h4>
+                      <p class="text-xs text-slate-400">Basculez entre mode clair et mode sombre.</p>
+                    </div>
+                    <button onClick={toggleTheme} class="bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-xl text-xs font-bold">
+                      {theme === 'dark' ? 'Mode Sombre 🌙' : 'Mode Clair ☀️'}
+                    </button>
+                  </div>
+
+                  <div class="p-4 space-y-2">
+                    <h4 class="font-bold text-xs">Règles de la communauté Skillink</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                      1. Respect et bienveillance obligatoires.<br/>
+                      2. Aucun partage d'informations personnelles sensibles (mots de passe, numéros privés).<br/>
+                      3. Les faux profils de démonstration sont explicitement identifiés comme "IA".
+                    </p>
+                  </div>
+
+                  <div class="p-4 flex justify-end">
+                    <button onClick={() => triggerToast('Déconnexion effectuée', 'info')} class="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition">
+                      Se déconnecter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          <!-- =================================================================== -->
+          <!-- MODALS ENGINE -->
+          <!-- =================================================================== -->
+
+          <!-- 1. EDIT PROFILE MODAL -->
+          {showEditProfileModal && (
+            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 space-y-4 animate-fade-in">
+                <h3 class="font-black text-lg">Modifier le profil</h3>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = e.target;
+                    handleUpdateProfile({
+                      name: form.name.value,
+                      bio: form.bio.value,
+                      avatar: form.avatar.value,
+                      skills: [
+                        { name: form.skill1.value, level: form.level1.value },
+                        { name: form.skill2.value, level: form.level2.value }
+                      ]
+                    });
+                  }}
+                  class="space-y-3 text-xs"
+                >
+                  <div>
+                    <label class="block font-bold mb-1">Nom complet</label>
+                    <input name="name" defaultValue={currentUser.name} class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:outline-none" />
+                  </div>
+                  <div>
+                    <label class="block font-bold mb-1">URL Photo de profil</label>
+                    <input name="avatar" defaultValue={currentUser.avatar} class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:outline-none" />
+                  </div>
+                  <div>
+                    <label class="block font-bold mb-1">Bio / Description</label>
+                    <textarea name="bio" defaultValue={currentUser.bio} rows="2" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:outline-none"></textarea>
+                  </div>
+
+                  <div class="pt-2">
+                    <label class="block font-bold mb-1">Talent principal</label>
+                    <div class="grid grid-cols-2 gap-2">
+                      <select name="skill1" defaultValue="Programmation" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2">
+                        {db.skills.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+                      </select>
+                      <select name="level1" defaultValue="Intermédiaire" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2">
+                        <option value="Débutant">Débutant</option>
+                        <option value="Intermédiaire">Intermédiaire</option>
+                        <option value="Avancé">Avancé</option>
+                        <option value="Expert">Expert</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="pt-1">
+                    <label class="block font-bold mb-1">Second Talent</label>
+                    <div class="grid grid-cols-2 gap-2">
+                      <select name="skill2" defaultValue="Musique" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2">
+                        {db.skills.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+                      </select>
+                      <select name="level2" defaultValue="Débutant" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2">
+                        <option value="Débutant">Débutant</option>
+                        <option value="Intermédiaire">Intermédiaire</option>
+                        <option value="Avancé">Avancé</option>
+                        <option value="Expert">Expert</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" onClick={() => setShowEditProfileModal(false)} class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">Annuler</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold">Enregistrer</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          <!-- 2. CREATE POST MODAL -->
+          {showNewPostModal && (
+            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 space-y-4 animate-fade-in">
+                <h3 class="font-black text-lg">Nouvelle Publication</h3>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = e.target;
+                    handleCreatePost(form.content.value, form.image.value, form.category.value);
+                  }}
+                  class="space-y-3 text-xs"
+                >
+                  <textarea name="content" required placeholder="Que veux-tu partager avec la communauté ?" rows="4" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 focus:outline-none"></textarea>
+                  
+                  <div>
+                    <label class="block font-bold mb-1">Catégorie / Talent</label>
+                    <select name="category" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5">
+                      {db.skills.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block font-bold mb-1">URL de l'image (optionnel)</label>
+                    <input name="image" placeholder="https://..." class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:outline-none" />
+                  </div>
+
+                  <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onClick={() => setShowNewPostModal(false)} class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">Annuler</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold">Publier</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          <!-- 3. CREATE HELP MODAL -->
+          {showNewHelpModal && (
+            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 space-y-4 animate-fade-in">
+                <h3 class="font-black text-lg">Demander de l’aide</h3>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = e.target;
+                    handleCreateHelpRequest(form.title.value, form.description.value, form.category.value);
+                  }}
+                  class="space-y-3 text-xs"
+                >
+                  <input name="title" required placeholder="Titre de la demande (ex: Aide en Python...)" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 focus:outline-none" />
+                  <textarea name="description" required placeholder="Décris en détail ce qui te bloque..." rows="4" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 focus:outline-none"></textarea>
+                  
+                  <div>
+                    <label class="block font-bold mb-1">Domaine concerné</label>
+                    <select name="category" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5">
+                      {db.skills.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+                    </select>
+                  </div>
+
+                  <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onClick={() => setShowNewHelpModal(false)} class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">Annuler</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold">Envoyer la demande</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          <!-- 4. VIEW USER PROFILE DETAIL MODAL -->
+          {activeProfileModalUser && (
+            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 space-y-4 animate-fade-in relative">
+                <button onClick={() => setActiveProfileModalUser(null)} class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                  <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+
+                <div class="flex items-center gap-4">
+                  <img src={activeProfileModalUser.avatar} class="w-16 h-16 rounded-full object-cover ring-2 ring-brand-500" />
+                  <div>
+                    <h3 class="font-extrabold text-base flex items-center gap-2">
+                      {activeProfileModalUser.name}
+                      {activeProfileModalUser.isAi && <span class="bg-purple-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">🤖 IA</span>}
+                    </h3>
+                    <p class="text-xs text-slate-400">@{activeProfileModalUser.username}</p>
+                  </div>
+                </div>
+
+                <p class="text-xs text-slate-600 dark:text-slate-300">{activeProfileModalUser.bio}</p>
+
+                <div>
+                  <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">Talents</h4>
+                  <div class="flex flex-wrap gap-1.5">
+                    {db.user_skills.filter(s => s.userId === activeProfileModalUser.id).map((s, idx) => (
+                      <span key={idx} class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs px-2.5 py-1 rounded-lg">
+                        {s.skillName} • <span class="text-brand-600 font-bold">{s.level}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div class="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-900">
+                  <button
+                    onClick={() => handleStartConversation(activeProfileModalUser.id)}
+                    class="flex-1 bg-brand-600 text-white py-2.5 rounded-xl font-bold text-xs"
+                  >
+                    Envoyer un message
+                  </button>
+                  <button
+                    onClick={() => handleBlockUser(activeProfileModalUser.id)}
+                    class="px-3 py-2.5 rounded-xl bg-red-500/10 text-red-500 font-bold text-xs"
+                  >
+                    Bloquer
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <!-- 5. REPORT MODAL -->
+          {showReportModal && (
+            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-sm w-full p-6 space-y-4 animate-fade-in">
+                <h3 class="font-black text-base text-amber-500">Signaler un contenu</h3>
+                <p class="text-xs text-slate-400">Pourquoi souhaitez-vous signaler cet élément ?</p>
+                
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleReport(showReportModal.type, showReportModal.id, e.target.reason.value);
+                  }}
+                  class="space-y-3 text-xs"
+                >
+                  <select name="reason" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5">
+                    <option value="Inapproprié">Contenu inapproprié ou irrespectueux</option>
+                    <option value="Spam">Spam ou publicité non sollicitée</option>
+                    <option value="Harcèlement">Harcèlement ou intimidation</option>
+                  </select>
+
+                  <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onClick={() => setShowReportModal(null)} class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">Annuler</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-amber-500 text-white font-bold">Signaler</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    // Render React App
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
