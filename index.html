@@ -1,1413 +1,3894 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skillink : Partage tes talents</title>
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#f0f5ff',
-              100: '#e0ebff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-            }
-          }
-        }
-      }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skillink : Partage tes talents</title>
+
+<style>
+:root{
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#18202a;
+    --muted:#6d7683;
+    --border:#e3e7ee;
+    --primary:#6366f1;
+    --primary-light:#eef0ff;
+    --danger:#ef4444;
+    --success:#22c55e;
+    --sidebar:#ffffff;
+    --shadow:0 8px 30px rgba(20,30,50,.08);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+body.dark{
+    --bg:#10131a;
+    --card:#171b23;
+    --text:#f1f5f9;
+    --muted:#9aa4b2;
+    --border:#282e39;
+    --primary:#818cf8;
+    --primary-light:#242743;
+    --sidebar:#141820;
+}
+
+button,
+input,
+textarea,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:240px;
+    background:var(--sidebar);
+    border-right:1px solid var(--border);
+    padding:22px 15px;
+    z-index:20;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:800;
+    padding:5px 12px 25px;
+}
+
+.logo span{
+    color:var(--primary);
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.nav button{
+    border:0;
+    background:transparent;
+    color:var(--text);
+    padding:12px;
+    border-radius:12px;
+    text-align:left;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+
+.premium-nav{
+    margin-top:12px;
+    border:1px solid #e7c94d !important;
+    background:#fff8d9 !important;
+    color:#8a6a00 !important;
+}
+
+body.dark .premium-nav{
+    background:#39331b !important;
+    color:#f4d96b !important;
+}
+
+.main{
+    margin-left:240px;
+    min-height:100vh;
+}
+
+.topbar{
+    height:72px;
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.topbar h1{
+    font-size:22px;
+    margin:0;
+}
+
+.top-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.content{
+    max-width:1000px;
+    margin:auto;
+    padding:30px;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+}
+
+.card h2,
+.card h3{
+    margin-top:0;
+}
+
+.btn{
+    border:0;
+    background:var(--primary);
+    color:white;
+    border-radius:10px;
+    padding:10px 15px;
+    font-weight:600;
+}
+
+.btn:hover{
+    opacity:.9;
+}
+
+.btn.secondary{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+
+.btn.danger{
+    background:var(--danger);
+}
+
+.btn.success{
+    background:var(--success);
+}
+
+.btn.small{
+    padding:7px 10px;
+    font-size:13px;
+}
+
+.input,
+textarea,
+select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:11px;
+    outline:none;
+}
+
+.input:focus,
+textarea:focus,
+select:focus{
+    border-color:var(--primary);
+}
+
+textarea{
+    resize:vertical;
+    min-height:100px;
+}
+
+.form{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.two{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:var(--primary-light);
+    color:var(--primary);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+}
+
+.avatar.large{
+    width:90px;
+    height:90px;
+    font-size:28px;
+}
+
+.user-row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+.user-info{
+    min-width:0;
+}
+
+.user-name{
+    font-weight:700;
+}
+
+.muted{
+    color:var(--muted);
+}
+
+.pill{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:999px;
+    font-size:12px;
+    background:var(--primary-light);
+    color:var(--primary);
+    margin:2px;
+}
+
+.pill.premium{
+    background:#fff1a8;
+    color:#8a6900;
+}
+
+body.dark .pill.premium{
+    background:#49401b;
+    color:#f3d45e;
+}
+
+.post-text{
+    white-space:pre-wrap;
+    line-height:1.55;
+}
+
+.post-actions{
+    display:flex;
+    gap:8px;
+    border-top:1px solid var(--border);
+    margin-top:16px;
+    padding-top:12px;
+}
+
+.icon-btn{
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    padding:7px 10px;
+    border-radius:8px;
+}
+
+.icon-btn:hover{
+    background:var(--primary-light);
+    color:var(--primary);
+}
+
+.comment{
+    padding:10px 0;
+    border-top:1px solid var(--border);
+}
+
+.comment-form{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.comment-form input{
+    flex:1;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.user-card{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.profile-header{
+    display:flex;
+    gap:20px;
+    align-items:center;
+}
+
+.profile-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:20px;
+}
+
+.stat{
+    background:var(--primary-light);
+    border-radius:12px;
+    padding:15px;
+    text-align:center;
+}
+
+.stat strong{
+    display:block;
+    font-size:22px;
+}
+
+.search-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.search-row .input{
+    flex:1;
+}
+
+.empty{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--muted);
+}
+
+.notification{
+    display:flex;
+    gap:12px;
+    padding:14px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.unread-dot{
+    width:9px;
+    height:9px;
+    background:var(--primary);
+    border-radius:50%;
+    margin-top:6px;
+}
+
+.chat-layout{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    min-height:600px;
+}
+
+.conversations{
+    border-right:1px solid var(--border);
+    padding-right:15px;
+}
+
+.conversation{
+    display:flex;
+    gap:10px;
+    padding:12px;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.conversation:hover,
+.conversation.active{
+    background:var(--primary-light);
+}
+
+.chat{
+    display:flex;
+    flex-direction:column;
+    padding-left:18px;
+}
+
+.messages{
+    flex:1;
+    overflow:auto;
+    max-height:480px;
+    padding:10px;
+}
+
+.message{
+    max-width:75%;
+    padding:10px 13px;
+    border-radius:14px;
+    margin:7px 0;
+    background:var(--border);
+}
+
+.message.me{
+    margin-left:auto;
+    background:var(--primary);
+    color:white;
+}
+
+.message-time{
+    font-size:11px;
+    opacity:.65;
+    margin-top:3px;
+}
+
+.chat-input{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+}
+
+.modal{
+    width:min(550px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:var(--card);
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 20px 70px rgba(0,0,0,.3);
+}
+
+.modal-close{
+    float:right;
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    font-size:22px;
+}
+
+.premium-card{
+    background:linear-gradient(
+        135deg,
+        var(--primary-light),
+        var(--card)
+    );
+    border:2px solid #e3c84e;
+}
+
+.premium-feature{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.locked{
+    opacity:.55;
+}
+
+.mobile-nav{
+    display:none;
+}
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:var(--text);
+    color:var(--bg);
+    padding:13px 17px;
+    border-radius:12px;
+    z-index:200;
+    box-shadow:var(--shadow);
+}
+
+@media(max-width:800px){
+
+    .sidebar{
+        display:none;
     }
-  </script>
 
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <!-- React & Babel -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    .main{
+        margin-left:0;
+        padding-bottom:70px;
+    }
 
-  <style>
-    /* Custom Scrollbar & Animations */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 9999px; }
-    .animate-fade-in { animation: fadeIn 0.2s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
+    .content{
+        padding:18px;
+    }
+
+    .topbar{
+        padding:0 16px;
+    }
+
+    .mobile-nav{
+        position:fixed;
+        display:flex;
+        bottom:0;
+        left:0;
+        right:0;
+        background:var(--card);
+        border-top:1px solid var(--border);
+        z-index:30;
+        justify-content:space-around;
+        padding:8px 4px;
+    }
+
+    .mobile-nav button{
+        border:0;
+        background:transparent;
+        color:var(--muted);
+        font-size:11px;
+    }
+
+    .mobile-nav button.active{
+        color:var(--primary);
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .chat-layout{
+        grid-template-columns:1fr;
+    }
+
+    .conversations{
+        border-right:0;
+        border-bottom:1px solid var(--border);
+        padding-bottom:10px;
+        margin-bottom:10px;
+    }
+
+    .profile-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+</style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white transition-colors duration-200">
-  <div id="root"></div>
 
-  <script type="text/babel">
-    const { useState, useEffect, useRef, useMemo } = React;
+<body>
 
-    // =========================================================================
-    // INITIAL DATABASE SEED (Simulates DB Tables: users, profiles, skills, etc.)
-    // =========================================================================
-    const INITIAL_DB = {
-      users: [
-        { id: 'u_me', username: 'alexandre_d', name: 'Alexandre Dupont', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', bio: 'Élève de 3ème passionné de robotique et de guitare. Toujours chaud pour apprendre !', role: 'user' },
-        { id: 'u_1', username: 'lucas_m', name: 'Lucas Martin', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80', bio: 'Passionné de Python et créateur de mini-jeux 2D.', role: 'user' },
-        { id: 'u_2', username: 'camille_r', name: 'Camille Roux', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', bio: 'Illustration numérique sur Procreate et graphisme.', role: 'user' },
-        
-        // Profiles IA Démo
-        { id: 'ai_alex', username: 'alex_bot', name: 'Alex (IA)', isAi: true, avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80', bio: ' Mentor IA spécialisé en Programmation & Développement Web. Pose-moi tes questions sur Python, HTML, JS !', role: 'ai' },
-        { id: 'ai_sophie', username: 'sophie_bot', name: 'Sophie (IA)', isAi: true, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', bio: ' Mentor IA spécialisée en Dessin, UX/UI et Design Graphique. Prête à analyser tes créations !', role: 'ai' },
-        { id: 'ai_noah', username: 'noah_bot', name: 'Noah (IA)', isAi: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', bio: ' Mentor IA en Électronique, Arduino & IoT. Je t’aide à câbler tes projets sans tout faire sauter.', role: 'ai' },
-        { id: 'ai_maya', username: 'maya_bot', name: 'Maya (IA)', isAi: true, avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80', bio: ' Mentor IA en Musique, Solfège et Composition sur M.A.O. On crée des sons ensemble ?', role: 'ai' }
-      ],
-      skills: [
-        { id: 'sk_1', name: 'Programmation', icon: 'fa-code' },
-        { id: 'sk_2', name: 'Dessin & Design', icon: 'fa-palette' },
-        { id: 'sk_3', name: 'Électronique', icon: 'fa-microchip' },
-        { id: 'sk_4', name: 'Musique', icon: 'fa-music' },
-        { id: 'sk_5', name: 'Langues', icon: 'fa-language' },
-        { id: 'sk_6', name: 'Vidéo & Montage', icon: 'fa-video' }
-      ],
-      user_skills: [
-        { userId: 'u_me', skillName: 'Programmation', level: 'Intermédiaire' },
-        { userId: 'u_me', skillName: 'Musique', level: 'Débutant' },
-        { userId: 'u_1', skillName: 'Programmation', level: 'Avancé' },
-        { userId: 'u_2', skillName: 'Dessin & Design', level: 'Expert' },
-        { userId: 'ai_alex', skillName: 'Programmation', level: 'Expert' },
-        { userId: 'ai_sophie', skillName: 'Dessin & Design', level: 'Expert' },
-        { userId: 'ai_noah', skillName: 'Électronique', level: 'Expert' },
-        { userId: 'ai_maya', skillName: 'Musique', level: 'Expert' }
-      ],
-      posts: [
-        {
-          id: 'post_1',
-          userId: 'u_2',
-          content: 'Voici mon dernier concept de redesign pour une appli de gestion de révisions scolaires ! Vos avis sur la palette de couleurs ? 🎨✨',
-          image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=800&q=80',
-          category: 'Dessin & Design',
-          createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-          likes: ['u_me', 'u_1'],
-          comments: [
-            { id: 'c_1', userId: 'u_me', text: 'Les contrastes sont super lisibles ! Quel logiciel as-tu utilisé ?', createdAt: new Date(Date.now() - 3600000).toISOString() }
-          ]
-        },
-        {
-          id: 'post_2',
-          userId: 'ai_alex',
-          content: ' Astuce Dev du jour : En Python, privilégiez les list comprehensions pour rendre votre code plus concis et rapide. Exemple : [x**2 for x in range(10)]. Avez-vous déjà testé ?',
-          image: null,
-          category: 'Programmation',
-          createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-          likes: ['u_me'],
-          comments: []
-        }
-      ],
-      help_requests: [
-        {
-          id: 'req_1',
-          userId: 'u_me',
-          title: 'Aide sur les boucles FOR en Python',
-          description: 'Je n’arrive pas à faire fonctionner ma boucle pour parcourir un dictionnaire sans erreur de clé. Quelqu’un a 10 min pour m’expliquer ?',
-          category: 'Programmation',
-          status: 'open',
-          createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-          replies: [
-            { id: 'r_1', userId: 'ai_alex', text: 'Salut ! Pour parcourir un dictionnaire, utilise `.items()` : `for cle, valeur in mon_dict.items():`. Essaye ça et dis-moi !', createdAt: new Date(Date.now() - 3600000 * 3).toISOString() }
-          ]
-        },
-        {
-          id: 'req_2',
-          userId: 'u_1',
-          title: 'Choix de microcontrôleur pour projet domotique',
-          description: 'Hesitation entre une carte Arduino UNO et une ESP32 pour contrôler des LED à distance via Wi-Fi.',
-          category: 'Électronique',
-          status: 'resolved',
-          createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-          replies: [
-            { id: 'r_2', userId: 'ai_noah', text: 'Prends directement l’ESP32 ! Elle intègre le Wi-Fi et le Bluetooth nativement, parfait pour la domotique.', createdAt: new Date(Date.now() - 3600000 * 20).toISOString() }
-          ]
-        }
-      ],
-      conversations: [
-        { id: 'conv_alex', participantId: 'ai_alex', lastMessage: 'N’hésite pas si tu as besoin d’un exemple de code !', updatedAt: new Date().toISOString(), unread: false },
-        { id: 'conv_camille', participantId: 'u_2', lastMessage: 'Merci pour ton retour sur mes designs !', updatedAt: new Date(Date.now() - 3600000 * 12).toISOString(), unread: true }
-      ],
-      messages: [
-        { id: 'm_1', conversationId: 'conv_alex', senderId: 'u_me', text: 'Bonjour Alex, peux-tu m’aider à démarrer en JavaScript ?', timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString() },
-        { id: 'm_2', conversationId: 'conv_alex', senderId: 'ai_alex', text: 'Bonjour Alexandre ! Avec grand plaisir. Pour démarrer, connais-tu la différence entre var, let et const ?', timestamp: new Date(Date.now() - 1000 * 60 * 14).toISOString() },
-        { id: 'm_3', conversationId: 'conv_camille', senderId: 'u_2', text: 'Merci pour ton retour sur mes designs !', timestamp: new Date(Date.now() - 3600000 * 12).toISOString() }
-      ],
-      notifications: [
-        { id: 'notif_1', userId: 'u_me', title: 'Nouveau message', body: 'Camille Roux vous a envoyé un message.', read: false, type: 'message', createdAt: new Date(Date.now() - 3600000 * 12).toISOString() },
-        { id: 'notif_2', userId: 'u_me', title: 'J’aime sur votre post', body: 'Lucas Martin a aimé votre profil.', read: true, type: 'like', createdAt: new Date(Date.now() - 3600000 * 18).toISOString() }
-      ],
-      reports: [],
-      blocks: []
+<div id="app"></div>
+
+<script>
+/* =====================================================
+   SKILLINK
+   Version locale / démonstration
+===================================================== */
+
+const STORAGE_KEY = "skillink_data_v2";
+const USER_KEY = "skillink_current_user_v2";
+const PREMIUM_KEY = "skillink_premium_v2";
+
+const SKILLS = [
+    "Programmation",
+    "Dessin",
+    "Design",
+    "Arduino",
+    "Électronique",
+    "Musique",
+    "Mathématiques",
+    "Français",
+    "Anglais",
+    "Montage vidéo",
+    "3D / CAO",
+    "Jeux vidéo"
+];
+
+let currentPage = "home";
+let selectedConversation = null;
+let searchTerm = "";
+let premium = localStorage.getItem(PREMIUM_KEY) === "true";
+
+
+function uid(prefix="id"){
+    return prefix + "_" + Math.random().toString(36).slice(2,10);
+}
+
+
+function escapeHTML(text=""){
+    return String(text)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+function now(){
+    return new Date().toISOString();
+}
+
+
+function formatDate(date){
+    const d = new Date(date);
+
+    return d.toLocaleString("fr-CA",{
+        day:"numeric",
+        month:"short",
+        hour:"2-digit",
+        minute:"2-digit"
+    });
+}
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+function createInitialData(){
+
+    return {
+
+        users:[
+
+            {
+                id:"camille",
+                name:"Camille",
+                description:"J'aime apprendre de nouvelles choses et aider les autres.",
+                skills:["Français","Dessin"],
+                level:"Intermédiaire",
+                ai:false,
+                premium:false
+            },
+
+            {
+                id:"thomas",
+                name:"Thomas",
+                description:"Je m'intéresse à la 3D, aux jeux et à la programmation.",
+                skills:["3D / CAO","Programmation","Jeux vidéo"],
+                level:"Débutant",
+                ai:false,
+                premium:false
+            },
+
+            {
+                id:"elodie",
+                name:"Élodie",
+                description:"Je fais du montage vidéo et du design.",
+                skills:["Montage vidéo","Design"],
+                level:"Avancé",
+                ai:false,
+                premium:false
+            },
+
+            {
+                id:"alex",
+                name:"Alex",
+                description:"Je peux t'aider avec la programmation et les projets web.",
+                skills:["Programmation"],
+                level:"Avancé",
+                ai:true,
+                premium:true
+            },
+
+            {
+                id:"sophie",
+                name:"Sophie",
+                description:"Je crée des dessins et des designs numériques.",
+                skills:["Dessin","Design"],
+                level:"Avancé",
+                ai:true,
+                premium:true
+            },
+
+            {
+                id:"noah",
+                name:"Noah",
+                description:"Je construis des projets avec Arduino et des composants électroniques.",
+                skills:["Arduino","Électronique"],
+                level:"Avancé",
+                ai:true,
+                premium:true
+            },
+
+            {
+                id:"maya",
+                name:"Maya",
+                description:"Je fais de la musique et j'aime apprendre de nouveaux instruments.",
+                skills:["Musique"],
+                level:"Intermédiaire",
+                ai:true,
+                premium:true
+            }
+
+        ],
+
+        posts:[
+
+            {
+                id:"post1",
+                userId:"camille",
+                text:"Quelqu'un veut apprendre à dessiner avec moi ? Je peux montrer quelques techniques simples.",
+                category:"Dessin",
+                createdAt:now(),
+                likes:["thomas"],
+                comments:[
+                    {
+                        id:"c1",
+                        userId:"thomas",
+                        text:"Oui, ça m'intéresse !",
+                        createdAt:now()
+                    }
+                ],
+                boosted:false
+            },
+
+            {
+                id:"post2",
+                userId:"thomas",
+                text:"Je travaille sur un petit projet 3D. Je cherche des idées pour améliorer mon modèle.",
+                category:"3D / CAO",
+                createdAt:now(),
+                likes:[],
+                comments:[],
+                boosted:false
+            },
+
+            {
+                id:"post3",
+                userId:"noah",
+                text:"Je viens de créer un petit projet Arduino avec une LED et un bouton.",
+                category:"Arduino",
+                createdAt:now(),
+                likes:["camille"],
+                comments:[],
+                boosted:false
+            }
+
+        ],
+
+        helps:[
+
+            {
+                id:"help1",
+                userId:"thomas",
+                title:"Comment commencer avec Arduino ?",
+                description:"Je viens d'avoir un Arduino et je ne sais pas trop par où commencer.",
+                category:"Arduino",
+                createdAt:now(),
+                resolved:false,
+                answers:[
+                    {
+                        id:"a1",
+                        userId:"noah",
+                        text:"Commence par une LED, un bouton et quelques programmes très simples.",
+                        createdAt:now()
+                    }
+                ]
+            },
+
+            {
+                id:"help2",
+                userId:"camille",
+                title:"Comment améliorer mes dessins ?",
+                description:"Je cherche des exercices simples pour pratiquer.",
+                category:"Dessin",
+                createdAt:now(),
+                resolved:false,
+                answers:[]
+            }
+
+        ],
+
+        conversations:[],
+
+        notifications:[]
+
     };
+}
 
-    // Helper DB Storage Engine
-    const loadDB = () => {
-      const saved = localStorage.getItem('skillink_db_v1');
-      if (saved) {
-        try { return JSON.parse(saved); } catch(e) { console.error(e); }
-      }
-      return INITIAL_DB;
-    };
 
-    const saveDB = (db) => {
-      localStorage.setItem('skillink_db_v1', JSON.stringify(db));
-    };
+let data;
 
-    // =========================================================================
-    // MAIN APP COMPONENT
-    // =========================================================================
-    function App() {
-      const [db, setDb] = useState(loadDB);
-      const [currentUser, setCurrentUser] = useState(db.users[0]);
-      const [activeTab, setActiveTab] = useState('feed');
-      const [theme, setTheme] = useState(localStorage.getItem('skillink_theme') || 'dark');
-      
-      // Filter & Modals States
-      const [searchQuery, setSearchQuery] = useState('');
-      const [selectedCategory, setSelectedCategory] = useState('Tous');
-      const [selectedConversationId, setSelectedConversationId] = useState('conv_alex');
-      const [activeProfileModalUser, setActiveProfileModalUser] = useState(null);
-      
-      // Action Modals
-      const [showNewPostModal, setShowNewPostModal] = useState(false);
-      const [showNewHelpModal, setShowNewHelpModal] = useState(false);
-      const [showEditProfileModal, setShowEditProfileModal] = useState(false);
-      const [showReportModal, setShowReportModal] = useState(null); // target item or user
-      const [showAuthModal, setShowAuthModal] = useState(false);
 
-      // Toast Alerts
-      const [toast, setToast] = useState(null);
+function loadData(){
 
-      const triggerToast = (msg, type = 'info') => {
-        setToast({ msg, type });
-        setTimeout(() => setToast(null), 3000);
-      };
+    const saved = localStorage.getItem(STORAGE_KEY);
 
-      // Sync DB with localStorage
-      useEffect(() => {
-        saveDB(db);
-      }, [db]);
+    if(saved){
 
-      // Apply Theme Class
-      useEffect(() => {
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
+        try{
+            data = JSON.parse(saved);
         }
-        localStorage.setItem('skillink_theme', theme);
-      }, [theme]);
-
-      const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
-
-      // Unread notifications count
-      const unreadNotifsCount = useMemo(() => {
-        return db.notifications.filter(n => n.userId === currentUser.id && !n.read).length;
-      }, [db.notifications, currentUser]);
-
-      // Unread messages count
-      const unreadMessagesCount = useMemo(() => {
-        return db.conversations.filter(c => c.unread).length;
-      }, [db.conversations]);
-
-      // -----------------------------------------------------------------------
-      // DATA MUTATIONS & HANDLERS
-      // -----------------------------------------------------------------------
-      const handleLikePost = (postId) => {
-        setDb(prev => {
-          const updatedPosts = prev.posts.map(post => {
-            if (post.id === postId) {
-              const hasLiked = post.likes.includes(currentUser.id);
-              const newLikes = hasLiked
-                ? post.likes.filter(id => id !== currentUser.id)
-                : [...post.likes, currentUser.id];
-              return { ...post, likes: newLikes };
-            }
-            return post;
-          });
-          return { ...prev, posts: updatedPosts };
-        });
-      };
-
-      const handleAddComment = (postId, text) => {
-        if (!text.trim()) return;
-        const newComment = {
-          id: 'c_' + Date.now(),
-          userId: currentUser.id,
-          text: text.trim(),
-          createdAt: new Date().toISOString()
-        };
-        setDb(prev => ({
-          ...prev,
-          posts: prev.posts.map(p => p.id === postId ? { ...p, comments: [...p.comments, newComment] } : p)
-        }));
-        triggerToast('Commentaire ajouté !', 'success');
-      };
-
-      const handleDeletePost = (postId) => {
-        setDb(prev => ({
-          ...prev,
-          posts: prev.posts.filter(p => p.id !== postId)
-        }));
-        triggerToast('Publication supprimée.', 'info');
-      };
-
-      const handleCreatePost = (content, image, category) => {
-        const newPost = {
-          id: 'post_' + Date.now(),
-          userId: currentUser.id,
-          content,
-          image: image || null,
-          category: category || 'Général',
-          createdAt: new Date().toISOString(),
-          likes: [],
-          comments: []
-        };
-        setDb(prev => ({ ...prev, posts: [newPost, ...prev.posts] }));
-        setShowNewPostModal(false);
-        triggerToast('Publication publiée avec succès !', 'success');
-      };
-
-      const handleCreateHelpRequest = (title, description, category) => {
-        const newReq = {
-          id: 'req_' + Date.now(),
-          userId: currentUser.id,
-          title,
-          description,
-          category,
-          status: 'open',
-          createdAt: new Date().toISOString(),
-          replies: []
-        };
-        setDb(prev => ({ ...prev, help_requests: [newReq, ...prev.help_requests] }));
-        setShowNewHelpModal(false);
-        triggerToast('Demande d’aide créée !', 'success');
-      };
-
-      const handleReplyHelpRequest = (reqId, text) => {
-        if (!text.trim()) return;
-        const reply = {
-          id: 'r_' + Date.now(),
-          userId: currentUser.id,
-          text: text.trim(),
-          createdAt: new Date().toISOString()
-        };
-        setDb(prev => ({
-          ...prev,
-          help_requests: prev.help_requests.map(r => r.id === reqId ? { ...r, replies: [...r.replies, reply] } : r)
-        }));
-        triggerToast('Réponse envoyée !', 'success');
-      };
-
-      const handleResolveHelpRequest = (reqId) => {
-        setDb(prev => ({
-          ...prev,
-          help_requests: prev.help_requests.map(r => r.id === reqId ? { ...r, status: 'resolved' } : r)
-        }));
-        triggerToast('Demande marquée comme résolue 🎉', 'success');
-      };
-
-      const handleDeleteHelpRequest = (reqId) => {
-        setDb(prev => ({
-          ...prev,
-          help_requests: prev.help_requests.filter(r => r.id !== reqId)
-        }));
-        triggerToast('Demande supprimée.', 'info');
-      };
-
-      // AI Contextual Response Handler
-      const triggerAiResponse = (convId, userMessageText, targetAi) => {
-        setTimeout(() => {
-          let aiText = "C'est une super question ! Peux-tu me donner plus de détails sur ce que tu cherches à réaliser ?";
-          const msgLower = userMessageText.toLowerCase();
-
-          if (targetAi.id === 'ai_alex') {
-            if (msgLower.includes('python') || msgLower.includes('code') || msgLower.includes('script')) {
-              aiText = "En Python, la lisibilité est essentielle ! Utilises-tu une boucle `for` ou une fonction ? Montre-moi ton bout de code si tu veux qu'on le débogue ensemble ! 💻";
-            } else if (msgLower.includes('js') || msgLower.includes('javascript') || msgLower.includes('web')) {
-              aiText = "JavaScript est génial pour rendre les sites vivants ! Tu travailles avec du HTML/CSS classique ou un framework comme React ?";
-            } else {
-              aiText = "Je suis Alex, ton mentor Dev. Que souhaites-tu programmer aujourd'hui ? (Python, JavaScript, Algorithmes...)";
-            }
-          } else if (targetAi.id === 'ai_sophie') {
-            if (msgLower.includes('couleur') || msgLower.includes('design') || msgLower.includes('palette')) {
-              aiText = "Pour les couleurs, applique la règle des 60-30-10 : 60% couleur dominante, 30% secondaire, et 10% couleur d'accentuation pour les boutons ! 🎨";
-            } else {
-              aiText = "Salut ! Je suis Sophie. Tu travailles sur un dessin numérique, un logo ou l'interface d'une application ?";
-            }
-          } else if (targetAi.id === 'ai_noah') {
-            if (msgLower.includes('arduino') || msgLower.includes('capteur') || msgLower.includes('led')) {
-              aiText = "N'oublie pas de toujours vérifier la résistance de tes LED (autour de 220 ohms) pour éviter de griller les broches Arduino ! ⚡";
-            } else {
-              aiText = "Salut ! Noah à l'appareil. Quel montage électronique es-tu en train de préparer ?";
-            }
-          } else if (targetAi.id === 'ai_maya') {
-            aiText = "La musique, c'est de la passion ! Tu joues d'un instrument en particulier ou tu composes sur ordinateur (MAO) ? 🎵";
-          }
-
-          const responseMsg = {
-            id: 'm_' + Date.now(),
-            conversationId: convId,
-            senderId: targetAi.id,
-            text: aiText,
-            timestamp: new Date().toISOString()
-          };
-
-          setDb(prev => {
-            const newMsgs = [...prev.messages, responseMsg];
-            const updatedConvs = prev.conversations.map(c => c.id === convId ? { ...c, lastMessage: aiText, updatedAt: new Date().toISOString() } : c);
-            return { ...prev, messages: newMsgs, conversations: updatedConvs };
-          });
-        }, 1200);
-      };
-
-      const handleSendMessage = (convId, text) => {
-        if (!text.trim()) return;
-        const msg = {
-          id: 'm_' + Date.now(),
-          conversationId: convId,
-          senderId: currentUser.id,
-          text: text.trim(),
-          timestamp: new Date().toISOString()
-        };
-
-        const conv = db.conversations.find(c => c.id === convId);
-        const partner = db.users.find(u => u.id === conv?.participantId);
-
-        setDb(prev => ({
-          ...prev,
-          messages: [...prev.messages, msg],
-          conversations: prev.conversations.map(c => c.id === convId ? { ...c, lastMessage: text, updatedAt: new Date().toISOString() } : c)
-        }));
-
-        if (partner && partner.isAi) {
-          triggerAiResponse(convId, text, partner);
+        catch{
+            data = createInitialData();
         }
-      };
 
-      const handleStartConversation = (targetUserId) => {
-        let conv = db.conversations.find(c => c.participantId === targetUserId);
-        if (!conv) {
-          conv = {
-            id: 'conv_' + Date.now(),
-            participantId: targetUserId,
-            lastMessage: 'Conversation démarrée',
-            updatedAt: new Date().toISOString(),
-            unread: false
-          };
-          setDb(prev => ({ ...prev, conversations: [conv, ...prev.conversations] }));
-        }
-        setSelectedConversationId(conv.id);
-        setActiveTab('messages');
-        setActiveProfileModalUser(null);
-      };
+    }else{
 
-      const handleUpdateProfile = (updatedData) => {
-        const updatedUser = { ...currentUser, ...updatedData };
-        setCurrentUser(updatedUser);
-        setDb(prev => ({
-          ...prev,
-          users: prev.users.map(u => u.id === currentUser.id ? updatedUser : u),
-          user_skills: [
-            ...prev.user_skills.filter(s => s.userId !== currentUser.id),
-            ...updatedData.skills.map(s => ({ userId: currentUser.id, skillName: s.name, level: s.level }))
-          ]
-        }));
-        setShowEditProfileModal(false);
-        triggerToast('Profil mis à jour !', 'success');
-      };
+        data = createInitialData();
 
-      const handleBlockUser = (userId) => {
-        setDb(prev => ({ ...prev, blocks: [...prev.blocks, { userId: currentUser.id, blockedId: userId }] }));
-        triggerToast('Utilisateur bloqué.', 'info');
-        setActiveProfileModalUser(null);
-      };
+    }
 
-      const handleReport = (type, targetId, reason) => {
-        const report = { id: 'rep_' + Date.now(), reporterId: currentUser.id, type, targetId, reason, createdAt: new Date().toISOString() };
-        setDb(prev => ({ ...prev, reports: [...prev.reports, report] }));
-        setShowReportModal(null);
-        triggerToast('Signalement transmis aux modérateurs. Merci !', 'success');
-      };
+}
 
-      const handleMarkNotifRead = (id) => {
-        setDb(prev => ({
-          ...prev,
-          notifications: prev.notifications.map(n => n.id === id ? { ...n, read: true } : n)
-        }));
-      };
 
-      const handleMarkAllNotifsRead = () => {
-        setDb(prev => ({
-          ...prev,
-          notifications: prev.notifications.map(n => ({ ...n, read: true }))
-        }));
-        triggerToast('Toutes les notifications sont marquées comme lues.', 'info');
-      };
+function saveData(){
 
-      // Filter blocked content
-      const blockedIds = useMemo(() => db.blocks.filter(b => b.userId === currentUser.id).map(b => b.blockedId), [db.blocks, currentUser]);
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
 
-      const visiblePosts = useMemo(() => {
-        return db.posts
-          .filter(p => !blockedIds.includes(p.userId))
-          .filter(p => selectedCategory === 'Tous' || p.category === selectedCategory)
-          .filter(p => searchQuery === '' || p.content.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase()));
-      }, [db.posts, blockedIds, selectedCategory, searchQuery]);
+}
 
-      const visibleHelpRequests = useMemo(() => {
-        return db.help_requests
-          .filter(r => !blockedIds.includes(r.userId))
-          .filter(r => selectedCategory === 'Tous' || r.category === selectedCategory)
-          .filter(r => searchQuery === '' || r.title.toLowerCase().includes(searchQuery.toLowerCase()) || r.description.toLowerCase().includes(searchQuery.toLowerCase()));
-      }, [db.help_requests, blockedIds, selectedCategory, searchQuery]);
 
-      const visibleUsers = useMemo(() => {
-        return db.users
-          .filter(u => u.id !== currentUser.id && !blockedIds.includes(u.id))
-          .filter(u => {
-            if (!searchQuery) return true;
-            const userSkills = db.user_skills.filter(s => s.userId === u.id).map(s => s.skillName.toLowerCase());
-            return u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                   u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                   userSkills.some(s => s.includes(searchQuery.toLowerCase()));
-          });
-      }, [db.users, currentUser, blockedIds, searchQuery, db.user_skills]);
+function currentUser(){
 
-      // -----------------------------------------------------------------------
-      // UI RENDER HELPERS
-      // -----------------------------------------------------------------------
-      return (
-        <div class="min-h-screen flex flex-col md:flex-row bg-slate-50 dark:bg-slate-900">
-          
-          <!-- TOAST NOTIFICATION -->
-          {toast && (
-            <div class="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl bg-indigo-600 text-white animate-fade-in">
-              <i class="fa-solid fa-circle-info"></i>
-              <span class="text-sm font-medium">{toast.msg}</span>
-            </div>
-          )}
+    const id = localStorage.getItem(USER_KEY);
 
-          <!-- SIDEBAR (DESKTOP) -->
-          <aside class="hidden md:flex flex-col w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4 sticky top-0 h-screen justify-between z-20">
-            <div>
-              <!-- Logo -->
-              <div class="flex items-center gap-3 px-3 py-2 mb-8">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-violet-500 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-brand-500/30">
-                  <i class="fa-solid fa-bolt"></i>
-                </div>
-                <div>
-                  <h1 class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-violet-500 bg-clip-text text-transparent">Skillink</h1>
-                  <p class="text-xs text-slate-400 font-medium">Partage tes talents</p>
-                </div>
-              </div>
+    return data.users.find(u=>u.id===id) || data.users[0];
 
-              <!-- Nav Links -->
-              <nav class="space-y-1">
-                {[
-                  { id: 'feed', label: 'Accueil / Fil', icon: 'fa-house' },
-                  { id: 'discover', label: 'Découvrir', icon: 'fa-compass' },
-                  { id: 'help', label: 'Demandes d’aide', icon: 'fa-hand-holding-hand' },
-                  { id: 'messages', label: 'Messages', icon: 'fa-paper-plane', badge: unreadMessagesCount },
-                  { id: 'notifications', label: 'Notifications', icon: 'fa-bell', badge: unreadNotifsCount },
-                  { id: 'profile', label: 'Mon Profil', icon: 'fa-user' },
-                  { id: 'settings', label: 'Paramètres', icon: 'fa-gear' }
-                ].map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    class={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                      activeTab === item.id 
-                        ? 'bg-brand-500/10 text-brand-600 dark:text-brand-400 font-bold' 
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <div class="flex items-center gap-3">
-                      <i class={`fa-solid ${item.icon} text-lg w-5 text-center`}></i>
-                      <span>{item.label}</span>
-                    </div>
-                    {item.badge > 0 && (
-                      <span class="bg-brand-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </nav>
+}
+
+
+function currentUserId(){
+
+    return currentUser()?.id;
+}
+
+
+function getUser(id){
+
+    return data.users.find(u=>u.id===id);
+}
+
+
+function avatar(user,large=false){
+
+    if(!user) return "";
+
+    const initial = escapeHTML(
+        user.name.charAt(0).toUpperCase()
+    );
+
+    return `
+        <div class="avatar ${large?"large":""}">
+            ${initial}
+        </div>
+    `;
+}
+
+
+function userName(id){
+
+    const u = getUser(id);
+
+    return u ? escapeHTML(u.name) : "Utilisateur";
+}
+
+
+function premiumBadge(user){
+
+    if(!user) return "";
+
+    if(user.premium || (user.ai && user.id!=="")){
+        return `
+            <span class="pill premium">
+                ⭐ Premium
+            </span>
+        `;
+    }
+
+    return "";
+}
+
+
+/* =====================================================
+   APP SHELL
+===================================================== */
+
+function render(){
+
+    const user = currentUser();
+
+    document.getElementById("app").innerHTML = `
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                Skill<span>ink</span>
             </div>
 
-            <!-- Current User Badge Footer -->
-            <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-              <div class="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('profile')}>
-                <img src={currentUser.avatar} class="w-10 h-10 rounded-full object-cover ring-2 ring-brand-500/30" />
-                <div class="overflow-hidden">
-                  <p class="text-sm font-bold truncate">{currentUser.name}</p>
-                  <p class="text-xs text-slate-400 truncate">@{currentUser.username}</p>
-                </div>
-              </div>
-              <button onClick={toggleTheme} class="p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                <i class={`fa-solid ${theme === 'dark' ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'}`}></i>
-              </button>
-            </div>
-          </aside>
+            <div class="nav">
 
-          <!-- MOBILE HEADER & BOTTOM NAV -->
-          <header class="md:hidden sticky top-0 z-30 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-violet-500 flex items-center justify-center text-white font-bold text-sm">
-                <i class="fa-solid fa-bolt"></i>
-              </div>
-              <span class="font-extrabold text-lg text-brand-600 dark:text-brand-400">Skillink</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <button onClick={toggleTheme} class="p-2 rounded-lg text-slate-400">
-                <i class={`fa-solid ${theme === 'dark' ? 'fa-sun text-amber-400' : 'fa-moon text-indigo-600'}`}></i>
-              </button>
-              <img src={currentUser.avatar} class="w-8 h-8 rounded-full object-cover" onClick={() => setActiveTab('profile')} />
-            </div>
-          </header>
+                ${navButton("home","Accueil","⌂")}
 
-          <nav class="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/90 dark:bg-slate-950/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 px-1">
-            {[
-              { id: 'feed', icon: 'fa-house' },
-              { id: 'discover', icon: 'fa-compass' },
-              { id: 'help', icon: 'fa-hand-holding-hand' },
-              { id: 'messages', icon: 'fa-paper-plane', badge: unreadMessagesCount },
-              { id: 'notifications', icon: 'fa-bell', badge: unreadNotifsCount },
-              { id: 'profile', icon: 'fa-user' }
-            ].map(item => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                class={`relative p-3 rounded-xl ${activeTab === item.id ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400'}`}
-              >
-                <i class={`fa-solid ${item.icon} text-xl`}></i>
-                {item.badge > 0 && (
-                  <span class="absolute top-2 right-2 w-2 h-2 bg-brand-600 rounded-full"></span>
-                )}
-              </button>
-            ))}
-          </nav>
+                ${navButton("discover","Découvrir","◉")}
 
-          <!-- MAIN CONTENT AREA -->
-          <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-8 pb-24 md:pb-8 min-h-screen">
-            
-            <!-- GLOBAL TOP BAR WITH SEARCH -->
-            <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div class="relative w-full">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input
-                  type="text"
-                  placeholder="Rechercher des talents, membres, questions ou posts..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm shadow-sm transition"
-                />
-                {searchQuery && (
-                  <button onClick={() => setSearchQuery('')} class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                    <i class="fa-solid fa-xmark"></i>
-                  </button>
-                )}
-              </div>
-            </div>
+                ${navButton("help","Demandes d'aide","?")}
 
-            <!-- TAB CONTENT -->
+                ${navButton("messages","Messages","✉")}
 
-            <!-- 1. FEED / ACCUEIL -->
-            {activeTab === 'feed' && (
-              <div class="space-y-6 animate-fade-in">
-                
-                <!-- Category Filter Pill Bar -->
-                <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                  <button
-                    onClick={() => setSelectedCategory('Tous')}
-                    class={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
-                      selectedCategory === 'Tous' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
-                    }`}
-                  >
-                    Tous les talents
-                  </button>
-                  {db.skills.map(sk => (
-                    <button
-                      key={sk.id}
-                      onClick={() => setSelectedCategory(sk.name)}
-                      class={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-2 transition ${
-                        selectedCategory === sk.name ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
-                      }`}
-                    >
-                      <i class={`fa-solid ${sk.icon}`}></i>
-                      <span>{sk.name}</span>
-                    </button>
-                  ))}
-                </div>
+                ${navButton("notifications","Notifications","●")}
 
-                <!-- Create Post Card Trigger -->
-                <div class="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                  <img src={currentUser.avatar} class="w-10 h-10 rounded-full object-cover" />
-                  <button
-                    onClick={() => setShowNewPostModal(true)}
-                    class="flex-1 text-left px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-400 text-sm font-medium hover:bg-slate-200/60 dark:hover:bg-slate-800 transition"
-                  >
-                    Partage un projet, un conseil ou une réussite...
-                  </button>
-                  <button onClick={() => setShowNewPostModal(true)} class="bg-brand-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-md shadow-brand-500/20 hover:bg-brand-700 transition">
-                    Publier
-                  </button>
-                </div>
+                ${navButton("profile","Mon profil","○")}
 
-                <!-- Posts List -->
-                <div class="space-y-4">
-                  {visiblePosts.length === 0 ? (
-                    <div class="text-center py-12 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800">
-                      <i class="fa-solid fa-newspaper text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
-                      <p class="text-slate-500 font-medium">Aucune publication ne correspond à votre recherche.</p>
-                    </div>
-                  ) : (
-                    visiblePosts.map(post => {
-                      const author = db.users.find(u => u.id === post.userId) || currentUser;
-                      const hasLiked = post.likes.includes(currentUser.id);
+                <button
+                    class="premium-nav"
+                    onclick="openPremium()">
 
-                      return (
-                        <div key={post.id} class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
-                          <!-- Post Header -->
-                          <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3 cursor-pointer" onClick={() => setActiveProfileModalUser(author)}>
-                              <img src={author.avatar} class="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100 dark:ring-slate-800" />
-                              <div>
-                                <div class="flex items-center gap-2">
-                                  <span class="font-bold text-sm">{author.name}</span>
-                                  {author.isAi && (
-                                    <span class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">🤖 IA / Démo</span>
-                                  )}
-                                </div>
-                                <span class="text-xs text-slate-400">@{author.username} • {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                              </div>
-                            </div>
-                            
-                            <div class="flex items-center gap-2">
-                              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-400">
-                                {post.category}
-                              </span>
-                              {post.userId === currentUser.id ? (
-                                <button onClick={() => handleDeletePost(post.id)} class="text-slate-400 hover:text-red-500 p-2">
-                                  <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                              ) : (
-                                <button onClick={() => setShowReportModal({ type: 'post', id: post.id })} class="text-slate-400 hover:text-amber-500 p-2">
-                                  <i class="fa-solid fa-flag"></i>
-                                </button>
-                              )}
-                            </div>
-                          </div>
+                    ⭐ Premium
 
-                          <!-- Content -->
-                          <p class="text-sm leading-relaxed whitespace-pre-line">{post.content}</p>
-
-                          {post.image && (
-                            <img src={post.image} class="rounded-xl w-full max-h-96 object-cover border border-slate-200 dark:border-slate-800" />
-                          )}
-
-                          <!-- Like & Comment Action Buttons -->
-                          <div class="flex items-center gap-6 pt-2 border-t border-slate-100 dark:border-slate-900 text-xs text-slate-500 font-semibold">
-                            <button
-                              onClick={() => handleLikePost(post.id)}
-                              class={`flex items-center gap-2 transition ${hasLiked ? 'text-red-500 font-bold' : 'hover:text-slate-800 dark:hover:text-slate-200'}`}
-                            >
-                              <i class={`fa-${hasLiked ? 'solid' : 'regular'} fa-heart text-base`}></i>
-                              <span>{post.likes.length} J'aime</span>
-                            </button>
-
-                            <div class="flex items-center gap-2">
-                              <i class="fa-regular fa-comment text-base"></i>
-                              <span>{post.comments.length} Commentaires</span>
-                            </div>
-                          </div>
-
-                          <!-- Comments Section -->
-                          {post.comments.length > 0 && (
-                            <div class="space-y-2 pt-2 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl">
-                              {post.comments.map(c => {
-                                const cAuthor = db.users.find(u => u.id === c.userId) || currentUser;
-                                return (
-                                  <div key={c.id} class="flex items-start gap-2.5 text-xs">
-                                    <img src={cAuthor.avatar} class="w-6 h-6 rounded-full object-cover mt-0.5" />
-                                    <div class="flex-1 bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
-                                      <span class="font-bold mr-2">{cAuthor.name}</span>
-                                      <span class="text-slate-600 dark:text-slate-300">{c.text}</span>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
-
-                          <!-- Add Comment Input -->
-                          <form
-                            onSubmit={(e) => {
-                              e.preventDefault();
-                              const input = e.target.elements.commentInput;
-                              handleAddComment(post.id, input.value);
-                              input.value = '';
-                            }}
-                            class="flex items-center gap-2 pt-1"
-                          >
-                            <input
-                              name="commentInput"
-                              type="text"
-                              placeholder="Écrire un commentaire..."
-                              class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
-                            />
-                            <button type="submit" class="bg-brand-600 text-white px-3 py-2 rounded-xl text-xs font-bold">
-                              Envoyer
-                            </button>
-                          </form>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-            )}
-
-            <!-- 2. DISCOVER / DÉCOUVRIR -->
-            {activeTab === 'discover' && (
-              <div class="space-y-6 animate-fade-in">
-                <div>
-                  <h2 class="text-xl font-black mb-1">Découvrir les talents</h2>
-                  <p class="text-xs text-slate-400">Trouve des camarades ou des mentors IA pour échanger et progresser.</p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {visibleUsers.map(u => {
-                    const skills = db.user_skills.filter(s => s.userId === u.id);
-                    return (
-                      <div key={u.id} class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between space-y-4">
-                        <div>
-                          <div class="flex items-center gap-3 mb-3">
-                            <img src={u.avatar} class="w-12 h-12 rounded-full object-cover ring-2 ring-brand-500/20" />
-                            <div>
-                              <div class="flex items-center gap-2">
-                                <h3 class="font-bold text-sm">{u.name}</h3>
-                                {u.isAi && <span class="bg-purple-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">🤖 IA</span>}
-                              </div>
-                              <p class="text-xs text-slate-400">@{u.username}</p>
-                            </div>
-                          </div>
-                          
-                          <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mb-3">{u.bio}</p>
-
-                          <!-- Skill Badges -->
-                          <div class="flex flex-wrap gap-1.5">
-                            {skills.map((s, idx) => (
-                              <span key={idx} class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] font-semibold px-2.5 py-1 rounded-lg text-slate-700 dark:text-slate-300">
-                                {s.skillName} • <span class="text-brand-600 dark:text-brand-400">{s.level}</span>
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="flex items-center gap-2 pt-2">
-                          <button
-                            onClick={() => setActiveProfileModalUser(u)}
-                            class="flex-1 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 text-xs font-bold py-2.5 rounded-xl transition text-center"
-                          >
-                            Voir profil
-                          </button>
-                          <button
-                            onClick={() => handleStartConversation(u.id)}
-                            class="flex-1 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-md shadow-brand-500/20"
-                          >
-                            <i class="fa-solid fa-paper-plane"></i>
-                            <span>Message</span>
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            <!-- 3. HELP REQUESTS / DEMANDES D'AIDE -->
-            {activeTab === 'help' && (
-              <div class="space-y-6 animate-fade-in">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <h2 class="text-xl font-black">Demandes d’aide</h2>
-                    <p class="text-xs text-slate-400">Bloqué sur un devoir ou un projet ? Demande à la communauté.</p>
-                  </div>
-                  <button
-                    onClick={() => setShowNewHelpModal(true)}
-                    class="bg-brand-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-brand-500/20 hover:bg-brand-700 transition flex items-center gap-2"
-                  >
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Poser une question</span>
-                  </button>
-                </div>
-
-                <div class="space-y-4">
-                  {visibleHelpRequests.length === 0 ? (
-                    <div class="text-center py-12 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800">
-                      <p class="text-slate-500 font-medium">Aucune demande d’aide en cours.</p>
-                    </div>
-                  ) : (
-                    visibleHelpRequests.map(req => {
-                      const author = db.users.find(u => u.id === req.userId) || currentUser;
-                      const isOwner = req.userId === currentUser.id;
-
-                      return (
-                        <div key={req.id} class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
-                          <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                              <img src={author.avatar} class="w-10 h-10 rounded-full object-cover" />
-                              <div>
-                                <h3 class="font-bold text-sm">{req.title}</h3>
-                                <p class="text-xs text-slate-400">par {author.name} • {new Date(req.createdAt).toLocaleDateString()}</p>
-                              </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                              <span class={`text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase ${
-                                req.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
-                              }`}>
-                                {req.status === 'resolved' ? 'Résolu' : 'En attente'}
-                              </span>
-                              {isOwner && req.status !== 'resolved' && (
-                                <button onClick={() => handleResolveHelpRequest(req.id)} class="text-xs bg-emerald-600 text-white px-3 py-1 rounded-lg font-bold">
-                                  Marquer Résolu
-                                </button>
-                              )}
-                              {isOwner && (
-                                <button onClick={() => handleDeleteHelpRequest(req.id)} class="text-slate-400 hover:text-red-500 p-1">
-                                  <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                              )}
-                            </div>
-                          </div>
-
-                          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{req.description}</p>
-
-                          <!-- Replies -->
-                          {req.replies.length > 0 && (
-                            <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-900">
-                              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Réponses ({req.replies.length})</h4>
-                              {req.replies.map(r => {
-                                const rAuthor = db.users.find(u => u.id === r.userId) || currentUser;
-                                return (
-                                  <div key={r.id} class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl flex items-start gap-3">
-                                    <img src={rAuthor.avatar} class="w-7 h-7 rounded-full object-cover" />
-                                    <div>
-                                      <div class="flex items-center gap-2">
-                                        <span class="font-bold text-xs">{rAuthor.name}</span>
-                                        {rAuthor.isAi && <span class="bg-purple-600 text-white text-[9px] font-bold px-1 rounded">🤖 IA</span>}
-                                      </div>
-                                      <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">{r.text}</p>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
-
-                          <!-- Add Reply Form -->
-                          <form
-                            onSubmit={(e) => {
-                              e.preventDefault();
-                              const input = e.target.elements.replyInput;
-                              handleReplyHelpRequest(req.id, input.value);
-                              input.value = '';
-                            }}
-                            class="flex items-center gap-2 pt-2"
-                          >
-                            <input
-                              name="replyInput"
-                              type="text"
-                              placeholder="Proposer de l'aide..."
-                              class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none"
-                            />
-                            <button type="submit" class="bg-slate-800 dark:bg-slate-700 text-white px-3 py-2 rounded-xl text-xs font-bold">
-                              Répondre
-                            </button>
-                          </form>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-            )}
-
-            <!-- 4. MESSAGES / MESSAGERIE -->
-            {activeTab === 'messages' && (
-              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm h-[650px] flex overflow-hidden animate-fade-in">
-                <!-- Conversations List -->
-                <div class="w-1/3 border-r border-slate-200 dark:border-slate-800 flex flex-col">
-                  <div class="p-4 border-b border-slate-200 dark:border-slate-800 font-bold text-sm">
-                    Conversations
-                  </div>
-                  <div class="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-900">
-                    {db.conversations.map(conv => {
-                      const partner = db.users.find(u => u.id === conv.participantId);
-                      if (!partner) return null;
-                      const isSelected = selectedConversationId === conv.id;
-
-                      return (
-                        <div
-                          key={conv.id}
-                          onClick={() => setSelectedConversationId(conv.id)}
-                          class={`p-3.5 flex items-center gap-3 cursor-pointer transition ${
-                            isSelected ? 'bg-brand-500/10 border-l-4 border-brand-600' : 'hover:bg-slate-50 dark:hover:bg-slate-900'
-                          }`}
-                        >
-                          <img src={partner.avatar} class="w-10 h-10 rounded-full object-cover" />
-                          <div class="overflow-hidden flex-1">
-                            <div class="flex items-center justify-between">
-                              <span class="font-bold text-xs truncate">{partner.name}</span>
-                              {partner.isAi && <span class="text-[9px] bg-purple-500/20 text-purple-400 font-bold px-1 rounded">IA</span>}
-                            </div>
-                            <p class="text-xs text-slate-400 truncate mt-0.5">{conv.lastMessage}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <!-- Chat Box -->
-                <div class="flex-1 flex flex-col justify-between">
-                  {(() => {
-                    const currentConv = db.conversations.find(c => c.id === selectedConversationId);
-                    const partner = db.users.find(u => u.id === currentConv?.participantId);
-                    const convMessages = db.messages.filter(m => m.conversationId === selectedConversationId);
-
-                    if (!partner) return <div class="p-8 text-center text-slate-400">Sélectionnez une conversation</div>;
-
-                    return (
-                      <>
-                        <!-- Chat Header -->
-                        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                          <div class="flex items-center gap-3 cursor-pointer" onClick={() => setActiveProfileModalUser(partner)}>
-                            <img src={partner.avatar} class="w-9 h-9 rounded-full object-cover" />
-                            <div>
-                              <h3 class="font-bold text-sm flex items-center gap-2">
-                                {partner.name}
-                                {partner.isAi && <span class="bg-purple-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">🤖 Assistant IA</span>}
-                              </h3>
-                              <p class="text-[11px] text-slate-400">@{partner.username}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Messages Stream -->
-                        <div class="flex-1 p-4 overflow-y-auto space-y-3">
-                          {convMessages.map(m => {
-                            const isMe = m.senderId === currentUser.id;
-                            return (
-                              <div key={m.id} class={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                                <div class={`max-w-[75%] p-3 rounded-2xl text-xs leading-relaxed ${
-                                  isMe ? 'bg-brand-600 text-white rounded-br-none' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-none'
-                                }`}>
-                                  <p>{m.text}</p>
-                                  <span class={`text-[9px] block text-right mt-1 ${isMe ? 'text-brand-200' : 'text-slate-400'}`}>
-                                    {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                  </span>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <!-- Chat Input Form -->
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            const input = e.target.elements.msgText;
-                            handleSendMessage(selectedConversationId, input.value);
-                            input.value = '';
-                          }}
-                          class="p-3 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2"
-                        >
-                          <input
-                            name="msgText"
-                            type="text"
-                            placeholder={`Écrire à ${partner.name}...`}
-                            class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
-                          />
-                          <button type="submit" class="bg-brand-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md shadow-brand-500/20">
-                            <i class="fa-solid fa-paper-plane"></i>
-                          </button>
-                        </form>
-                      </>
-                    );
-                  })()}
-                </div>
-              </div>
-            )}
-
-            <!-- 5. NOTIFICATIONS -->
-            {activeTab === 'notifications' && (
-              <div class="space-y-6 animate-fade-in">
-                <div class="flex items-center justify-between">
-                  <h2 class="text-xl font-black">Centre de Notifications</h2>
-                  <button onClick={handleMarkAllNotifsRead} class="text-xs text-brand-600 font-bold hover:underline">
-                    Tout marquer comme lu
-                  </button>
-                </div>
-
-                <div class="space-y-3">
-                  {db.notifications.map(n => (
-                    <div
-                      key={n.id}
-                      onClick={() => handleMarkNotifRead(n.id)}
-                      class={`p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between transition cursor-pointer ${
-                        !n.read ? 'bg-brand-500/5 border-brand-500/30' : 'bg-white dark:bg-slate-950'
-                      }`}
-                    >
-                      <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center">
-                          <i class="fa-solid fa-bell"></i>
-                        </div>
-                        <div>
-                          <h4 class="font-bold text-xs">{n.title}</h4>
-                          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{n.body}</p>
-                        </div>
-                      </div>
-                      <span class="text-[10px] text-slate-400">{new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <!-- 6. PROFILE / MON PROFIL -->
-            {activeTab === 'profile' && (
-              <div class="space-y-6 animate-fade-in">
-                <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm relative overflow-hidden">
-                  <div class="h-28 bg-gradient-to-r from-brand-600 to-violet-600 -mx-6 -mt-6 mb-12"></div>
-                  <div class="absolute top-16 left-6">
-                    <img src={currentUser.avatar} class="w-20 h-20 rounded-full object-cover ring-4 ring-white dark:ring-slate-950 shadow-md" />
-                  </div>
-
-                  <div class="flex justify-between items-start pt-2">
-                    <div>
-                      <h2 class="text-xl font-black">{currentUser.name}</h2>
-                      <p class="text-xs text-slate-400">@{currentUser.username}</p>
-                    </div>
-                    <button
-                      onClick={() => setShowEditProfileModal(true)}
-                      class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-bold px-4 py-2 rounded-xl transition"
-                    >
-                      Modifier le profil
-                    </button>
-                  </div>
-
-                  <p class="text-xs text-slate-600 dark:text-slate-300 mt-4 leading-relaxed">{currentUser.bio}</p>
-
-                  <!-- Skills Section -->
-                  <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-900">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Mes Talents & Niveaux</h3>
-                    <div class="flex flex-wrap gap-2">
-                      {db.user_skills.filter(s => s.userId === currentUser.id).map((sk, idx) => (
-                        <span key={idx} class="bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-bold px-3 py-1.5 rounded-xl">
-                          {sk.skillName} • <span class="underline">{sk.level}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Personal Posts -->
-                <div class="space-y-3">
-                  <h3 class="font-bold text-sm">Mes Publications</h3>
-                  {db.posts.filter(p => p.userId === currentUser.id).map(post => (
-                    <div key={post.id} class="bg-white dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
-                      <p>{post.content}</p>
-                      <div class="flex items-center justify-between text-slate-400 text-[10px]">
-                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                        <span>{post.likes.length} J'aime</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <!-- 7. SETTINGS / PARAMÈTRES -->
-            {activeTab === 'settings' && (
-              <div class="space-y-6 animate-fade-in">
-                <h2 class="text-xl font-black">Paramètres</h2>
-
-                <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-900">
-                  <div class="p-4 flex items-center justify-between">
-                    <div>
-                      <h4 class="font-bold text-xs">Thème d'affichage</h4>
-                      <p class="text-xs text-slate-400">Basculez entre mode clair et mode sombre.</p>
-                    </div>
-                    <button onClick={toggleTheme} class="bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-xl text-xs font-bold">
-                      {theme === 'dark' ? 'Mode Sombre 🌙' : 'Mode Clair ☀️'}
-                    </button>
-                  </div>
-
-                  <div class="p-4 space-y-2">
-                    <h4 class="font-bold text-xs">Règles de la communauté Skillink</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                      1. Respect et bienveillance obligatoires.<br/>
-                      2. Aucun partage d'informations personnelles sensibles (mots de passe, numéros privés).<br/>
-                      3. Les faux profils de démonstration sont explicitement identifiés comme "IA".
-                    </p>
-                  </div>
-
-                  <div class="p-4 flex justify-end">
-                    <button onClick={() => triggerToast('Déconnexion effectuée', 'info')} class="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition">
-                      Se déconnecter
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-          </main>
-
-          <!-- =================================================================== -->
-          <!-- MODALS ENGINE -->
-          <!-- =================================================================== -->
-
-          <!-- 1. EDIT PROFILE MODAL -->
-          {showEditProfileModal && (
-            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 space-y-4 animate-fade-in">
-                <h3 class="font-black text-lg">Modifier le profil</h3>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.target;
-                    handleUpdateProfile({
-                      name: form.name.value,
-                      bio: form.bio.value,
-                      avatar: form.avatar.value,
-                      skills: [
-                        { name: form.skill1.value, level: form.level1.value },
-                        { name: form.skill2.value, level: form.level2.value }
-                      ]
-                    });
-                  }}
-                  class="space-y-3 text-xs"
-                >
-                  <div>
-                    <label class="block font-bold mb-1">Nom complet</label>
-                    <input name="name" defaultValue={currentUser.name} class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:outline-none" />
-                  </div>
-                  <div>
-                    <label class="block font-bold mb-1">URL Photo de profil</label>
-                    <input name="avatar" defaultValue={currentUser.avatar} class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:outline-none" />
-                  </div>
-                  <div>
-                    <label class="block font-bold mb-1">Bio / Description</label>
-                    <textarea name="bio" defaultValue={currentUser.bio} rows="2" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:outline-none"></textarea>
-                  </div>
-
-                  <div class="pt-2">
-                    <label class="block font-bold mb-1">Talent principal</label>
-                    <div class="grid grid-cols-2 gap-2">
-                      <select name="skill1" defaultValue="Programmation" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2">
-                        {db.skills.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-                      </select>
-                      <select name="level1" defaultValue="Intermédiaire" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2">
-                        <option value="Débutant">Débutant</option>
-                        <option value="Intermédiaire">Intermédiaire</option>
-                        <option value="Avancé">Avancé</option>
-                        <option value="Expert">Expert</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="pt-1">
-                    <label class="block font-bold mb-1">Second Talent</label>
-                    <div class="grid grid-cols-2 gap-2">
-                      <select name="skill2" defaultValue="Musique" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2">
-                        {db.skills.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-                      </select>
-                      <select name="level2" defaultValue="Débutant" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2">
-                        <option value="Débutant">Débutant</option>
-                        <option value="Intermédiaire">Intermédiaire</option>
-                        <option value="Avancé">Avancé</option>
-                        <option value="Expert">Expert</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="flex justify-end gap-2 pt-4">
-                    <button type="button" onClick={() => setShowEditProfileModal(false)} class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">Annuler</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold">Enregistrer</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          <!-- 2. CREATE POST MODAL -->
-          {showNewPostModal && (
-            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 space-y-4 animate-fade-in">
-                <h3 class="font-black text-lg">Nouvelle Publication</h3>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.target;
-                    handleCreatePost(form.content.value, form.image.value, form.category.value);
-                  }}
-                  class="space-y-3 text-xs"
-                >
-                  <textarea name="content" required placeholder="Que veux-tu partager avec la communauté ?" rows="4" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 focus:outline-none"></textarea>
-                  
-                  <div>
-                    <label class="block font-bold mb-1">Catégorie / Talent</label>
-                    <select name="category" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5">
-                      {db.skills.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label class="block font-bold mb-1">URL de l'image (optionnel)</label>
-                    <input name="image" placeholder="https://..." class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:outline-none" />
-                  </div>
-
-                  <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onClick={() => setShowNewPostModal(false)} class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">Annuler</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold">Publier</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          <!-- 3. CREATE HELP MODAL -->
-          {showNewHelpModal && (
-            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 space-y-4 animate-fade-in">
-                <h3 class="font-black text-lg">Demander de l’aide</h3>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.target;
-                    handleCreateHelpRequest(form.title.value, form.description.value, form.category.value);
-                  }}
-                  class="space-y-3 text-xs"
-                >
-                  <input name="title" required placeholder="Titre de la demande (ex: Aide en Python...)" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 focus:outline-none" />
-                  <textarea name="description" required placeholder="Décris en détail ce qui te bloque..." rows="4" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 focus:outline-none"></textarea>
-                  
-                  <div>
-                    <label class="block font-bold mb-1">Domaine concerné</label>
-                    <select name="category" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5">
-                      {db.skills.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-                    </select>
-                  </div>
-
-                  <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onClick={() => setShowNewHelpModal(false)} class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">Annuler</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold">Envoyer la demande</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          <!-- 4. VIEW USER PROFILE DETAIL MODAL -->
-          {activeProfileModalUser && (
-            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 space-y-4 animate-fade-in relative">
-                <button onClick={() => setActiveProfileModalUser(null)} class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
-                  <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
 
-                <div class="flex items-center gap-4">
-                  <img src={activeProfileModalUser.avatar} class="w-16 h-16 rounded-full object-cover ring-2 ring-brand-500" />
-                  <div>
-                    <h3 class="font-extrabold text-base flex items-center gap-2">
-                      {activeProfileModalUser.name}
-                      {activeProfileModalUser.isAi && <span class="bg-purple-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">🤖 IA</span>}
-                    </h3>
-                    <p class="text-xs text-slate-400">@{activeProfileModalUser.username}</p>
-                  </div>
-                </div>
+                ${navButton("settings","Paramètres","⚙")}
 
-                <p class="text-xs text-slate-600 dark:text-slate-300">{activeProfileModalUser.bio}</p>
-
-                <div>
-                  <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">Talents</h4>
-                  <div class="flex flex-wrap gap-1.5">
-                    {db.user_skills.filter(s => s.userId === activeProfileModalUser.id).map((s, idx) => (
-                      <span key={idx} class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs px-2.5 py-1 rounded-lg">
-                        {s.skillName} • <span class="text-brand-600 font-bold">{s.level}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div class="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-900">
-                  <button
-                    onClick={() => handleStartConversation(activeProfileModalUser.id)}
-                    class="flex-1 bg-brand-600 text-white py-2.5 rounded-xl font-bold text-xs"
-                  >
-                    Envoyer un message
-                  </button>
-                  <button
-                    onClick={() => handleBlockUser(activeProfileModalUser.id)}
-                    class="px-3 py-2.5 rounded-xl bg-red-500/10 text-red-500 font-bold text-xs"
-                  >
-                    Bloquer
-                  </button>
-                </div>
-              </div>
             </div>
-          )}
 
-          <!-- 5. REPORT MODAL -->
-          {showReportModal && (
-            <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div class="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-sm w-full p-6 space-y-4 animate-fade-in">
-                <h3 class="font-black text-base text-amber-500">Signaler un contenu</h3>
-                <p class="text-xs text-slate-400">Pourquoi souhaitez-vous signaler cet élément ?</p>
-                
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleReport(showReportModal.type, showReportModal.id, e.target.reason.value);
-                  }}
-                  class="space-y-3 text-xs"
-                >
-                  <select name="reason" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5">
-                    <option value="Inapproprié">Contenu inapproprié ou irrespectueux</option>
-                    <option value="Spam">Spam ou publicité non sollicitée</option>
-                    <option value="Harcèlement">Harcèlement ou intimidation</option>
-                  </select>
+        </aside>
 
-                  <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onClick={() => setShowReportModal(null)} class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">Annuler</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-amber-500 text-white font-bold">Signaler</button>
-                  </div>
-                </form>
-              </div>
+
+        <main class="main">
+
+            <header class="topbar">
+
+                <h1>${pageTitle()}</h1>
+
+                <div class="top-actions">
+
+                    ${
+                        premium
+
+                        ?
+
+                        `
+                        <button
+                            class="btn secondary"
+                            onclick="openPremium()">
+
+                            ⭐ Premium
+
+                        </button>
+                        `
+
+                        :
+
+                        `
+                        <button
+                            class="btn"
+                            onclick="openPremium()">
+
+                            Passer à Premium
+
+                        </button>
+                        `
+                    }
+
+                    <button
+                        class="btn secondary"
+                        onclick="toggleTheme()">
+
+                        ◐
+
+                    </button>
+
+                    ${avatar(user)}
+
+                </div>
+
+            </header>
+
+
+            <section class="content" id="content"></section>
+
+        </main>
+
+
+        <nav class="mobile-nav">
+
+            ${mobileNav("home","⌂","Accueil")}
+            ${mobileNav("discover","◉","Découvrir")}
+            ${mobileNav("help","?","Aide")}
+            ${mobileNav("messages","✉","Messages")}
+            ${mobileNav("profile","○","Profil")}
+
+        </nav>
+
+    `;
+
+    renderPage();
+
+}
+
+
+function navButton(page,label,icon){
+
+    return `
+        <button
+            class="${currentPage===page?"active":""}"
+            onclick="navigate('${page}')">
+
+            ${icon} &nbsp; ${label}
+
+        </button>
+    `;
+}
+
+
+function mobileNav(page,icon,label){
+
+    return `
+        <button
+            class="${currentPage===page?"active":""}"
+            onclick="navigate('${page}')">
+
+            <div>${icon}</div>
+            ${label}
+
+        </button>
+    `;
+}
+
+
+function pageTitle(){
+
+    const titles = {
+        home:"Accueil",
+        discover:"Découvrir",
+        help:"Demandes d'aide",
+        messages:"Messages",
+        notifications:"Notifications",
+        profile:"Mon profil",
+        settings:"Paramètres"
+    };
+
+    return titles[currentPage] || "Skillink";
+}
+
+
+function navigate(page){
+
+    currentPage=page;
+    searchTerm="";
+    render();
+
+}
+
+
+/* =====================================================
+   HOME
+===================================================== */
+
+function renderHome(){
+
+    const content=document.getElementById("content");
+
+    const user=currentUser();
+
+    content.innerHTML=`
+
+        ${
+            !premium
+            ?
+            `
+            <div class="card premium-card">
+
+                <h2>⭐ Découvre Skillink Premium</h2>
+
+                <p class="muted">
+                    Débloque des fonctions supplémentaires
+                    pour améliorer ton expérience Skillink.
+                </p>
+
+                <button
+                    class="btn"
+                    onclick="openPremium()">
+
+                    Découvrir Premium
+
+                </button>
+
             </div>
-          )}
+            `
+            :
+            `
+            <div class="card premium-card">
+
+                <h2>⭐ Bienvenue dans Premium, ${escapeHTML(user.name)} !</h2>
+
+                <p class="muted">
+                    Toutes tes fonctions Premium sont activées.
+                </p>
+
+            </div>
+            `
+        }
+
+
+        <div class="card">
+
+            <h2>Créer une publication</h2>
+
+            <div class="form">
+
+                <textarea
+                    id="postText"
+                    placeholder="Partage quelque chose avec la communauté...">
+                </textarea>
+
+                <select id="postCategory">
+
+                    ${SKILLS.map(s=>`
+                        <option>${s}</option>
+                    `).join("")}
+
+                </select>
+
+                <button
+                    class="btn"
+                    onclick="createPost()">
+
+                    Publier
+
+                </button>
+
+            </div>
 
         </div>
-      );
+
+
+        <div class="search-row">
+
+            <input
+                class="input"
+                placeholder="Rechercher dans les publications..."
+                value="${escapeHTML(searchTerm)}"
+                oninput="searchPosts(this.value)"
+            >
+
+        </div>
+
+
+        <div id="posts"></div>
+
+    `;
+
+    renderPosts();
+
+}
+
+
+function searchPosts(value){
+
+    searchTerm=value;
+
+    renderPosts();
+
+}
+
+
+function renderPosts(){
+
+    const container=document.getElementById("posts");
+
+    if(!container) return;
+
+    let posts=[...data.posts];
+
+    if(searchTerm){
+
+        const q=searchTerm.toLowerCase();
+
+        posts=posts.filter(p=>
+            p.text.toLowerCase().includes(q) ||
+            p.category.toLowerCase().includes(q) ||
+            userName(p.userId).toLowerCase().includes(q)
+        );
+
     }
 
-    // Render React App
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+    posts.sort((a,b)=>
+        new Date(b.createdAt)-new Date(a.createdAt)
+    );
+
+    if(!posts.length){
+
+        container.innerHTML=`
+            <div class="card empty">
+                Aucune publication trouvée.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML=posts.map(renderPost).join("");
+
+}
+
+
+function renderPost(post){
+
+    const u=getUser(post.userId);
+
+    const liked=post.likes.includes(currentUserId());
+
+    return `
+
+        <article class="card">
+
+            <div class="user-row">
+
+                ${avatar(u)}
+
+                <div class="user-info">
+
+                    <div class="user-name">
+
+                        ${userName(post.userId)}
+
+                        ${premiumBadge(u)}
+
+                        ${
+                            u?.ai
+                            ?
+                            `<span class="pill">IA · Démo</span>`
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                    <div class="muted">
+                        ${formatDate(post.createdAt)}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            ${
+                post.boosted
+                ?
+                `
+                <div style="margin-top:12px">
+                    <span class="pill premium">
+                        🚀 Publication mise en avant
+                    </span>
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            <p class="post-text">
+                ${escapeHTML(post.text)}
+            </p>
+
+
+            <span class="pill">
+                ${escapeHTML(post.category)}
+            </span>
+
+
+            <div class="post-actions">
+
+                <button
+                    class="icon-btn"
+                    onclick="toggleLike('${post.id}')">
+
+                    ${liked?"♥":"♡"} ${post.likes.length}
+
+                </button>
+
+                <button
+                    class="icon-btn"
+                    onclick="focusComment('${post.id}')">
+
+                    💬 ${post.comments.length}
+
+                </button>
+
+                <button
+                    class="icon-btn"
+                    onclick="reportItem('publication')">
+
+                    ⚑
+
+                </button>
+
+                ${
+                    post.userId===currentUserId()
+                    ?
+                    `
+                    <button
+                        class="icon-btn"
+                        onclick="deletePost('${post.id}')">
+
+                        Supprimer
+
+                    </button>
+                    `
+                    :
+                    ""
+                }
+
+                ${
+                    premium && post.userId===currentUserId() && !post.boosted
+                    ?
+                    `
+                    <button
+                        class="icon-btn"
+                        onclick="boostPost('${post.id}')">
+
+                        🚀 Mettre en avant
+
+                    </button>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+
+            <div>
+
+                ${post.comments.map(c=>`
+
+                    <div class="comment">
+
+                        <div class="user-row">
+
+                            ${avatar(getUser(c.userId))}
+
+                            <div>
+
+                                <div class="user-name">
+                                    ${userName(c.userId)}
+                                </div>
+
+                                <div>
+                                    ${escapeHTML(c.text)}
+                                </div>
+
+                                <small class="muted">
+                                    ${formatDate(c.createdAt)}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        ${
+                            c.userId===currentUserId()
+                            ?
+                            `
+                            <button
+                                class="icon-btn"
+                                onclick="deleteComment('${post.id}','${c.id}')">
+
+                                Supprimer
+
+                            </button>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                `).join("")}
+
+
+                <div class="comment-form">
+
+                    <input
+                        id="comment-${post.id}"
+                        placeholder="Écrire un commentaire..."
+                    >
+
+                    <button
+                        class="btn small"
+                        onclick="addComment('${post.id}')">
+
+                        Envoyer
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    `;
+}
+
+
+function createPost(){
+
+    const text=document.getElementById("postText").value.trim();
+
+    const category=document.getElementById("postCategory").value;
+
+    if(!text){
+
+        showToast("Écris quelque chose avant de publier.");
+
+        return;
+
+    }
+
+    data.posts.push({
+
+        id:uid("post"),
+
+        userId:currentUserId(),
+
+        text,
+
+        category,
+
+        createdAt:now(),
+
+        likes:[],
+
+        comments:[],
+
+        boosted:false
+
+    });
+
+    saveData();
+
+    showToast("Publication créée !");
+
+    renderHome();
+
+}
+
+
+function toggleLike(id){
+
+    const post=data.posts.find(p=>p.id===id);
+
+    if(!post) return;
+
+    const index=post.likes.indexOf(currentUserId());
+
+    if(index===-1){
+
+        post.likes.push(currentUserId());
+
+    }else{
+
+        post.likes.splice(index,1);
+
+    }
+
+    saveData();
+
+    renderPosts();
+
+}
+
+
+function addComment(postId){
+
+    const input=document.getElementById("comment-"+postId);
+
+    if(!input) return;
+
+    const text=input.value.trim();
+
+    if(!text) return;
+
+    const post=data.posts.find(p=>p.id===postId);
+
+    post.comments.push({
+
+        id:uid("comment"),
+
+        userId:currentUserId(),
+
+        text,
+
+        createdAt:now()
+
+    });
+
+    saveData();
+
+    renderPosts();
+
+}
+
+
+function deleteComment(postId,commentId){
+
+    const post=data.posts.find(p=>p.id===postId);
+
+    post.comments=post.comments.filter(
+        c=>c.id!==commentId
+    );
+
+    saveData();
+
+    renderPosts();
+
+}
+
+
+function deletePost(id){
+
+    if(!confirm("Supprimer cette publication ?")) return;
+
+    data.posts=data.posts.filter(p=>p.id!==id);
+
+    saveData();
+
+    renderPosts();
+
+}
+
+
+function boostPost(id){
+
+    if(!premium){
+
+        openPremium();
+
+        return;
+
+    }
+
+    const post=data.posts.find(p=>p.id===id);
+
+    if(post){
+
+        post.boosted=true;
+
+        saveData();
+
+        showToast("🚀 Publication mise en avant !");
+
+        renderPosts();
+
+    }
+
+}
+
+
+function focusComment(id){
+
+    const input=document.getElementById("comment-"+id);
+
+    if(input) input.focus();
+
+}
+
+
+/* =====================================================
+   DISCOVER
+===================================================== */
+
+function renderDiscover(){
+
+    const content=document.getElementById("content");
+
+    content.innerHTML=`
+
+        <div class="card">
+
+            <h2>Trouver des personnes</h2>
+
+            <div class="search-row">
+
+                <input
+                    class="input"
+                    id="discoverSearch"
+                    placeholder="Nom, talent ou description..."
+                    oninput="renderUsers()"
+                >
+
+            </div>
+
+
+            ${
+                premium
+                ?
+                `
+                <div class="premium-feature">
+
+                    <div>🔎</div>
+
+                    <div>
+                        <strong>Recherche avancée activée</strong>
+                        <div class="muted">
+                            Les résultats sont filtrés par talents et niveaux.
+                        </div>
+                    </div>
+
+                </div>
+                `
+                :
+                `
+                <div class="premium-feature locked">
+
+                    <div>🔒</div>
+
+                    <div>
+                        <strong>Recherche avancée</strong>
+                        <div class="muted">
+                            Fonction Premium
+                        </div>
+                    </div>
+
+                    <button
+                        class="btn small"
+                        onclick="openPremium()">
+
+                        Débloquer
+
+                    </button>
+
+                </div>
+                `
+            }
+
+        </div>
+
+
+        <div class="grid" id="users"></div>
+
+    `;
+
+    renderUsers();
+
+}
+
+
+function renderUsers(){
+
+    const container=document.getElementById("users");
+
+    if(!container) return;
+
+    const input=document.getElementById("discoverSearch");
+
+    const q=(input?.value || "").toLowerCase();
+
+    let users=data.users.filter(
+        u=>u.id!==currentUserId()
+    );
+
+    users=users.filter(u=>{
+
+        const text=[
+            u.name,
+            u.description,
+            ...u.skills,
+            u.level
+        ].join(" ").toLowerCase();
+
+        return text.includes(q);
+
+    });
+
+    if(!users.length){
+
+        container.innerHTML=`
+            <div class="card empty">
+                Aucun utilisateur trouvé.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML=users.map(u=>`
+
+        <div class="card user-card">
+
+            <div class="user-row">
+
+                ${avatar(u)}
+
+                <div>
+
+                    <div class="user-name">
+
+                        ${escapeHTML(u.name)}
+
+                        ${premiumBadge(u)}
+
+                    </div>
+
+                    ${
+                        u.ai
+                        ?
+                        `<span class="pill">
+                            IA · Démo
+                         </span>`
+                        :
+                        ""
+                    }
+
+                </div>
+
+            </div>
+
+
+            <p class="muted">
+                ${escapeHTML(u.description)}
+            </p>
+
+
+            <div>
+
+                ${u.skills.map(s=>`
+                    <span class="pill">
+                        ${escapeHTML(s)}
+                    </span>
+                `).join("")}
+
+            </div>
+
+
+            <div class="muted">
+                Niveau : ${escapeHTML(u.level)}
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="btn small"
+                    onclick="viewProfile('${u.id}')">
+
+                    Voir le profil
+
+                </button>
+
+                <button
+                    class="btn secondary small"
+                    onclick="startConversation('${u.id}')">
+
+                    Message
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join("");
+
+}
+
+
+function viewProfile(id){
+
+    currentPage="profile";
+
+    render();
+
+    renderOtherProfile(id);
+
+}
+
+
+function renderOtherProfile(id){
+
+    const u=getUser(id);
+
+    if(!u) return;
+
+    document.getElementById("content").innerHTML=`
+
+        <button
+            class="btn secondary"
+            onclick="navigate('discover')">
+
+            ← Retour
+
+        </button>
+
+        <br><br>
+
+        <div class="card">
+
+            <div class="profile-header">
+
+                ${avatar(u,true)}
+
+                <div>
+
+                    <h2>
+
+                        ${escapeHTML(u.name)}
+
+                        ${premiumBadge(u)}
+
+                    </h2>
+
+                    ${
+                        u.ai
+                        ?
+                        `<span class="pill">
+                            IA · Démo
+                         </span>`
+                        :
+                        ""
+                    }
+
+                    <p class="muted">
+                        ${escapeHTML(u.description)}
+                    </p>
+
+                    <div>
+
+                        ${u.skills.map(s=>`
+                            <span class="pill">
+                                ${escapeHTML(s)}
+                            </span>
+                        `).join("")}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-stats">
+
+                <div class="stat">
+                    <strong>
+                        ${data.posts.filter(p=>p.userId===u.id).length}
+                    </strong>
+                    Publications
+                </div>
+
+                <div class="stat">
+                    <strong>
+                        ${u.skills.length}
+                    </strong>
+                    Talents
+                </div>
+
+                <div class="stat">
+                    <strong>
+                        ${u.level}
+                    </strong>
+                    Niveau
+                </div>
+
+            </div>
+
+
+            <br>
+
+            <button
+                class="btn"
+                onclick="startConversation('${u.id}')">
+
+                Envoyer un message
+
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   HELP
+===================================================== */
+
+function renderHelp(){
+
+    const content=document.getElementById("content");
+
+    content.innerHTML=`
+
+        <div class="card">
+
+            <h2>Demander de l'aide</h2>
+
+            <div class="form">
+
+                <input
+                    class="input"
+                    id="helpTitle"
+                    placeholder="Titre de ta demande"
+                >
+
+                <textarea
+                    id="helpDescription"
+                    placeholder="Explique ce dont tu as besoin...">
+                </textarea>
+
+                <select id="helpCategory">
+
+                    ${SKILLS.map(s=>`
+                        <option>${s}</option>
+                    `).join("")}
+
+                </select>
+
+                <button
+                    class="btn"
+                    onclick="createHelp()">
+
+                    Publier la demande
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div id="helpList"></div>
+
+    `;
+
+    renderHelpList();
+
+}
+
+
+function createHelp(){
+
+    const title=document.getElementById("helpTitle").value.trim();
+
+    const description=document
+        .getElementById("helpDescription")
+        .value.trim();
+
+    const category=document.getElementById("helpCategory").value;
+
+    if(!title || !description){
+
+        showToast("Complète tous les champs.");
+
+        return;
+
+    }
+
+    data.helps.push({
+
+        id:uid("help"),
+
+        userId:currentUserId(),
+
+        title,
+
+        description,
+
+        category,
+
+        createdAt:now(),
+
+        resolved:false,
+
+        answers:[]
+
+    });
+
+    saveData();
+
+    showToast("Demande publiée !");
+
+    renderHelp();
+
+}
+
+
+function renderHelpList(){
+
+    const container=document.getElementById("helpList");
+
+    if(!container) return;
+
+    let helps=[...data.helps];
+
+    helps.sort((a,b)=>
+        new Date(b.createdAt)-new Date(a.createdAt)
+    );
+
+    container.innerHTML=helps.map(h=>`
+
+        <div class="card">
+
+            <div class="user-row">
+
+                ${avatar(getUser(h.userId))}
+
+                <div>
+
+                    <strong>
+                        ${userName(h.userId)}
+                    </strong>
+
+                    <div class="muted">
+                        ${formatDate(h.createdAt)}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <h2>
+                ${escapeHTML(h.title)}
+            </h2>
+
+            <p>
+                ${escapeHTML(h.description)}
+            </p>
+
+            <span class="pill">
+                ${escapeHTML(h.category)}
+            </span>
+
+            ${
+                h.resolved
+                ?
+                `
+                <span class="pill"
+                      style="background:#dcfce7;color:#166534">
+
+                    Résolue
+
+                </span>
+                `
+                :
+                ""
+            }
+
+
+            <h3>
+                Réponses (${h.answers.length})
+            </h3>
+
+
+            ${h.answers.map(a=>`
+
+                <div class="comment">
+
+                    <strong>
+                        ${userName(a.userId)}
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(a.text)}
+                    </p>
+
+                    ${
+                        a.userId===currentUserId()
+                        ?
+                        `
+                        <button
+                            class="icon-btn"
+                            onclick="deleteAnswer('${h.id}','${a.id}')">
+
+                            Supprimer
+
+                        </button>
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
+
+            `).join("")}
+
+
+            ${
+                !h.resolved
+                ?
+                `
+                <div class="comment-form">
+
+                    <input
+                        id="answer-${h.id}"
+                        placeholder="Répondre à cette demande..."
+                    >
+
+                    <button
+                        class="btn small"
+                        onclick="answerHelp('${h.id}')">
+
+                        Répondre
+
+                    </button>
+
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            ${
+                h.userId===currentUserId()
+                ?
+                `
+                <div class="post-actions">
+
+                    ${
+                        !h.resolved
+                        ?
+                        `
+                        <button
+                            class="btn success small"
+                            onclick="resolveHelp('${h.id}')">
+
+                            Marquer comme résolue
+
+                        </button>
+                        `
+                        :
+                        ""
+                    }
+
+                    <button
+                        class="btn danger small"
+                        onclick="deleteHelp('${h.id}')">
+
+                        Supprimer
+
+                    </button>
+
+                </div>
+                `
+                :
+                ""
+            }
+
+        </div>
+
+    `).join("");
+
+}
+
+
+function answerHelp(id){
+
+    const input=document.getElementById("answer-"+id);
+
+    const text=input.value.trim();
+
+    if(!text) return;
+
+    const h=data.helps.find(x=>x.id===id);
+
+    h.answers.push({
+
+        id:uid("answer"),
+
+        userId:currentUserId(),
+
+        text,
+
+        createdAt:now()
+
+    });
+
+    saveData();
+
+    renderHelpList();
+
+}
+
+
+function deleteAnswer(helpId,answerId){
+
+    const h=data.helps.find(x=>x.id===helpId);
+
+    h.answers=h.answers.filter(
+        a=>a.id!==answerId
+    );
+
+    saveData();
+
+    renderHelpList();
+
+}
+
+
+function resolveHelp(id){
+
+    const h=data.helps.find(x=>x.id===id);
+
+    if(h){
+
+        h.resolved=true;
+
+        saveData();
+
+        renderHelpList();
+
+    }
+
+}
+
+
+function deleteHelp(id){
+
+    data.helps=data.helps.filter(
+        h=>h.id!==id
+    );
+
+    saveData();
+
+    renderHelpList();
+
+}
+
+
+/* =====================================================
+   MESSAGES
+===================================================== */
+
+function getConversation(otherId){
+
+    let c=data.conversations.find(c=>
+        c.users.includes(currentUserId()) &&
+        c.users.includes(otherId)
+    );
+
+    if(!c){
+
+        c={
+            id:uid("conversation"),
+            users:[currentUserId(),otherId],
+            messages:[]
+        };
+
+        data.conversations.push(c);
+
+    }
+
+    return c;
+
+}
+
+
+function startConversation(otherId){
+
+    getConversation(otherId);
+
+    selectedConversation=otherId;
+
+    currentPage="messages";
+
+    saveData();
+
+    render();
+
+}
+
+
+function renderMessages(){
+
+    const content=document.getElementById("content");
+
+    let conversations=data.conversations.filter(
+        c=>c.users.includes(currentUserId())
+    );
+
+    content.innerHTML=`
+
+        <div class="card">
+
+            <div class="chat-layout">
+
+                <div class="conversations">
+
+                    <h3>Conversations</h3>
+
+                    ${
+                        conversations.length
+                        ?
+                        conversations.map(c=>{
+
+                            const other=c.users.find(
+                                id=>id!==currentUserId()
+                            );
+
+                            return `
+
+                                <div
+                                    class="conversation ${
+                                        selectedConversation===other
+                                        ?"active"
+                                        :""
+                                    }"
+                                    onclick="selectConversation('${other}')">
+
+                                    ${avatar(getUser(other))}
+
+                                    <div>
+
+                                        <strong>
+                                            ${userName(other)}
+                                        </strong>
+
+                                        ${
+                                            getUser(other)?.ai
+                                            ?
+                                            `<div class="muted">
+                                                IA · Démo
+                                             </div>`
+                                            :
+                                            ""
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                            `;
+
+                        }).join("")
+                        :
+                        `
+                        <div class="empty">
+                            Aucune conversation.
+                        </div>
+                        `
+                    }
+
+                </div>
+
+
+                <div class="chat">
+
+                    ${
+                        selectedConversation
+                        ?
+                        renderChat(selectedConversation)
+                        :
+                        `
+                        <div class="empty">
+                            Sélectionne une conversation.
+                        </div>
+                        `
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+function selectConversation(id){
+
+    selectedConversation=id;
+
+    renderMessages();
+
+}
+
+
+function renderChat(otherId){
+
+    const c=getConversation(otherId);
+
+    return `
+
+        <div class="user-row">
+
+            ${avatar(getUser(otherId))}
+
+            <div>
+
+                <strong>
+                    ${userName(otherId)}
+                </strong>
+
+                ${
+                    getUser(otherId)?.ai
+                    ?
+                    `<div>
+                        <span class="pill">
+                            IA · Démo
+                         </span>
+                     </div>`
+                    :
+                    ""
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="messages" id="messageList">
+
+            ${
+                c.messages.length
+                ?
+                c.messages.map(m=>`
+
+                    <div class="message ${
+                        m.userId===currentUserId()
+                        ?"me"
+                        :""
+                    }">
+
+                        ${escapeHTML(m.text)}
+
+                        <div class="message-time">
+                            ${formatDate(m.createdAt)}
+                        </div>
+
+                    </div>
+
+                `).join("")
+                :
+                `
+                <div class="empty">
+                    Aucun message. Commence la conversation !
+                </div>
+                `
+            }
+
+        </div>
+
+
+        <div class="chat-input">
+
+            <input
+                class="input"
+                id="chatInput"
+                placeholder="Écrire un message..."
+                onkeydown="
+                    if(event.key==='Enter')
+                    sendMessage('${otherId}')
+                "
+            >
+
+            <button
+                class="btn"
+                onclick="sendMessage('${otherId}')">
+
+                Envoyer
+
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+function sendMessage(otherId){
+
+    const input=document.getElementById("chatInput");
+
+    const text=input.value.trim();
+
+    if(!text) return;
+
+    const c=getConversation(otherId);
+
+    c.messages.push({
+
+        id:uid("message"),
+
+        userId:currentUserId(),
+
+        text,
+
+        createdAt:now()
+
+    });
+
+    saveData();
+
+    input.value="";
+
+    renderMessages();
+
+    const other=getUser(otherId);
+
+    if(other?.ai){
+
+        setTimeout(()=>{
+
+            const reply=aiReply(other,text);
+
+            c.messages.push({
+
+                id:uid("message"),
+
+                userId:other.id,
+
+                text:reply,
+
+                createdAt:now()
+
+            });
+
+            saveData();
+
+            renderMessages();
+
+        },700);
+
+    }
+
+}
+
+
+function aiReply(user,message){
+
+    const text=message.toLowerCase();
+
+    if(user.id==="alex"){
+
+        if(text.includes("arduino"))
+            return "Pour Arduino, je te conseillerais plutôt de discuter avec Noah. Moi, je peux surtout t'aider avec la programmation et le web.";
+
+        if(text.includes("html") || text.includes("web"))
+            return premium
+                ? "Pour un projet web, commence par séparer HTML, CSS et JavaScript. Si tu veux, tu peux aussi créer une petite interface puis ajouter les fonctionnalités une par une."
+                : "Pour un projet web, commence par HTML, CSS et JavaScript. Essaie de construire une petite fonctionnalité à la fois.";
+
+        return premium
+            ? "Bonne question ! Comme conseil Premium, je te suggère de commencer par définir exactement ce que ton programme doit faire, puis de construire chaque partie séparément."
+            : "Bonne question ! Essaie de décrire le problème et on peut le diviser en petites étapes.";
+
+    }
+
+    if(user.id==="sophie"){
+
+        if(text.includes("dessin"))
+            return "Pour progresser en dessin, pratique régulièrement les formes simples, les proportions et les ombres.";
+
+        return premium
+            ? "Pour le design, pense à la hiérarchie visuelle, à l'espace entre les éléments et à garder une interface simple."
+            : "Pour le design, commence par garder une interface simple et facile à comprendre.";
+
+    }
+
+    if(user.id==="noah"){
+
+        if(text.includes("led"))
+            return "Une LED est un excellent premier projet. Pense à utiliser une résistance pour limiter le courant.";
+
+        if(text.includes("servo"))
+            return "Pour un servo, vérifie son alimentation et commence avec un petit programme qui contrôle progressivement sa position.";
+
+        return premium
+            ? "Pour un projet Arduino, je te conseille de tester chaque composant séparément avant de tout connecter. Ça rend le dépannage beaucoup plus facile."
+            : "Teste chaque composant séparément avant de construire tout ton projet.";
+
+    }
+
+    if(user.id==="maya"){
+
+        return premium
+            ? "Pour apprendre la musique, essaie de pratiquer une petite section à la fois et augmente progressivement la difficulté."
+            : "Pratique régulièrement de petites sections plutôt que d'essayer de tout apprendre en même temps.";
+
+    }
+
+    return "Je peux essayer de t'aider avec ça !";
+
+}
+
+
+/* =====================================================
+   NOTIFICATIONS
+===================================================== */
+
+function renderNotifications(){
+
+    const content=document.getElementById("content");
+
+    const notifications=data.notifications.filter(
+        n=>n.userId===currentUserId()
+    );
+
+    content.innerHTML=`
+
+        <div class="card">
+
+            <h2>Notifications</h2>
+
+            ${
+                notifications.length
+                ?
+                notifications.map(n=>`
+
+                    <div class="notification">
+
+                        <div class="unread-dot"></div>
+
+                        <div>
+
+                            ${escapeHTML(n.text)}
+
+                            <div class="muted">
+                                ${formatDate(n.createdAt)}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `).join("")
+                :
+                `
+                <div class="empty">
+                    Tu n'as aucune notification.
+                </div>
+                `
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+function renderProfile(){
+
+    const user=currentUser();
+
+    const posts=data.posts.filter(
+        p=>p.userId===user.id
+    );
+
+    document.getElementById("content").innerHTML=`
+
+        <div class="card">
+
+            <div class="profile-header">
+
+                ${avatar(user,true)}
+
+                <div>
+
+                    <h2>
+
+                        ${escapeHTML(user.name)}
+
+                        ${premiumBadge(user)}
+
+                    </h2>
+
+                    <p class="muted">
+                        ${escapeHTML(user.description)}
+                    </p>
+
+                    <div>
+
+                        ${user.skills.map(s=>`
+                            <span class="pill">
+                                ${escapeHTML(s)}
+                            </span>
+                        `).join("")}
+
+                    </div>
+
+                    <p class="muted">
+                        Niveau : ${escapeHTML(user.level)}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-stats">
+
+                <div class="stat">
+
+                    <strong>
+                        ${posts.length}
+                    </strong>
+
+                    Publications
+
+                </div>
+
+                <div class="stat">
+
+                    <strong>
+                        ${user.skills.length}
+                    </strong>
+
+                    Talents
+
+                </div>
+
+                <div class="stat">
+
+                    <strong>
+                        ${data.helps.filter(
+                            h=>h.userId===user.id
+                        ).length}
+                    </strong>
+
+                    Demandes
+
+                </div>
+
+            </div>
+
+
+            <br>
+
+            <button
+                class="btn"
+                onclick="openEditProfile()">
+
+                Modifier mon profil
+
+            </button>
+
+        </div>
+
+
+        ${
+            premium
+            ?
+            `
+            <div class="card premium-card">
+
+                <h2>📊 Statistiques Premium</h2>
+
+                <div class="profile-stats">
+
+                    <div class="stat">
+
+                        <strong>
+                            ${posts.reduce(
+                                (sum,p)=>sum+p.likes.length,
+                                0
+                            )}
+                        </strong>
+
+                        J'aime reçus
+
+                    </div>
+
+                    <div class="stat">
+
+                        <strong>
+                            ${posts.reduce(
+                                (sum,p)=>sum+p.comments.length,
+                                0
+                            )}
+                        </strong>
+
+                        Commentaires
+
+                    </div>
+
+                    <div class="stat">
+
+                        <strong>
+                            ${user.skills.length}
+                        </strong>
+
+                        Talents
+
+                    </div>
+
+                </div>
+
+            </div>
+            `
+            :
+            `
+            <div class="card locked">
+
+                <h2>📊 Statistiques avancées</h2>
+
+                <p class="muted">
+                    Découvre plus de statistiques sur ton profil
+                    avec Premium.
+                </p>
+
+                <button
+                    class="btn"
+                    onclick="openPremium()">
+
+                    Débloquer
+
+                </button>
+
+            </div>
+            `
+        }
+
+
+        <h2>Mes publications</h2>
+
+        <div id="profilePosts">
+
+            ${
+                posts.length
+                ?
+                posts.map(renderPost).join("")
+                :
+                `
+                <div class="card empty">
+                    Tu n'as encore aucune publication.
+                </div>
+                `
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+function openEditProfile(){
+
+    const u=currentUser();
+
+    openModal(`
+
+        <button
+            class="modal-close"
+            onclick="closeModal()">
+
+            ×
+
+        </button>
+
+        <h2>Modifier mon profil</h2>
+
+        <div class="form">
+
+            <input
+                class="input"
+                id="editName"
+                value="${escapeHTML(u.name)}"
+                placeholder="Nom"
+            >
+
+            <textarea
+                id="editDescription"
+                placeholder="Description">${escapeHTML(u.description)}</textarea>
+
+            <select id="editLevel">
+
+                ${["Débutant","Intermédiaire","Avancé"]
+                    .map(l=>`
+                        <option
+                            ${u.level===l?"selected":""}>
+                            ${l}
+                        </option>
+                    `).join("")}
+
+            </select>
+
+            <label>
+                Talents
+            </label>
+
+            <div>
+
+                ${SKILLS.map(s=>`
+
+                    <label style="display:block;margin:6px 0">
+
+                        <input
+                            type="checkbox"
+                            value="${escapeHTML(s)}"
+                            class="skill-check"
+                            ${
+                                u.skills.includes(s)
+                                ?"checked"
+                                :""
+                            }
+                        >
+
+                        ${escapeHTML(s)}
+
+                    </label>
+
+                `).join("")}
+
+            </div>
+
+            <button
+                class="btn"
+                onclick="saveProfile()">
+
+                Sauvegarder
+
+            </button>
+
+        </div>
+
+    `);
+
+}
+
+
+function saveProfile(){
+
+    const u=currentUser();
+
+    u.name=document.getElementById("editName").value.trim();
+
+    u.description=
+        document.getElementById("editDescription").value.trim();
+
+    u.level=
+        document.getElementById("editLevel").value;
+
+    u.skills=[
+        ...document.querySelectorAll(".skill-check:checked")
+    ].map(x=>x.value);
+
+    u.premium=premium;
+
+    saveData();
+
+    closeModal();
+
+    showToast("Profil sauvegardé !");
+
+    render();
+
+}
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+function renderSettings(){
+
+    document.getElementById("content").innerHTML=`
+
+        <div class="card premium-card">
+
+            <h2>⭐ Skillink Premium</h2>
+
+            ${
+                premium
+                ?
+                `
+                <p>
+                    Ton compte possède actuellement
+                    <strong>Skillink Premium</strong>.
+                </p>
+
+                <span class="pill premium">
+                    ⭐ Premium actif
+                </span>
+
+                <br><br>
+
+                <button
+                    class="btn danger"
+                    onclick="cancelPremium()">
+
+                    Désactiver Premium
+
+                </button>
+                `
+                :
+                `
+                <p class="muted">
+                    Débloque des fonctionnalités supplémentaires
+                    pour ton profil.
+                </p>
+
+                <div class="premium-feature">
+                    <div>⭐</div>
+                    <div>
+                        <strong>Badge Premium</strong>
+                        <div class="muted">
+                            Affiche ton statut Premium.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-feature">
+                    <div>🤖</div>
+                    <div>
+                        <strong>IA Premium</strong>
+                        <div class="muted">
+                            Réponses plus détaillées des profils IA.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-feature">
+                    <div>📊</div>
+                    <div>
+                        <strong>Statistiques avancées</strong>
+                        <div class="muted">
+                            Analyse ton activité.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-feature">
+                    <div>🚀</div>
+                    <div>
+                        <strong>Publications mises en avant</strong>
+                        <div class="muted">
+                            Mets tes publications en avant.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-feature">
+                    <div>🔎</div>
+                    <div>
+                        <strong>Recherche avancée</strong>
+                        <div class="muted">
+                            Recherche plus précise.
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+                <h2>
+                    4,99 $ / mois
+                </h2>
+
+                <button
+                    class="btn"
+                    onclick="openPremium()">
+
+                    Passer à Premium
+
+                </button>
+                `
+            }
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>Apparence</h2>
+
+            <button
+                class="btn secondary"
+                onclick="toggleTheme()">
+
+                Changer le thème
+
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>Compte</h2>
+
+            <button
+                class="btn danger"
+                onclick="logout()">
+
+                Se déconnecter
+
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>Données de démonstration</h2>
+
+            <p class="muted">
+                Réinitialise les publications, demandes,
+                messages et utilisateurs de démonstration.
+            </p>
+
+            <button
+                class="btn danger"
+                onclick="resetDemo()">
+
+                Réinitialiser la démo
+
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   PREMIUM
+===================================================== */
+
+function openPremium(){
+
+    if(premium){
+
+        openModal(`
+
+            <button
+                class="modal-close"
+                onclick="closeModal()">
+
+                ×
+
+            </button>
+
+            <div style="text-align:center">
+
+                <h2>⭐ Skillink Premium</h2>
+
+                <span class="pill premium">
+                    Premium actif
+                </span>
+
+                <p class="muted">
+                    Ton compte possède déjà toutes les
+                    fonctionnalités Premium.
+                </p>
+
+                <br>
+
+                <button
+                    class="btn"
+                    onclick="closeModal();navigate('profile')">
+
+                    Voir mes statistiques
+
+                </button>
+
+            </div>
+
+        `);
+
+        return;
+
+    }
+
+
+    openModal(`
+
+        <button
+            class="modal-close"
+            onclick="closeModal()">
+
+            ×
+
+        </button>
+
+        <div style="text-align:center">
+
+            <h2>⭐ Skillink Premium</h2>
+
+            <p class="muted">
+                Plus de possibilités pour partager
+                et développer tes talents.
+            </p>
+
+        </div>
+
+
+        <div class="premium-feature">
+
+            <div>⭐</div>
+
+            <div>
+
+                <strong>Badge Premium</strong>
+
+                <div class="muted">
+                    Ton profil possède un badge exclusif.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="premium-feature">
+
+            <div>🤖</div>
+
+            <div>
+
+                <strong>IA Premium</strong>
+
+                <div class="muted">
+                    Réponses plus détaillées avec les
+                    profils IA de démonstration.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="premium-feature">
+
+            <div>📊</div>
+
+            <div>
+
+                <strong>Statistiques avancées</strong>
+
+                <div class="muted">
+                    Vois plus de statistiques sur ton activité.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="premium-feature">
+
+            <div>🚀</div>
+
+            <div>
+
+                <strong>Publications mises en avant</strong>
+
+                <div class="muted">
+                    Mets tes publications en avant.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="premium-feature">
+
+            <div>🔎</div>
+
+            <div>
+
+                <strong>Recherche avancée</strong>
+
+                <div class="muted">
+                    Trouve plus facilement les talents.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <br>
+
+
+        <div class="card"
+             style="box-shadow:none">
+
+            <h2>
+                4,99 $ / mois
+            </h2>
+
+            <p class="muted">
+                Ceci est une version de démonstration.
+            </p>
+
+            <button
+                class="btn"
+                style="width:100%"
+                onclick="fakePremiumPayment()">
+
+                Payer 4,99 $ · Démo
+
+            </button>
+
+        </div>
+
+
+        <p
+            class="muted"
+            style="text-align:center;font-size:12px">
+
+            Paiement de démonstration uniquement.
+            Aucun paiement réel ne sera effectué.
+
+        </p>
+
+    `);
+
+}
+
+
+function fakePremiumPayment(){
+
+    closeModal();
+
+    openModal(`
+
+        <button
+            class="modal-close"
+            onclick="closeModal()">
+
+            ×
+
+        </button>
+
+        <div style="text-align:center">
+
+            <h2>💳 Paiement de démonstration</h2>
+
+            <p class="muted">
+                Cette page simule un paiement.
+            </p>
+
+        </div>
+
+
+        <div
+            class="card"
+            style="
+                background:var(--primary-light);
+                box-shadow:none;
+            ">
+
+            <strong>
+                Skillink Premium
+            </strong>
+
+            <div class="muted">
+                4,99 $ / mois
+            </div>
+
+        </div>
+
+
+        <div class="form">
+
+            <input
+                class="input"
+                placeholder="Nom de démonstration"
+                value="Utilisateur Skillink"
+            >
+
+            <input
+                class="input"
+                placeholder="Carte de démonstration"
+                value="DEMO PAYMENT"
+                readonly
+            >
+
+            <div class="two">
+
+                <input
+                    class="input"
+                    value="12 / 30"
+                    readonly
+                >
+
+                <input
+                    class="input"
+                    value="DEMO"
+                    readonly
+                >
+
+            </div>
+
+
+            <button
+                class="btn"
+                onclick="activatePremium()">
+
+                Confirmer le paiement de démo
+
+            </button>
+
+        </div>
+
+
+        <p
+            class="muted"
+            style="text-align:center;font-size:12px;margin-top:15px">
+
+            Ne saisis aucune vraie information bancaire.
+            Aucun paiement réel n'est effectué.
+
+        </p>
+
+    `);
+
+}
+
+
+function activatePremium(){
+
+    premium=true;
+
+    localStorage.setItem(
+        PREMIUM_KEY,
+        "true"
+    );
+
+    const u=currentUser();
+
+    if(u){
+        u.premium=true;
+    }
+
+    saveData();
+
+    closeModal();
+
+    showToast(
+        "⭐ Skillink Premium est maintenant actif !"
+    );
+
+    render();
+
+}
+
+
+function cancelPremium(){
+
+    if(!confirm(
+        "Désactiver Premium dans cette démonstration ?"
+    )) return;
+
+    premium=false;
+
+    localStorage.removeItem(
+        PREMIUM_KEY
+    );
+
+    const u=currentUser();
+
+    if(u){
+        u.premium=false;
+    }
+
+    saveData();
+
+    showToast(
+        "Premium désactivé."
+    );
+
+    render();
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+function openModal(html){
+
+    const div=document.createElement("div");
+
+    div.id="modal";
+
+    div.className="modal-overlay";
+
+    div.innerHTML=`
+        <div class="modal">
+            ${html}
+        </div>
+    `;
+
+    document.body.appendChild(div);
+
+}
+
+
+function closeModal(){
+
+    document.getElementById("modal")?.remove();
+
+}
+
+
+/* =====================================================
+   THEME
+===================================================== */
+
+function toggleTheme(){
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "skillink_theme",
+        document.body.classList.contains("dark")
+        ?"dark"
+        :"light"
+    );
+
+}
+
+
+function loadTheme(){
+
+    const theme=localStorage.getItem("skillink_theme");
+
+    if(theme==="dark"){
+        document.body.classList.add("dark");
+    }
+
+}
+
+
+/* =====================================================
+   REPORT / COMMUNITY
+===================================================== */
+
+function reportItem(type){
+
+    showToast(
+        "Merci. Ton signalement a été enregistré dans la démo."
+    );
+
+}
+
+
+/* =====================================================
+   LOGIN / DEMO ACCOUNT
+===================================================== */
+
+function showLogin(){
+
+    document.getElementById("app").innerHTML=`
+
+        <div style="
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+        ">
+
+            <div class="card" style="width:min(450px,100%)">
+
+                <div class="logo">
+                    Skill<span>ink</span>
+                </div>
+
+                <h2>
+                    Bienvenue sur Skillink
+                </h2>
+
+                <p class="muted">
+                    Partage tes talents. Apprends.
+                    Aide les autres.
+                </p>
+
+
+                <div class="form">
+
+                    <input
+                        class="input"
+                        id="loginName"
+                        placeholder="Ton prénom"
+                    >
+
+                    <button
+                        class="btn"
+                        onclick="login()">
+
+                        Entrer dans Skillink
+
+                    </button>
+
+                    <button
+                        class="btn secondary"
+                        onclick="demoLogin()">
+
+                        Utiliser le compte démo
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+function login(){
+
+    const name=document
+        .getElementById("loginName")
+        .value.trim();
+
+    if(!name){
+
+        showToast("Entre ton prénom.");
+
+        return;
+
+    }
+
+    let user=data.users.find(
+        u=>u.name.toLowerCase()===name.toLowerCase()
+    );
+
+    if(!user){
+
+        user={
+            id:uid("user"),
+            name,
+            description:"Nouveau membre de Skillink.",
+            skills:[],
+            level:"Débutant",
+            ai:false,
+            premium:false
+        };
+
+        data.users.push(user);
+
+    }
+
+    localStorage.setItem(
+        USER_KEY,
+        user.id
+    );
+
+    premium=user.premium===true;
+
+    if(premium){
+
+        localStorage.setItem(
+            PREMIUM_KEY,
+            "true"
+        );
+
+    }else{
+
+        localStorage.removeItem(
+            PREMIUM_KEY
+        );
+
+    }
+
+    saveData();
+
+    render();
+
+}
+
+
+function demoLogin(){
+
+    localStorage.setItem(
+        USER_KEY,
+        "camille"
+    );
+
+    premium=false;
+
+    localStorage.removeItem(
+        PREMIUM_KEY
+    );
+
+    render();
+
+}
+
+
+function logout(){
+
+    localStorage.removeItem(USER_KEY);
+
+    showLogin();
+
+}
+
+
+function resetDemo(){
+
+    if(!confirm(
+        "Réinitialiser toutes les données de démonstration ?"
+    )) return;
+
+    data=createInitialData();
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+    premium=false;
+
+    localStorage.removeItem(
+        PREMIUM_KEY
+    );
+
+    localStorage.setItem(
+        USER_KEY,
+        "camille"
+    );
+
+    showToast("Démo réinitialisée.");
+
+    render();
+
+}
+
+
+/* =====================================================
+   ROUTING
+===================================================== */
+
+function renderPage(){
+
+    switch(currentPage){
+
+        case "home":
+            renderHome();
+            break;
+
+        case "discover":
+            renderDiscover();
+            break;
+
+        case "help":
+            renderHelp();
+            break;
+
+        case "messages":
+            renderMessages();
+            break;
+
+        case "notifications":
+            renderNotifications();
+            break;
+
+        case "profile":
+            renderProfile();
+            break;
+
+        case "settings":
+            renderSettings();
+            break;
+
+        default:
+            renderHome();
+
+    }
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message){
+
+    const old=document.querySelector(".toast");
+
+    if(old) old.remove();
+
+    const toast=document.createElement("div");
+
+    toast.className="toast";
+
+    toast.textContent=message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(()=>{
+        toast.remove();
+    },3000);
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+loadData();
+loadTheme();
+
+if(!localStorage.getItem(USER_KEY)){
+
+    showLogin();
+
+}else{
+
+    const u=currentUser();
+
+    if(u){
+
+        premium=u.premium===true ||
+            localStorage.getItem(PREMIUM_KEY)==="true";
+
+        render();
+
+    }else{
+
+        showLogin();
+
+    }
+
+}
+
+
+/* Rafraîchissement local des messages */
+setInterval(()=>{
+
+    if(currentPage==="messages"){
+
+        renderMessages();
+
+    }
+
+},3000);
+
+</script>
+
 </body>
 </html>
