@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,39 +7,53 @@
 
 <style>
 :root{
-    --bg:#f5f7fb;
+    --bg:#f4f6fa;
     --card:#ffffff;
-    --text:#18202a;
-    --muted:#6d7683;
+    --text:#171c25;
+    --muted:#6d7582;
     --border:#e3e7ee;
     --primary:#6366f1;
+    --primary2:#4f46e5;
     --primary-light:#eef0ff;
     --danger:#ef4444;
+    --danger-light:#fee2e2;
     --success:#22c55e;
+    --success-light:#dcfce7;
+    --warning:#eab308;
+    --warning-light:#fef9c3;
     --sidebar:#ffffff;
-    --shadow:0 8px 30px rgba(20,30,50,.08);
+    --shadow:0 8px 30px rgba(15,23,42,.07);
 }
 
 *{
     box-sizing:border-box;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
     margin:0;
-    font-family:Inter,Arial,sans-serif;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
     background:var(--bg);
     color:var(--text);
 }
 
 body.dark{
-    --bg:#10131a;
-    --card:#171b23;
+    --bg:#0f1218;
+    --card:#171b22;
     --text:#f1f5f9;
-    --muted:#9aa4b2;
-    --border:#282e39;
+    --muted:#9aa5b4;
+    --border:#282f3a;
     --primary:#818cf8;
-    --primary-light:#242743;
-    --sidebar:#141820;
+    --primary2:#6366f1;
+    --primary-light:#252947;
+    --sidebar:#14181f;
+    --shadow:0 8px 30px rgba(0,0,0,.2);
+    --danger-light:#3a2024;
+    --success-light:#183524;
+    --warning-light:#3a3417;
 }
 
 button,
@@ -54,41 +67,58 @@ button{
     cursor:pointer;
 }
 
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    bottom:0;
-    width:240px;
-    background:var(--sidebar);
-    border-right:1px solid var(--border);
-    padding:22px 15px;
-    z-index:20;
+.hidden{
+    display:none !important;
+}
+
+.muted{
+    color:var(--muted);
+}
+
+.small-text{
+    font-size:13px;
 }
 
 .logo{
-    font-size:24px;
-    font-weight:800;
-    padding:5px 12px 25px;
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:-.7px;
 }
 
 .logo span{
     color:var(--primary);
 }
 
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    width:245px;
+    background:var(--sidebar);
+    border-right:1px solid var(--border);
+    padding:22px 15px;
+    z-index:30;
+}
+
+.sidebar .logo{
+    padding:4px 12px 26px;
+}
+
 .nav{
     display:flex;
     flex-direction:column;
-    gap:5px;
+    gap:4px;
 }
 
 .nav button{
     border:0;
     background:transparent;
     color:var(--text);
-    padding:12px;
-    border-radius:12px;
+    padding:12px 13px;
     text-align:left;
+    border-radius:12px;
+    transition:.18s;
 }
 
 .nav button:hover,
@@ -97,51 +127,53 @@ button{
     color:var(--primary);
 }
 
-.premium-nav{
+.nav .premium-nav{
     margin-top:12px;
-    border:1px solid #e7c94d !important;
-    background:#fff8d9 !important;
-    color:#8a6a00 !important;
+    background:#fff7cf;
+    color:#876500;
+    border:1px solid #e5ca4c;
 }
 
-body.dark .premium-nav{
-    background:#39331b !important;
-    color:#f4d96b !important;
+body.dark .nav .premium-nav{
+    background:#3a341b;
+    color:#f0d666;
+    border-color:#675b2a;
 }
 
 .main{
-    margin-left:240px;
     min-height:100vh;
+    margin-left:245px;
 }
 
 .topbar{
-    height:72px;
-    background:var(--card);
-    border-bottom:1px solid var(--border);
+    height:74px;
     display:flex;
     align-items:center;
     justify-content:space-between;
+    gap:15px;
     padding:0 28px;
+    background:var(--card);
+    border-bottom:1px solid var(--border);
     position:sticky;
     top:0;
-    z-index:10;
+    z-index:20;
 }
 
 .topbar h1{
-    font-size:22px;
     margin:0;
+    font-size:21px;
 }
 
 .top-actions{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:9px;
 }
 
 .content{
-    max-width:1000px;
-    margin:auto;
-    padding:30px;
+    max-width:1100px;
+    margin:0 auto;
+    padding:28px;
 }
 
 .card{
@@ -149,26 +181,29 @@ body.dark .premium-nav{
     border:1px solid var(--border);
     border-radius:18px;
     padding:20px;
-    margin-bottom:18px;
     box-shadow:var(--shadow);
+    margin-bottom:18px;
 }
 
 .card h2,
-.card h3{
+.card h3,
+.card h4{
     margin-top:0;
 }
 
 .btn{
     border:0;
-    background:var(--primary);
-    color:white;
-    border-radius:10px;
     padding:10px 15px;
-    font-weight:600;
+    border-radius:10px;
+    background:var(--primary);
+    color:#fff;
+    font-weight:700;
+    transition:.18s;
 }
 
 .btn:hover{
-    opacity:.9;
+    transform:translateY(-1px);
+    background:var(--primary2);
 }
 
 .btn.secondary{
@@ -184,9 +219,31 @@ body.dark .premium-nav{
     background:var(--success);
 }
 
+.btn.warning{
+    background:var(--warning);
+    color:#322900;
+}
+
 .btn.small{
     padding:7px 10px;
     font-size:13px;
+}
+
+.btn.full{
+    width:100%;
+}
+
+.icon-btn{
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    padding:7px 9px;
+    border-radius:8px;
+}
+
+.icon-btn:hover{
+    background:var(--primary-light);
+    color:var(--primary);
 }
 
 .input,
@@ -194,10 +251,10 @@ textarea,
 select{
     width:100%;
     padding:12px 14px;
+    border-radius:11px;
     border:1px solid var(--border);
     background:var(--card);
     color:var(--text);
-    border-radius:11px;
     outline:none;
 }
 
@@ -208,8 +265,8 @@ select:focus{
 }
 
 textarea{
+    min-height:110px;
     resize:vertical;
-    min-height:100px;
 }
 
 .form{
@@ -221,32 +278,38 @@ textarea{
 .two{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:12px;
+    gap:10px;
+}
+
+.three{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
 }
 
 .avatar{
-    width:42px;
-    height:42px;
+    width:44px;
+    height:44px;
     border-radius:50%;
-    background:var(--primary-light);
-    color:var(--primary);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-weight:800;
     flex-shrink:0;
+    background:var(--primary-light);
+    color:var(--primary);
+    font-weight:900;
 }
 
 .avatar.large{
-    width:90px;
-    height:90px;
-    font-size:28px;
+    width:94px;
+    height:94px;
+    font-size:31px;
 }
 
 .user-row{
     display:flex;
-    gap:12px;
     align-items:center;
+    gap:12px;
 }
 
 .user-info{
@@ -254,63 +317,84 @@ textarea{
 }
 
 .user-name{
-    font-weight:700;
+    font-weight:800;
 }
 
-.muted{
-    color:var(--muted);
+.profile-header{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.profile-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:22px;
+}
+
+.stat{
+    padding:15px;
+    text-align:center;
+    border-radius:13px;
+    background:var(--primary-light);
+}
+
+.stat strong{
+    display:block;
+    font-size:23px;
+    margin-bottom:3px;
 }
 
 .pill{
     display:inline-block;
     padding:4px 8px;
+    margin:2px 2px 2px 0;
     border-radius:999px;
-    font-size:12px;
     background:var(--primary-light);
     color:var(--primary);
-    margin:2px;
+    font-size:12px;
+    font-weight:700;
 }
 
 .pill.premium{
-    background:#fff1a8;
-    color:#8a6900;
+    background:#fff1a6;
+    color:#886600;
 }
 
 body.dark .pill.premium{
-    background:#49401b;
-    color:#f3d45e;
+    background:#4b421d;
+    color:#f0d56b;
+}
+
+.pill.ai{
+    background:#ece7ff;
+    color:#6d3ed8;
+}
+
+body.dark .pill.ai{
+    background:#35295a;
+    color:#c3a8ff;
 }
 
 .post-text{
+    line-height:1.6;
     white-space:pre-wrap;
-    line-height:1.55;
+    margin:17px 0;
 }
 
 .post-actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
     border-top:1px solid var(--border);
-    margin-top:16px;
-    padding-top:12px;
-}
-
-.icon-btn{
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    padding:7px 10px;
-    border-radius:8px;
-}
-
-.icon-btn:hover{
-    background:var(--primary-light);
-    color:var(--primary);
+    margin-top:15px;
+    padding-top:11px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
 }
 
 .comment{
-    padding:10px 0;
     border-top:1px solid var(--border);
+    padding:11px 0;
 }
 
 .comment-form{
@@ -320,6 +404,15 @@ body.dark .pill.premium{
 }
 
 .comment-form input{
+    flex:1;
+}
+
+.search-row{
+    display:flex;
+    gap:10px;
+}
+
+.search-row .input{
     flex:1;
 }
 
@@ -335,79 +428,61 @@ body.dark .pill.premium{
     gap:12px;
 }
 
-.profile-header{
-    display:flex;
-    gap:20px;
-    align-items:center;
-}
-
-.profile-stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-top:20px;
-}
-
-.stat{
-    background:var(--primary-light);
-    border-radius:12px;
-    padding:15px;
-    text-align:center;
-}
-
-.stat strong{
-    display:block;
-    font-size:22px;
-}
-
-.search-row{
-    display:flex;
-    gap:10px;
-    margin-bottom:18px;
-}
-
-.search-row .input{
-    flex:1;
-}
-
 .empty{
     text-align:center;
-    padding:40px 20px;
+    padding:42px 20px;
     color:var(--muted);
+}
+
+.help-meta{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:10px;
 }
 
 .notification{
     display:flex;
-    gap:12px;
-    padding:14px 0;
+    align-items:flex-start;
+    gap:11px;
+    padding:13px 0;
     border-bottom:1px solid var(--border);
+}
+
+.notification:last-child{
+    border-bottom:0;
 }
 
 .unread-dot{
     width:9px;
     height:9px;
-    background:var(--primary);
     border-radius:50%;
-    margin-top:6px;
+    background:var(--primary);
+    margin-top:7px;
+    flex-shrink:0;
 }
 
 .chat-layout{
     display:grid;
-    grid-template-columns:280px 1fr;
+    grid-template-columns:290px 1fr;
     min-height:600px;
 }
 
 .conversations{
     border-right:1px solid var(--border);
     padding-right:15px;
+    overflow:auto;
 }
 
 .conversation{
     display:flex;
+    align-items:center;
     gap:10px;
-    padding:12px;
+    padding:11px;
     border-radius:12px;
     cursor:pointer;
+    margin-bottom:4px;
 }
 
 .conversation:hover,
@@ -416,36 +491,38 @@ body.dark .pill.premium{
 }
 
 .chat{
+    padding-left:18px;
     display:flex;
     flex-direction:column;
-    padding-left:18px;
+    min-width:0;
 }
 
 .messages{
     flex:1;
+    max-height:450px;
     overflow:auto;
-    max-height:480px;
-    padding:10px;
+    padding:12px 4px;
 }
 
 .message{
     max-width:75%;
     padding:10px 13px;
-    border-radius:14px;
-    margin:7px 0;
     background:var(--border);
+    border-radius:14px;
+    margin:8px 0;
+    line-height:1.4;
 }
 
 .message.me{
     margin-left:auto;
     background:var(--primary);
-    color:white;
+    color:#fff;
 }
 
 .message-time{
-    font-size:11px;
+    font-size:10px;
     opacity:.65;
-    margin-top:3px;
+    margin-top:4px;
 }
 
 .chat-input{
@@ -454,25 +531,87 @@ body.dark .pill.premium{
     margin-top:10px;
 }
 
+.premium-card{
+    background:linear-gradient(
+        135deg,
+        var(--primary-light),
+        var(--card)
+    );
+    border:2px solid #dfc84d;
+}
+
+.premium-feature{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:13px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.premium-feature:last-child{
+    border-bottom:0;
+}
+
+.locked{
+    opacity:.55;
+}
+
+.price{
+    font-size:31px;
+    font-weight:900;
+    margin:10px 0;
+}
+
+.price span{
+    color:var(--muted);
+    font-size:14px;
+    font-weight:500;
+}
+
+.hero{
+    background:linear-gradient(
+        135deg,
+        var(--primary-light),
+        var(--card)
+    );
+    border:1px solid var(--border);
+}
+
+.hero h2{
+    font-size:29px;
+    margin-bottom:8px;
+}
+
+.hero p{
+    max-width:680px;
+    line-height:1.6;
+}
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
 .modal-overlay{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,.55);
+    z-index:100;
     display:flex;
     align-items:center;
     justify-content:center;
-    z-index:100;
     padding:20px;
 }
 
 .modal{
-    width:min(550px,100%);
+    width:min(560px,100%);
     max-height:90vh;
     overflow:auto;
     background:var(--card);
     border-radius:20px;
-    padding:25px;
-    box-shadow:0 20px 70px rgba(0,0,0,.3);
+    padding:24px;
+    box-shadow:0 25px 80px rgba(0,0,0,.3);
 }
 
 .modal-close{
@@ -480,49 +619,94 @@ body.dark .pill.premium{
     border:0;
     background:transparent;
     color:var(--muted);
-    font-size:22px;
+    font-size:25px;
 }
 
-.premium-card{
-    background:linear-gradient(135deg,var(--primary-light),var(--card));
-    border:2px solid #e3c84e;
+.toast{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    z-index:200;
+    padding:13px 17px;
+    border-radius:12px;
+    background:var(--text);
+    color:var(--bg);
+    box-shadow:var(--shadow);
 }
 
-.premium-feature{
+.auth-screen{
+    min-height:100vh;
     display:flex;
-    gap:12px;
     align-items:center;
-    padding:12px 0;
-    border-bottom:1px solid var(--border);
+    justify-content:center;
+    padding:20px;
 }
 
-.locked{
-    opacity:.55;
+.auth-box{
+    width:min(470px,100%);
+}
+
+.auth-logo{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.auth-logo .logo{
+    display:inline-block;
+    font-size:32px;
+}
+
+.divider{
+    height:1px;
+    background:var(--border);
+    margin:20px 0;
+}
+
+.global-search{
+    position:relative;
+}
+
+.global-results{
+    margin-top:10px;
+}
+
+.result-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px;
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
+}
+
+.result-item:hover{
+    background:var(--primary-light);
+}
+
+.result-item:last-child{
+    border-bottom:0;
+}
+
+.badge-count{
+    min-width:19px;
+    height:19px;
+    padding:0 5px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    background:var(--danger);
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+    margin-left:4px;
 }
 
 .mobile-nav{
     display:none;
 }
 
-.toast{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    background:var(--text);
-    color:var(--bg);
-    padding:13px 17px;
-    border-radius:12px;
-    z-index:200;
-    box-shadow:var(--shadow);
-}
-
-.actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
-@media(max-width:800px){
+@media(max-width:850px){
 
     .sidebar{
         display:none;
@@ -533,30 +717,30 @@ body.dark .pill.premium{
         padding-bottom:70px;
     }
 
-    .content{
-        padding:18px;
-    }
-
     .topbar{
         padding:0 16px;
     }
 
+    .content{
+        padding:18px;
+    }
+
     .mobile-nav{
         position:fixed;
-        display:flex;
         bottom:0;
         left:0;
         right:0;
+        display:flex;
+        justify-content:space-around;
         background:var(--card);
         border-top:1px solid var(--border);
-        z-index:30;
-        justify-content:space-around;
-        padding:8px 4px;
+        z-index:40;
+        padding:7px 4px;
     }
 
     .mobile-nav button{
-        border:0;
         background:transparent;
+        border:0;
         color:var(--muted);
         font-size:11px;
     }
@@ -576,13 +760,52 @@ body.dark .pill.premium{
     .conversations{
         border-right:0;
         border-bottom:1px solid var(--border);
+        padding-right:0;
         padding-bottom:10px;
         margin-bottom:10px;
+        max-height:220px;
+    }
+
+    .chat{
+        padding-left:0;
     }
 
     .profile-header{
-        flex-direction:column;
         align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .profile-stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:520px){
+
+    .two,
+    .three{
+        grid-template-columns:1fr;
+    }
+
+    .topbar h1{
+        font-size:18px;
+    }
+
+    .top-actions .btn{
+        padding:8px 10px;
+        font-size:12px;
+    }
+
+    .content{
+        padding:12px;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    .message{
+        max-width:88%;
     }
 }
 </style>
@@ -594,10 +817,9 @@ body.dark .pill.premium{
 
 <script>
 
-/* =====================================================
-   SKILLINK
-   TOUT EST RÉINITIALISÉ APRÈS UN REFRESH
-===================================================== */
+/* =========================================================
+   DONNÉES
+========================================================= */
 
 const SKILLS = [
     "Programmation",
@@ -614,18 +836,25 @@ const SKILLS = [
     "Jeux vidéo"
 ];
 
+let data = null;
+let currentUserId = null;
 let currentPage = "home";
 let selectedConversation = null;
 let searchTerm = "";
 let premium = false;
+let darkMode = false;
 
 
-/* =====================================================
+/* =========================================================
    OUTILS
-===================================================== */
+========================================================= */
 
 function uid(prefix="id"){
     return prefix + "_" + Math.random().toString(36).slice(2,10);
+}
+
+function now(){
+    return new Date().toISOString();
 }
 
 function escapeHTML(text=""){
@@ -637,10 +866,6 @@ function escapeHTML(text=""){
         .replaceAll("'","&#039;");
 }
 
-function now(){
-    return new Date().toISOString();
-}
-
 function formatDate(date){
     return new Date(date).toLocaleString("fr-CA",{
         day:"numeric",
@@ -650,91 +875,131 @@ function formatDate(date){
     });
 }
 
+function currentUser(){
+    return data.users.find(u=>u.id===currentUserId);
+}
 
-/* =====================================================
-   DONNÉES
-===================================================== */
+function getUser(id){
+    return data.users.find(u=>u.id===id);
+}
+
+function userName(id){
+    const user = getUser(id);
+    return user ? escapeHTML(user.name) : "Utilisateur";
+}
+
+function showToast(message){
+    document.querySelector(".toast")?.remove();
+
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(()=>{
+        toast.remove();
+    },3000);
+}
+
+function avatar(user,large=false){
+    if(!user) return "";
+
+    return `
+        <div class="avatar ${large ? "large" : ""}">
+            ${escapeHTML(user.name.charAt(0).toUpperCase())}
+        </div>
+    `;
+}
+
+function premiumBadge(user){
+    if(!user?.premium) return "";
+
+    return `
+        <span class="pill premium">
+            ⭐ Premium
+        </span>
+    `;
+}
+
+
+/* =========================================================
+   DONNÉES DE DÉMO
+========================================================= */
 
 function createInitialData(){
 
+    const users = [
+        {
+            id:"camille",
+            name:"Camille",
+            description:"J'aime apprendre de nouvelles choses et aider les autres.",
+            skills:["Français","Dessin"],
+            level:"Intermédiaire",
+            ai:false,
+            premium:false
+        },
+        {
+            id:"thomas",
+            name:"Thomas",
+            description:"Je m'intéresse à la 3D, aux jeux et à la programmation.",
+            skills:["3D / CAO","Programmation","Jeux vidéo"],
+            level:"Débutant",
+            ai:false,
+            premium:false
+        },
+        {
+            id:"elodie",
+            name:"Élodie",
+            description:"Je fais du montage vidéo et du design.",
+            skills:["Montage vidéo","Design"],
+            level:"Avancé",
+            ai:false,
+            premium:false
+        },
+        {
+            id:"alex",
+            name:"Alex",
+            description:"Je peux t'aider avec la programmation, JavaScript, HTML et les projets web.",
+            skills:["Programmation"],
+            level:"Avancé",
+            ai:true,
+            premium:true
+        },
+        {
+            id:"sophie",
+            name:"Sophie",
+            description:"Je crée des dessins et des designs numériques.",
+            skills:["Dessin","Design"],
+            level:"Avancé",
+            ai:true,
+            premium:true
+        },
+        {
+            id:"noah",
+            name:"Noah",
+            description:"Je construis des projets avec Arduino et des composants électroniques.",
+            skills:["Arduino","Électronique"],
+            level:"Avancé",
+            ai:true,
+            premium:true
+        },
+        {
+            id:"maya",
+            name:"Maya",
+            description:"Je fais de la musique et j'aime apprendre de nouveaux instruments.",
+            skills:["Musique"],
+            level:"Intermédiaire",
+            ai:true,
+            premium:true
+        }
+    ];
+
     return {
 
-        users:[
-
-            {
-                id:"camille",
-                name:"Camille",
-                description:"J'aime apprendre de nouvelles choses et aider les autres.",
-                skills:["Français","Dessin"],
-                level:"Intermédiaire",
-                ai:false,
-                premium:false
-            },
-
-            {
-                id:"thomas",
-                name:"Thomas",
-                description:"Je m'intéresse à la 3D, aux jeux et à la programmation.",
-                skills:["3D / CAO","Programmation","Jeux vidéo"],
-                level:"Débutant",
-                ai:false,
-                premium:false
-            },
-
-            {
-                id:"elodie",
-                name:"Élodie",
-                description:"Je fais du montage vidéo et du design.",
-                skills:["Montage vidéo","Design"],
-                level:"Avancé",
-                ai:false,
-                premium:false
-            },
-
-            {
-                id:"alex",
-                name:"Alex",
-                description:"Je peux t'aider avec la programmation et les projets web.",
-                skills:["Programmation"],
-                level:"Avancé",
-                ai:true,
-                premium:true
-            },
-
-            {
-                id:"sophie",
-                name:"Sophie",
-                description:"Je crée des dessins et des designs numériques.",
-                skills:["Dessin","Design"],
-                level:"Avancé",
-                ai:true,
-                premium:true
-            },
-
-            {
-                id:"noah",
-                name:"Noah",
-                description:"Je construis des projets avec Arduino et des composants électroniques.",
-                skills:["Arduino","Électronique"],
-                level:"Avancé",
-                ai:true,
-                premium:true
-            },
-
-            {
-                id:"maya",
-                name:"Maya",
-                description:"Je fais de la musique et j'aime apprendre de nouveaux instruments.",
-                skills:["Musique"],
-                level:"Intermédiaire",
-                ai:true,
-                premium:true
-            }
-
-        ],
+        users,
 
         posts:[
-
             {
                 id:"post1",
                 userId:"camille",
@@ -742,10 +1007,16 @@ function createInitialData(){
                 category:"Dessin",
                 createdAt:now(),
                 likes:["thomas"],
-                comments:[],
+                comments:[
+                    {
+                        id:"comment1",
+                        userId:"thomas",
+                        text:"Oui, ça m'intéresse !",
+                        createdAt:now()
+                    }
+                ],
                 boosted:false
             },
-
             {
                 id:"post2",
                 userId:"thomas",
@@ -756,7 +1027,6 @@ function createInitialData(){
                 comments:[],
                 boosted:false
             },
-
             {
                 id:"post3",
                 userId:"noah",
@@ -766,12 +1036,20 @@ function createInitialData(){
                 likes:["camille"],
                 comments:[],
                 boosted:false
+            },
+            {
+                id:"post4",
+                userId:"alex",
+                text:"Petit conseil : quand tu apprends à coder, commence par un petit problème puis ajoute une fonctionnalité à la fois.",
+                category:"Programmation",
+                createdAt:now(),
+                likes:["camille","thomas"],
+                comments:[],
+                boosted:false
             }
-
         ],
 
         helps:[
-
             {
                 id:"help1",
                 userId:"thomas",
@@ -782,14 +1060,13 @@ function createInitialData(){
                 resolved:false,
                 answers:[
                     {
-                        id:"a1",
+                        id:"answer1",
                         userId:"noah",
                         text:"Commence par une LED, un bouton et quelques programmes très simples.",
                         createdAt:now()
                     }
                 ]
             },
-
             {
                 id:"help2",
                 userId:"camille",
@@ -800,112 +1077,274 @@ function createInitialData(){
                 resolved:false,
                 answers:[]
             }
-
         ],
 
         conversations:[],
 
-        notifications:[]
+        notifications:[
+            {
+                id:"notification1",
+                userId:"camille",
+                text:"Thomas a aimé ta publication.",
+                createdAt:now()
+            },
+            {
+                id:"notification2",
+                userId:"camille",
+                text:"Noah a répondu à une demande d'aide.",
+                createdAt:now()
+            }
+        ]
 
     };
 }
 
-let data = createInitialData();
 
+/* =========================================================
+   INITIALISATION
+========================================================= */
 
-function currentUser(){
+function resetEverything(){
 
-    return data.users.find(u=>u.id==="camille");
+    /*
+        Aucun localStorage.
+        Chaque chargement recrée complètement
+        les données de démonstration.
+    */
 
+    data = createInitialData();
+
+    currentUserId = null;
+
+    currentPage = "home";
+
+    selectedConversation = null;
+
+    searchTerm = "";
+
+    premium = false;
+
+    darkMode = false;
+
+    document.body.classList.remove("dark");
 }
 
-function currentUserId(){
+resetEverything();
 
-    return currentUser().id;
 
-}
+/* =========================================================
+   AUTHENTIFICATION
+========================================================= */
 
-function getUser(id){
+function showAuth(){
 
-    return data.users.find(u=>u.id===id);
+    document.getElementById("app").innerHTML=`
 
-}
+        <div class="auth-screen">
 
-function avatar(user,large=false){
+            <div class="auth-box">
 
-    if(!user) return "";
+                <div class="auth-logo">
 
-    return `
-        <div class="avatar ${large?"large":""}">
-            ${escapeHTML(user.name.charAt(0).toUpperCase())}
+                    <div class="logo">
+                        Skill<span>ink</span>
+                    </div>
+
+                    <p class="muted">
+                        Partage tes talents. Apprends. Aide les autres.
+                    </p>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h2>Se connecter</h2>
+
+                    <div class="form">
+
+                        <input
+                            class="input"
+                            id="loginName"
+                            placeholder="Ton prénom"
+                        >
+
+                        <button
+                            class="btn full"
+                            onclick="login()">
+
+                            Se connecter
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="divider"></div>
+
+
+                    <h3>Créer un compte</h3>
+
+                    <div class="form">
+
+                        <input
+                            class="input"
+                            id="registerName"
+                            placeholder="Ton prénom"
+                        >
+
+                        <button
+                            class="btn secondary full"
+                            onclick="register()">
+
+                            Créer mon compte
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="divider"></div>
+
+
+                    <button
+                        class="btn full"
+                        onclick="demoLogin()">
+
+                        Entrer avec le compte démo
+
+                    </button>
+
+                </div>
+
+
+                <p
+                    class="muted small-text"
+                    style="text-align:center">
+
+                    Version locale de démonstration.
+                    Les données sont supprimées lorsque la page est actualisée.
+
+                </p>
+
+            </div>
+
         </div>
+
     `;
-
 }
 
-function userName(id){
 
-    const u=getUser(id);
+function login(){
 
-    return u ? escapeHTML(u.name) : "Utilisateur";
+    const name = document
+        .getElementById("loginName")
+        .value
+        .trim();
 
-}
-
-function premiumBadge(user){
-
-    if(!user) return "";
-
-    if(user.premium){
-
-        return `
-            <span class="pill premium">
-                ⭐ Premium
-            </span>
-        `;
-
+    if(!name){
+        showToast("Entre ton prénom.");
+        return;
     }
 
-    return "";
+    const user = data.users.find(
+        u=>u.name.toLowerCase()===name.toLowerCase()
+    );
+
+    if(!user){
+
+        showToast(
+            "Compte non trouvé. Utilise la création de compte."
+        );
+
+        return;
+    }
+
+    currentUserId = user.id;
+
+    premium = user.premium;
+
+    render();
 
 }
 
 
-/* =====================================================
+function register(){
+
+    const name = document
+        .getElementById("registerName")
+        .value
+        .trim();
+
+    if(!name){
+        showToast("Entre ton prénom.");
+        return;
+    }
+
+    const exists = data.users.some(
+        u=>u.name.toLowerCase()===name.toLowerCase()
+    );
+
+    if(exists){
+
+        showToast(
+            "Ce prénom existe déjà. Utilise la connexion."
+        );
+
+        return;
+    }
+
+    const user = {
+        id:uid("user"),
+        name,
+        description:"Nouveau membre de Skillink.",
+        skills:[],
+        level:"Débutant",
+        ai:false,
+        premium:false
+    };
+
+    data.users.push(user);
+
+    currentUserId = user.id;
+
+    premium = false;
+
+    showToast("Compte créé !");
+
+    render();
+
+}
+
+
+function demoLogin(){
+
+    currentUserId = "camille";
+
+    premium = false;
+
+    render();
+
+}
+
+
+/* =========================================================
    NAVIGATION
-===================================================== */
+========================================================= */
 
-function navButton(page,label,icon){
+function navigate(page){
 
-    return `
-        <button
-            class="${currentPage===page?"active":""}"
-            onclick="navigate('${page}')">
+    currentPage = page;
 
-            ${icon} &nbsp; ${label}
+    searchTerm = "";
 
-        </button>
-    `;
-
-}
-
-function mobileNav(page,icon,label){
-
-    return `
-        <button
-            class="${currentPage===page?"active":""}"
-            onclick="navigate('${page}')">
-
-            <div>${icon}</div>
-            ${label}
-
-        </button>
-    `;
+    render();
 
 }
 
 function pageTitle(){
 
-    const titles={
+    const titles = {
         home:"Accueil",
         discover:"Découvrir",
         help:"Demandes d'aide",
@@ -916,25 +1355,50 @@ function pageTitle(){
     };
 
     return titles[currentPage] || "Skillink";
-
 }
 
-function navigate(page){
+function navButton(page,label,icon){
 
-    currentPage=page;
-    searchTerm="";
-    render();
+    return `
+        <button
+            class="${currentPage===page ? "active" : ""}"
+            onclick="navigate('${page}')">
 
+            ${icon} &nbsp; ${label}
+
+        </button>
+    `;
+}
+
+function mobileNav(page,icon,label){
+
+    return `
+        <button
+            class="${currentPage===page ? "active" : ""}"
+            onclick="navigate('${page}')">
+
+            <div>${icon}</div>
+            ${label}
+
+        </button>
+    `;
 }
 
 
-/* =====================================================
-   APPLICATION
-===================================================== */
+/* =========================================================
+   APPLICATION SHELL
+========================================================= */
 
 function render(){
 
-    const user=currentUser();
+    if(!currentUserId){
+
+        showAuth();
+
+        return;
+    }
+
+    const user = currentUser();
 
     document.getElementById("app").innerHTML=`
 
@@ -944,14 +1408,21 @@ function render(){
                 Skill<span>ink</span>
             </div>
 
+
             <div class="nav">
 
                 ${navButton("home","Accueil","⌂")}
+
                 ${navButton("discover","Découvrir","◉")}
+
                 ${navButton("help","Demandes d'aide","?")}
+
                 ${navButton("messages","Messages","✉")}
+
                 ${navButton("notifications","Notifications","●")}
+
                 ${navButton("profile","Mon profil","○")}
+
 
                 <button
                     class="premium-nav"
@@ -960,6 +1431,7 @@ function render(){
                     ⭐ Premium
 
                 </button>
+
 
                 ${navButton("settings","Paramètres","⚙")}
 
@@ -972,17 +1444,21 @@ function render(){
 
             <header class="topbar">
 
-                <h1>${pageTitle()}</h1>
+                <h1>
+                    ${pageTitle()}
+                </h1>
+
 
                 <div class="top-actions">
 
                     <button
-                        class="btn ${premium?"secondary":""}"
+                        class="btn ${premium ? "secondary" : ""}"
                         onclick="openPremium()">
 
-                        ${premium?"⭐ Premium":"Passer à Premium"}
+                        ${premium ? "⭐ Premium" : "Passer à Premium"}
 
                     </button>
+
 
                     <button
                         class="btn secondary"
@@ -992,6 +1468,7 @@ function render(){
 
                     </button>
 
+
                     ${avatar(user)}
 
                 </div>
@@ -999,7 +1476,11 @@ function render(){
             </header>
 
 
-            <section class="content" id="content"></section>
+            <section
+                class="content"
+                id="content">
+
+            </section>
 
         </main>
 
@@ -1007,9 +1488,13 @@ function render(){
         <nav class="mobile-nav">
 
             ${mobileNav("home","⌂","Accueil")}
+
             ${mobileNav("discover","◉","Découvrir")}
+
             ${mobileNav("help","?","Aide")}
+
             ${mobileNav("messages","✉","Messages")}
+
             ${mobileNav("profile","○","Profil")}
 
         </nav>
@@ -1021,25 +1506,96 @@ function render(){
 }
 
 
-/* =====================================================
+function renderPage(){
+
+    switch(currentPage){
+
+        case "home":
+            renderHome();
+            break;
+
+        case "discover":
+            renderDiscover();
+            break;
+
+        case "help":
+            renderHelp();
+            break;
+
+        case "messages":
+            renderMessages();
+            break;
+
+        case "notifications":
+            renderNotifications();
+            break;
+
+        case "profile":
+            renderProfile();
+            break;
+
+        case "settings":
+            renderSettings();
+            break;
+
+        default:
+            renderHome();
+
+    }
+
+}
+
+
+/* =========================================================
    ACCUEIL
-===================================================== */
+========================================================= */
 
 function renderHome(){
 
     document.getElementById("content").innerHTML=`
 
+        <div class="card hero">
+
+            <h2>
+                Bienvenue sur Skillink, ${escapeHTML(currentUser().name)}
+            </h2>
+
+            <p class="muted">
+                Partage ce que tu sais faire, découvre les talents
+                des autres et demande de l'aide quand tu en as besoin.
+            </p>
+
+        </div>
+
+
         ${
-            !premium
+            premium
             ?
             `
             <div class="card premium-card">
 
-                <h2>⭐ Découvre Skillink Premium</h2>
+                <h2>
+                    ⭐ Skillink Premium actif
+                </h2>
 
                 <p class="muted">
-                    Débloque des fonctions supplémentaires
-                    pour améliorer ton expérience Skillink.
+                    Tu as accès aux fonctions Premium de la démo.
+                </p>
+
+            </div>
+            `
+            :
+            `
+            <div class="card premium-card">
+
+                <h2>
+                    ⭐ Passe à Skillink Premium
+                </h2>
+
+                <p class="muted">
+                    Obtiens un badge Premium, des statistiques
+                    avancées, l'IA Premium et la mise en avant
+                    de tes publications.
                 </p>
 
                 <button
@@ -1052,24 +1608,14 @@ function renderHome(){
 
             </div>
             `
-            :
-            `
-            <div class="card premium-card">
-
-                <h2>⭐ Bienvenue dans Premium, ${escapeHTML(currentUser().name)} !</h2>
-
-                <p class="muted">
-                    Toutes tes fonctions Premium sont activées.
-                </p>
-
-            </div>
-            `
         }
 
 
         <div class="card">
 
-            <h2>Créer une publication</h2>
+            <h2>
+                Créer une publication
+            </h2>
 
             <div class="form">
 
@@ -1078,13 +1624,17 @@ function renderHome(){
                     placeholder="Partage quelque chose avec la communauté...">
                 </textarea>
 
+
                 <select id="postCategory">
 
-                    ${SKILLS.map(s=>`
-                        <option>${s}</option>
+                    ${SKILLS.map(skill=>`
+                        <option value="${escapeHTML(skill)}">
+                            ${escapeHTML(skill)}
+                        </option>
                     `).join("")}
 
                 </select>
+
 
                 <button
                     class="btn"
@@ -1099,13 +1649,30 @@ function renderHome(){
         </div>
 
 
-        <div class="search-row">
+        <div class="card">
 
-            <input
-                class="input"
-                placeholder="Rechercher dans les publications..."
-                oninput="searchPosts(this.value)"
-            >
+            <h3>
+                Rechercher
+            </h3>
+
+            <div class="search-row">
+
+                <input
+                    class="input"
+                    id="postSearch"
+                    placeholder="Rechercher dans les publications..."
+                    oninput="searchPosts(this.value)"
+                >
+
+                <button
+                    class="btn secondary"
+                    onclick="openGlobalSearch()">
+
+                    Recherche globale
+
+                </button>
+
+            </div>
 
         </div>
 
@@ -1119,9 +1686,57 @@ function renderHome(){
 }
 
 
+function createPost(){
+
+    const text = document
+        .getElementById("postText")
+        .value
+        .trim();
+
+    const category = document
+        .getElementById("postCategory")
+        .value;
+
+    if(!text){
+
+        showToast(
+            "Écris quelque chose avant de publier."
+        );
+
+        return;
+    }
+
+    data.posts.unshift({
+
+        id:uid("post"),
+
+        userId:currentUserId,
+
+        text,
+
+        category,
+
+        createdAt:now(),
+
+        likes:[],
+
+        comments:[],
+
+        boosted:false
+
+    });
+
+    showToast("Publication créée !");
+
+    renderHome();
+
+}
+
+
 function searchPosts(value){
 
-    searchTerm=value;
+    searchTerm = value.toLowerCase();
+
     renderPosts();
 
 }
@@ -1129,46 +1744,66 @@ function searchPosts(value){
 
 function renderPosts(){
 
-    const container=document.getElementById("posts");
+    const container = document.getElementById("posts");
 
     if(!container) return;
 
-    let posts=[...data.posts];
+    let posts = [...data.posts];
 
     if(searchTerm){
 
-        const q=searchTerm.toLowerCase();
+        posts = posts.filter(post=>{
 
-        posts=posts.filter(p=>
-            p.text.toLowerCase().includes(q) ||
-            p.category.toLowerCase().includes(q) ||
-            userName(p.userId).toLowerCase().includes(q)
-        );
+            const text = [
+                post.text,
+                post.category,
+                getUser(post.userId)?.name || ""
+            ]
+            .join(" ")
+            .toLowerCase();
+
+            return text.includes(searchTerm);
+
+        });
 
     }
+
+    posts.sort((a,b)=>{
+
+        if(a.boosted && !b.boosted) return -1;
+
+        if(!a.boosted && b.boosted) return 1;
+
+        return new Date(b.createdAt)-new Date(a.createdAt);
+
+    });
+
 
     if(!posts.length){
 
         container.innerHTML=`
+
             <div class="card empty">
                 Aucune publication trouvée.
             </div>
+
         `;
 
         return;
-
     }
 
-    container.innerHTML=posts.map(renderPost).join("");
+    container.innerHTML = posts.map(renderPost).join("");
 
 }
 
 
 function renderPost(post){
 
-    const u=getUser(post.userId);
+    const user = getUser(post.userId);
 
-    const liked=post.likes.includes(currentUserId());
+    const liked =
+        post.likes.includes(currentUserId);
+
 
     return `
 
@@ -1176,7 +1811,7 @@ function renderPost(post){
 
             <div class="user-row">
 
-                ${avatar(u)}
+                ${avatar(user)}
 
                 <div class="user-info">
 
@@ -1184,19 +1819,24 @@ function renderPost(post){
 
                         ${userName(post.userId)}
 
-                        ${premiumBadge(u)}
+                        ${premiumBadge(user)}
 
                         ${
-                            u.ai
+                            user?.ai
                             ?
-                            `<span class="pill">IA · Démo</span>`
+                            `
+                            <span class="pill ai">
+                                IA · Démo
+                            </span>
+                            `
                             :
                             ""
                         }
 
                     </div>
 
-                    <div class="muted">
+
+                    <div class="muted small-text">
                         ${formatDate(post.createdAt)}
                     </div>
 
@@ -1212,7 +1852,7 @@ function renderPost(post){
                 <div style="margin-top:12px">
 
                     <span class="pill premium">
-                        Publication mise en avant
+                        Publication Premium mise en avant
                     </span>
 
                 </div>
@@ -1238,28 +1878,32 @@ function renderPost(post){
                     class="icon-btn"
                     onclick="toggleLike('${post.id}')">
 
-                    ${liked?"♥":"♡"} ${post.likes.length}
+                    ${liked ? "♥" : "♡"}
+                    ${post.likes.length}
 
                 </button>
+
 
                 <button
                     class="icon-btn"
                     onclick="focusComment('${post.id}')">
 
-                    Commentaires ${post.comments.length}
+                    💬 ${post.comments.length}
 
                 </button>
+
 
                 <button
                     class="icon-btn"
-                    onclick="reportItem()">
+                    onclick="reportItem('publication')">
 
-                    Signaler
+                    ⚑ Signaler
 
                 </button>
 
+
                 ${
-                    post.userId===currentUserId()
+                    post.userId===currentUserId
                     ?
                     `
                     <button
@@ -1274,9 +1918,10 @@ function renderPost(post){
                     ""
                 }
 
+
                 ${
                     premium &&
-                    post.userId===currentUserId() &&
+                    post.userId===currentUserId &&
                     !post.boosted
                     ?
                     `
@@ -1297,51 +1942,65 @@ function renderPost(post){
 
             <div>
 
-                ${post.comments.map(c=>`
+                ${
+                    post.comments.length
+                    ?
+                    post.comments.map(comment=>`
 
-                    <div class="comment">
+                        <div class="comment">
 
-                        <div class="user-row">
+                            <div class="user-row">
 
-                            ${avatar(getUser(c.userId))}
-
-                            <div>
-
-                                <div class="user-name">
-                                    ${userName(c.userId)}
-                                </div>
+                                ${avatar(getUser(comment.userId))}
 
                                 <div>
-                                    ${escapeHTML(c.text)}
-                                </div>
 
-                                <small class="muted">
-                                    ${formatDate(c.createdAt)}
-                                </small>
+                                    <div class="user-name">
+
+                                        ${userName(comment.userId)}
+
+                                    </div>
+
+                                    <div>
+                                        ${escapeHTML(comment.text)}
+                                    </div>
+
+                                    <div class="muted small-text">
+                                        ${formatDate(comment.createdAt)}
+                                    </div>
+
+                                </div>
 
                             </div>
 
+
+                            ${
+                                comment.userId===currentUserId
+                                ?
+                                `
+                                <button
+                                    class="icon-btn"
+                                    onclick="
+                                        deleteComment(
+                                            '${post.id}',
+                                            '${comment.id}'
+                                        )
+                                    ">
+
+                                    Supprimer
+
+                                </button>
+                                `
+                                :
+                                ""
+                            }
+
                         </div>
 
-                        ${
-                            c.userId===currentUserId()
-                            ?
-                            `
-                            <button
-                                class="icon-btn"
-                                onclick="deleteComment('${post.id}','${c.id}')">
-
-                                Supprimer
-
-                            </button>
-                            `
-                            :
-                            ""
-                        }
-
-                    </div>
-
-                `).join("")}
+                    `).join("")
+                    :
+                    ""
+                }
 
 
                 <div class="comment-form">
@@ -1370,47 +2029,20 @@ function renderPost(post){
 }
 
 
-function createPost(){
-
-    const text=document.getElementById("postText").value.trim();
-    const category=document.getElementById("postCategory").value;
-
-    if(!text){
-
-        showToast("Écris quelque chose avant de publier.");
-        return;
-
-    }
-
-    data.posts.unshift({
-
-        id:uid("post"),
-        userId:currentUserId(),
-        text,
-        category,
-        createdAt:now(),
-        likes:[],
-        comments:[],
-        boosted:false
-
-    });
-
-    showToast("Publication créée !");
-    renderHome();
-
-}
-
-
 function toggleLike(id){
 
-    const post=data.posts.find(p=>p.id===id);
+    const post = data.posts.find(
+        p=>p.id===id
+    );
 
     if(!post) return;
 
-    const index=post.likes.indexOf(currentUserId());
+    const index = post.likes.indexOf(
+        currentUserId
+    );
 
     if(index===-1){
-        post.likes.push(currentUserId());
+        post.likes.push(currentUserId);
     }else{
         post.likes.splice(index,1);
     }
@@ -1422,24 +2054,35 @@ function toggleLike(id){
 
 function addComment(postId){
 
-    const input=document.getElementById("comment-"+postId);
+    const input =
+        document.getElementById(
+            "comment-"+postId
+        );
 
     if(!input) return;
 
-    const text=input.value.trim();
+    const text = input.value.trim();
 
     if(!text) return;
 
-    const post=data.posts.find(p=>p.id===postId);
+    const post =
+        data.posts.find(p=>p.id===postId);
+
+    if(!post) return;
 
     post.comments.push({
 
         id:uid("comment"),
-        userId:currentUserId(),
+
+        userId:currentUserId,
+
         text,
+
         createdAt:now()
 
     });
+
+    input.value="";
 
     renderPosts();
 
@@ -1448,11 +2091,15 @@ function addComment(postId){
 
 function deleteComment(postId,commentId){
 
-    const post=data.posts.find(p=>p.id===postId);
+    const post =
+        data.posts.find(p=>p.id===postId);
 
-    post.comments=post.comments.filter(
-        c=>c.id!==commentId
-    );
+    if(!post) return;
+
+    post.comments =
+        post.comments.filter(
+            c=>c.id!==commentId
+        );
 
     renderPosts();
 
@@ -1461,11 +2108,14 @@ function deleteComment(postId,commentId){
 
 function deletePost(id){
 
-    if(!confirm("Supprimer cette publication ?")) return;
+    if(!confirm(
+        "Supprimer cette publication ?"
+    )) return;
 
-    data.posts=data.posts.filter(
-        p=>p.id!==id
-    );
+    data.posts =
+        data.posts.filter(
+            p=>p.id!==id
+        );
 
     renderPosts();
 
@@ -1477,45 +2127,61 @@ function boostPost(id){
     if(!premium){
 
         openPremium();
+
         return;
-
     }
 
-    const post=data.posts.find(p=>p.id===id);
+    const post =
+        data.posts.find(p=>p.id===id);
 
-    if(post){
+    if(!post) return;
 
-        post.boosted=true;
+    post.boosted = true;
 
-        showToast("Publication mise en avant !");
+    showToast(
+        "Publication mise en avant."
+    );
 
-        renderPosts();
-
-    }
+    renderPosts();
 
 }
 
 
 function focusComment(id){
 
-    const input=document.getElementById("comment-"+id);
+    setTimeout(()=>{
 
-    if(input) input.focus();
+        document
+            .getElementById("comment-"+id)
+            ?.focus();
+
+    },50);
 
 }
 
 
-/* =====================================================
+/* =========================================================
    DÉCOUVRIR
-===================================================== */
+========================================================= */
 
 function renderDiscover(){
 
     document.getElementById("content").innerHTML=`
 
-        <div class="card">
+        <div class="card hero">
 
-            <h2>Trouver des personnes</h2>
+            <h2>
+                Découvrir les talents
+            </h2>
+
+            <p class="muted">
+                Trouve des personnes qui partagent tes intérêts.
+            </p>
+
+        </div>
+
+
+        <div class="card">
 
             <div class="search-row">
 
@@ -1526,6 +2192,23 @@ function renderDiscover(){
                     oninput="renderUsers()"
                 >
 
+                <select
+                    class="input"
+                    id="discoverSkill"
+                    onchange="renderUsers()">
+
+                    <option value="">
+                        Tous les talents
+                    </option>
+
+                    ${SKILLS.map(skill=>`
+                        <option value="${escapeHTML(skill)}">
+                            ${escapeHTML(skill)}
+                        </option>
+                    `).join("")}
+
+                </select>
+
             </div>
 
 
@@ -1533,19 +2216,23 @@ function renderDiscover(){
                 premium
                 ?
                 `
-                <div class="premium-feature">
+                <div
+                    class="premium-feature"
+                    style="margin-top:15px">
 
-                    <div>Recherche avancée</div>
+                    <div>Recherche Premium</div>
 
                     <div class="muted">
-                        Les résultats Premium sont améliorés.
+                        Les filtres avancés sont activés.
                     </div>
 
                 </div>
                 `
                 :
                 `
-                <div class="premium-feature locked">
+                <div
+                    class="premium-feature locked"
+                    style="margin-top:15px">
 
                     <div>Recherche avancée</div>
 
@@ -1568,7 +2255,11 @@ function renderDiscover(){
         </div>
 
 
-        <div class="grid" id="users"></div>
+        <div
+            class="grid"
+            id="users">
+
+        </div>
 
     `;
 
@@ -1579,55 +2270,105 @@ function renderDiscover(){
 
 function renderUsers(){
 
-    const container=document.getElementById("users");
+    const container =
+        document.getElementById("users");
 
     if(!container) return;
 
-    const input=document.getElementById("discoverSearch");
+    const search =
+        document
+            .getElementById("discoverSearch")
+            ?.value
+            .toLowerCase()
+            .trim() || "";
 
-    const q=(input?.value || "").toLowerCase();
+    const skill =
+        document
+            .getElementById("discoverSkill")
+            ?.value || "";
 
-    let users=data.users.filter(
-        u=>u.id!==currentUserId()
-    );
 
-    users=users.filter(u=>{
+    let users =
+        data.users.filter(
+            u=>u.id!==currentUserId
+        );
 
-        const text=[
-            u.name,
-            u.description,
-            ...u.skills,
-            u.level
-        ].join(" ").toLowerCase();
 
-        return text.includes(q);
+    users = users.filter(user=>{
+
+        const text = [
+            user.name,
+            user.description,
+            user.level,
+            ...user.skills
+        ]
+        .join(" ")
+        .toLowerCase();
+
+        const matchesSearch =
+            !search ||
+            text.includes(search);
+
+        const matchesSkill =
+            !skill ||
+            user.skills.includes(skill);
+
+        return matchesSearch && matchesSkill;
 
     });
 
-    container.innerHTML=users.map(u=>`
+
+    if(!users.length){
+
+        container.innerHTML=`
+
+            <div class="card empty">
+
+                Aucun utilisateur trouvé.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        users.map(renderUserCard).join("");
+
+}
+
+
+function renderUserCard(user){
+
+    return `
 
         <div class="card user-card">
 
             <div class="user-row">
 
-                ${avatar(u)}
+                ${avatar(user)}
 
-                <div>
+                <div class="user-info">
 
                     <div class="user-name">
 
-                        ${escapeHTML(u.name)}
+                        ${escapeHTML(user.name)}
 
-                        ${premiumBadge(u)}
+                        ${premiumBadge(user)}
 
                     </div>
 
+
                     ${
-                        u.ai
+                        user.ai
                         ?
-                        `<span class="pill">
+                        `
+                        <span class="pill ai">
                             IA · Démo
-                         </span>`
+                        </span>
+                        `
                         :
                         ""
                     }
@@ -1638,23 +2379,25 @@ function renderUsers(){
 
 
             <p class="muted">
-                ${escapeHTML(u.description)}
+                ${escapeHTML(user.description)}
             </p>
 
 
             <div>
 
-                ${u.skills.map(s=>`
+                ${user.skills.map(skill=>`
+
                     <span class="pill">
-                        ${escapeHTML(s)}
+                        ${escapeHTML(skill)}
                     </span>
+
                 `).join("")}
 
             </div>
 
 
             <div class="muted">
-                Niveau : ${escapeHTML(u.level)}
+                Niveau : ${escapeHTML(user.level)}
             </div>
 
 
@@ -1662,15 +2405,16 @@ function renderUsers(){
 
                 <button
                     class="btn small"
-                    onclick="viewProfile('${u.id}')">
+                    onclick="viewProfile('${user.id}')">
 
                     Voir le profil
 
                 </button>
 
+
                 <button
                     class="btn secondary small"
-                    onclick="startConversation('${u.id}')">
+                    onclick="startConversation('${user.id}')">
 
                     Message
 
@@ -1680,7 +2424,7 @@ function renderUsers(){
 
         </div>
 
-    `).join("");
+    `;
 
 }
 
@@ -1698,9 +2442,16 @@ function viewProfile(id){
 
 function renderOtherProfile(id){
 
-    const u=getUser(id);
+    const user = getUser(id);
 
-    if(!u) return;
+    if(!user) return;
+
+
+    const posts =
+        data.posts.filter(
+            p=>p.userId===id
+        );
+
 
     document.getElementById("content").innerHTML=`
 
@@ -1712,46 +2463,58 @@ function renderOtherProfile(id){
 
         </button>
 
+
         <br><br>
+
 
         <div class="card">
 
             <div class="profile-header">
 
-                ${avatar(u,true)}
+                ${avatar(user,true)}
 
                 <div>
 
                     <h2>
 
-                        ${escapeHTML(u.name)}
+                        ${escapeHTML(user.name)}
 
-                        ${premiumBadge(u)}
+                        ${premiumBadge(user)}
 
                     </h2>
 
+
                     ${
-                        u.ai
+                        user.ai
                         ?
-                        `<span class="pill">
+                        `<span class="pill ai">
                             IA · Démo
                          </span>`
                         :
                         ""
                     }
 
+
                     <p class="muted">
-                        ${escapeHTML(u.description)}
+                        ${escapeHTML(user.description)}
                     </p>
+
 
                     <div>
 
-                        ${u.skills.map(s=>`
+                        ${user.skills.map(skill=>`
+
                             <span class="pill">
-                                ${escapeHTML(s)}
+                                ${escapeHTML(skill)}
                             </span>
+
                         `).join("")}
 
+                    </div>
+
+
+                    <div class="muted">
+                        Niveau : ${escapeHTML(user.level)}
                     </div>
 
                 </div>
@@ -1762,24 +2525,33 @@ function renderOtherProfile(id){
             <div class="profile-stats">
 
                 <div class="stat">
-                    <strong>
-                        ${data.posts.filter(p=>p.userId===u.id).length}
-                    </strong>
+                    <strong>${posts.length}</strong>
                     Publications
                 </div>
 
                 <div class="stat">
-                    <strong>
-                        ${u.skills.length}
-                    </strong>
+                    <strong>${user.skills.length}</strong>
                     Talents
                 </div>
 
                 <div class="stat">
                     <strong>
-                        ${u.level}
+                        ${posts.reduce(
+                            (sum,p)=>sum+p.likes.length,
+                            0
+                        )}
                     </strong>
-                    Niveau
+                    J'aime
+                </div>
+
+                <div class="stat">
+                    <strong>
+                        ${posts.reduce(
+                            (sum,p)=>sum+p.comments.length,
+                            0
+                        )}
+                    </strong>
+                    Commentaires
                 </div>
 
             </div>
@@ -1787,9 +2559,10 @@ function renderOtherProfile(id){
 
             <br>
 
+
             <button
                 class="btn"
-                onclick="startConversation('${u.id}')">
+                onclick="startConversation('${user.id}')">
 
                 Envoyer un message
 
@@ -1797,14 +2570,32 @@ function renderOtherProfile(id){
 
         </div>
 
+
+        <h2>
+            Publications de ${escapeHTML(user.name)}
+        </h2>
+
+
+        ${
+            posts.length
+            ?
+            posts.map(renderPost).join("")
+            :
+            `
+            <div class="card empty">
+                Aucune publication.
+            </div>
+            `
+        }
+
     `;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    DEMANDES D'AIDE
-===================================================== */
+========================================================= */
 
 function renderHelp(){
 
@@ -1812,7 +2603,9 @@ function renderHelp(){
 
         <div class="card">
 
-            <h2>Demander de l'aide</h2>
+            <h2>
+                Demander de l'aide
+            </h2>
 
             <div class="form">
 
@@ -1822,18 +2615,23 @@ function renderHelp(){
                     placeholder="Titre de ta demande"
                 >
 
+
                 <textarea
                     id="helpDescription"
                     placeholder="Explique ce dont tu as besoin...">
                 </textarea>
 
+
                 <select id="helpCategory">
 
-                    ${SKILLS.map(s=>`
-                        <option>${s}</option>
+                    ${SKILLS.map(skill=>`
+                        <option value="${escapeHTML(skill)}">
+                            ${escapeHTML(skill)}
+                        </option>
                     `).join("")}
 
                 </select>
+
 
                 <button
                     class="btn"
@@ -1859,35 +2657,56 @@ function renderHelp(){
 
 function createHelp(){
 
-    const title=document.getElementById("helpTitle").value.trim();
+    const title =
+        document.getElementById(
+            "helpTitle"
+        ).value.trim();
 
-    const description=
-        document.getElementById("helpDescription").value.trim();
+    const description =
+        document.getElementById(
+            "helpDescription"
+        ).value.trim();
 
-    const category=
-        document.getElementById("helpCategory").value;
+    const category =
+        document.getElementById(
+            "helpCategory"
+        ).value;
+
 
     if(!title || !description){
 
-        showToast("Complète tous les champs.");
-        return;
+        showToast(
+            "Complète tous les champs."
+        );
 
+        return;
     }
+
 
     data.helps.unshift({
 
         id:uid("help"),
-        userId:currentUserId(),
+
+        userId:currentUserId,
+
         title,
+
         description,
+
         category,
+
         createdAt:now(),
+
         resolved:false,
+
         answers:[]
 
     });
 
-    showToast("Demande publiée !");
+
+    showToast(
+        "Demande publiée !"
+    );
 
     renderHelp();
 
@@ -1896,26 +2715,44 @@ function createHelp(){
 
 function renderHelpList(){
 
-    const container=document.getElementById("helpList");
+    const container =
+        document.getElementById("helpList");
 
     if(!container) return;
 
-    container.innerHTML=data.helps.map(h=>`
+
+    let helps =
+        [...data.helps].sort(
+            (a,b)=>
+                new Date(b.createdAt)-
+                new Date(a.createdAt)
+        );
+
+
+    container.innerHTML =
+        helps.map(renderHelpCard).join("");
+
+}
+
+
+function renderHelpCard(help){
+
+    return `
 
         <div class="card">
 
             <div class="user-row">
 
-                ${avatar(getUser(h.userId))}
+                ${avatar(getUser(help.userId))}
 
                 <div>
 
                     <strong>
-                        ${userName(h.userId)}
+                        ${userName(help.userId)}
                     </strong>
 
-                    <div class="muted">
-                        ${formatDate(h.createdAt)}
+                    <div class="muted small-text">
+                        ${formatDate(help.createdAt)}
                     </div>
 
                 </div>
@@ -1923,86 +2760,143 @@ function renderHelpList(){
             </div>
 
 
-            <h2>
-                ${escapeHTML(h.title)}
+            <h2 style="margin-top:15px">
+
+                ${escapeHTML(help.title)}
+
             </h2>
 
-            <p>
-                ${escapeHTML(h.description)}
+
+            <p style="line-height:1.55">
+
+                ${escapeHTML(help.description)}
+
             </p>
 
-            <span class="pill">
-                ${escapeHTML(h.category)}
-            </span>
 
-            ${
-                h.resolved
-                ?
-                `
-                <span class="pill"
-                    style="background:#dcfce7;color:#166534">
+            <div class="help-meta">
 
-                    Résolue
-
+                <span class="pill">
+                    ${escapeHTML(help.category)}
                 </span>
-                `
-                :
-                ""
-            }
 
 
-            <h3>
-                Réponses (${h.answers.length})
+                ${
+                    help.resolved
+                    ?
+                    `
+                    <span
+                        class="pill"
+                        style="
+                            background:var(--success-light);
+                            color:#15803d;
+                        ">
+
+                        Résolue
+
+                    </span>
+                    `
+                    :
+                    `
+                    <span class="pill">
+                        En recherche de réponse
+                    </span>
+                    `
+                }
+
+            </div>
+
+
+            <h3 style="margin-top:18px">
+
+                Réponses (${help.answers.length})
+
             </h3>
 
 
-            ${h.answers.map(a=>`
+            ${
+                help.answers.length
+                ?
+                help.answers.map(answer=>`
 
-                <div class="comment">
+                    <div class="comment">
 
-                    <strong>
-                        ${userName(a.userId)}
-                    </strong>
+                        <div class="user-row">
 
-                    <p>
-                        ${escapeHTML(a.text)}
-                    </p>
+                            ${avatar(getUser(answer.userId))}
 
-                    ${
-                        a.userId===currentUserId()
-                        ?
-                        `
-                        <button
-                            class="icon-btn"
-                            onclick="deleteAnswer('${h.id}','${a.id}')">
+                            <div>
 
-                            Supprimer
+                                <strong>
+                                    ${userName(answer.userId)}
+                                </strong>
 
-                        </button>
-                        `
-                        :
-                        ""
-                    }
+                                <p style="margin:6px 0">
 
+                                    ${escapeHTML(answer.text)}
+
+                                </p>
+
+                                <small class="muted">
+
+                                    ${formatDate(answer.createdAt)}
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        ${
+                            answer.userId===currentUserId
+                            ?
+                            `
+                            <button
+                                class="icon-btn"
+                                onclick="
+                                    deleteAnswer(
+                                        '${help.id}',
+                                        '${answer.id}'
+                                    )
+                                ">
+
+                                Supprimer
+
+                            </button>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                `).join("")
+                :
+                `
+                <div class="muted">
+                    Aucune réponse pour le moment.
                 </div>
-
-            `).join("")}
+                `
+            }
 
 
             ${
-                !h.resolved
+                !help.resolved
                 ?
                 `
                 <div class="comment-form">
 
                     <input
-                        id="answer-${h.id}"
+                        id="answer-${help.id}"
                         placeholder="Répondre à cette demande..."
                     >
 
                     <button
                         class="btn small"
-                        onclick="answerHelp('${h.id}')">
+                        onclick="
+                            answerHelp('${help.id}')
+                        ">
 
                         Répondre
 
@@ -2016,18 +2910,20 @@ function renderHelpList(){
 
 
             ${
-                h.userId===currentUserId()
+                help.userId===currentUserId
                 ?
                 `
                 <div class="post-actions">
 
                     ${
-                        !h.resolved
+                        !help.resolved
                         ?
                         `
                         <button
                             class="btn success small"
-                            onclick="resolveHelp('${h.id}')">
+                            onclick="
+                                resolveHelp('${help.id}')
+                            ">
 
                             Marquer comme résolue
 
@@ -2037,9 +2933,12 @@ function renderHelpList(){
                         ""
                     }
 
+
                     <button
                         class="btn danger small"
-                        onclick="deleteHelp('${h.id}')">
+                        onclick="
+                            deleteHelp('${help.id}')
+                        ">
 
                         Supprimer
 
@@ -2053,29 +2952,45 @@ function renderHelpList(){
 
         </div>
 
-    `).join("");
+    `;
 
 }
 
 
 function answerHelp(id){
 
-    const input=document.getElementById("answer-"+id);
+    const input =
+        document.getElementById(
+            "answer-"+id
+        );
 
-    const text=input.value.trim();
+    const text =
+        input?.value.trim();
 
     if(!text) return;
 
-    const h=data.helps.find(x=>x.id===id);
+    const help =
+        data.helps.find(
+            h=>h.id===id
+        );
 
-    h.answers.push({
+    if(!help) return;
+
+
+    help.answers.push({
 
         id:uid("answer"),
-        userId:currentUserId(),
+
+        userId:currentUserId,
+
         text,
+
         createdAt:now()
 
     });
+
+
+    input.value="";
 
     renderHelpList();
 
@@ -2084,11 +2999,17 @@ function answerHelp(id){
 
 function deleteAnswer(helpId,answerId){
 
-    const h=data.helps.find(x=>x.id===helpId);
+    const help =
+        data.helps.find(
+            h=>h.id===helpId
+        );
 
-    h.answers=h.answers.filter(
-        a=>a.id!==answerId
-    );
+    if(!help) return;
+
+    help.answers =
+        help.answers.filter(
+            a=>a.id!==answerId
+        );
 
     renderHelpList();
 
@@ -2097,53 +3018,68 @@ function deleteAnswer(helpId,answerId){
 
 function resolveHelp(id){
 
-    const h=data.helps.find(x=>x.id===id);
+    const help =
+        data.helps.find(
+            h=>h.id===id
+        );
 
-    if(h){
+    if(!help) return;
 
-        h.resolved=true;
-        renderHelpList();
-
-    }
-
-}
-
-
-function deleteHelp(id){
-
-    data.helps=data.helps.filter(
-        h=>h.id!==id
-    );
+    help.resolved=true;
 
     renderHelpList();
 
 }
 
 
-/* =====================================================
+function deleteHelp(id){
+
+    data.helps =
+        data.helps.filter(
+            h=>h.id!==id
+        );
+
+    renderHelpList();
+
+}
+
+
+/* =========================================================
    MESSAGES
-===================================================== */
+========================================================= */
 
 function getConversation(otherId){
 
-    let c=data.conversations.find(c=>
-        c.users.includes(currentUserId()) &&
-        c.users.includes(otherId)
-    );
+    let conversation =
+        data.conversations.find(c=>
+            c.users.includes(currentUserId) &&
+            c.users.includes(otherId)
+        );
 
-    if(!c){
 
-        c={
+    if(!conversation){
+
+        conversation = {
+
             id:uid("conversation"),
-            users:[currentUserId(),otherId],
+
+            users:[
+                currentUserId,
+                otherId
+            ],
+
             messages:[]
+
         };
 
-        data.conversations.push(c);
+        data.conversations.push(
+            conversation
+        );
 
     }
 
-    return c;
+
+    return conversation;
 
 }
 
@@ -2152,7 +3088,7 @@ function startConversation(otherId){
 
     getConversation(otherId);
 
-    selectedConversation=otherId;
+    selectedConversation = otherId;
 
     currentPage="messages";
 
@@ -2163,11 +3099,15 @@ function startConversation(otherId){
 
 function renderMessages(){
 
-    const content=document.getElementById("content");
+    const content =
+        document.getElementById("content");
 
-    const conversations=data.conversations.filter(
-        c=>c.users.includes(currentUserId())
-    );
+
+    const conversations =
+        data.conversations.filter(
+            c=>c.users.includes(currentUserId)
+        );
+
 
     content.innerHTML=`
 
@@ -2177,43 +3117,74 @@ function renderMessages(){
 
                 <div class="conversations">
 
-                    <h3>Conversations</h3>
+                    <h3>
+                        Conversations
+                    </h3>
+
 
                     ${
                         conversations.length
                         ?
                         conversations.map(c=>{
 
-                            const other=c.users.find(
-                                id=>id!==currentUserId()
-                            );
+                            const other =
+                                c.users.find(
+                                    id=>id!==currentUserId
+                                );
+
+                            const last =
+                                c.messages[c.messages.length-1];
+
 
                             return `
 
                                 <div
-                                    class="conversation ${
-                                        selectedConversation===other
-                                        ?"active"
-                                        :""
-                                    }"
-                                    onclick="selectConversation('${other}')">
+                                    class="
+                                        conversation
+                                        ${
+                                            selectedConversation===other
+                                            ?"active"
+                                            :""
+                                        }
+                                    "
+                                    onclick="
+                                        selectConversation('${other}')
+                                    ">
 
                                     ${avatar(getUser(other))}
 
-                                    <div>
+
+                                    <div
+                                        style="
+                                            min-width:0;
+                                        ">
 
                                         <strong>
                                             ${userName(other)}
                                         </strong>
 
                                         ${
-                                            getUser(other)?.ai
+                                            last
                                             ?
-                                            `<div class="muted">
-                                                IA · Démo
-                                             </div>`
+                                            `
+                                            <div class="muted small-text"
+                                                style="
+                                                    white-space:nowrap;
+                                                    overflow:hidden;
+                                                    text-overflow:ellipsis;
+                                                    max-width:170px;
+                                                ">
+
+                                                ${escapeHTML(last.text)}
+
+                                            </div>
+                                            `
                                             :
-                                            ""
+                                            `
+                                            <div class="muted small-text">
+                                                Aucun message
+                                            </div>
+                                            `
                                         }
 
                                     </div>
@@ -2239,11 +3210,14 @@ function renderMessages(){
                     ${
                         selectedConversation
                         ?
-                        renderChat(selectedConversation)
+                        renderChat(
+                            selectedConversation
+                        )
                         :
                         `
                         <div class="empty">
-                            Sélectionne une conversation.
+                            Sélectionne une conversation
+                            pour commencer à discuter.
                         </div>
                         `
                     }
@@ -2262,6 +3236,7 @@ function renderMessages(){
 function selectConversation(id){
 
     selectedConversation=id;
+
     renderMessages();
 
 }
@@ -2269,31 +3244,43 @@ function selectConversation(id){
 
 function renderChat(otherId){
 
-    const c=getConversation(otherId);
+    const conversation =
+        getConversation(otherId);
+
+    const other =
+        getUser(otherId);
+
 
     return `
 
         <div class="user-row">
 
-            ${avatar(getUser(otherId))}
+            ${avatar(other)}
 
             <div>
 
                 <strong>
-                    ${userName(otherId)}
+                    ${escapeHTML(other.name)}
                 </strong>
 
-                ${
-                    getUser(otherId)?.ai
-                    ?
-                    `<div>
-                        <span class="pill">
+
+                <div>
+
+                    ${
+                        other.ai
+                        ?
+                        `
+                        <span class="pill ai">
                             IA · Démo
                         </span>
-                    </div>`
-                    :
-                    ""
-                }
+                        `
+                        :
+                        ""
+                    }
+
+                    ${premiumBadge(other)}
+
+                </div>
 
             </div>
 
@@ -2303,20 +3290,26 @@ function renderChat(otherId){
         <div class="messages">
 
             ${
-                c.messages.length
+                conversation.messages.length
                 ?
-                c.messages.map(m=>`
+                conversation.messages.map(message=>`
 
-                    <div class="message ${
-                        m.userId===currentUserId()
-                        ?"me"
-                        :""
-                    }">
+                    <div
+                        class="
+                            message
+                            ${
+                                message.userId===currentUserId
+                                ?"me"
+                                :""
+                            }
+                        ">
 
-                        ${escapeHTML(m.text)}
+                        ${escapeHTML(message.text)}
 
                         <div class="message-time">
-                            ${formatDate(m.createdAt)}
+
+                            ${formatDate(message.createdAt)}
+
                         </div>
 
                     </div>
@@ -2340,14 +3333,18 @@ function renderChat(otherId){
                 id="chatInput"
                 placeholder="Écrire un message..."
                 onkeydown="
-                    if(event.key==='Enter')
-                    sendMessage('${otherId}')
+                    if(event.key==='Enter'){
+                        sendMessage('${otherId}')
+                    }
                 "
             >
 
+
             <button
                 class="btn"
-                onclick="sendMessage('${otherId}')">
+                onclick="
+                    sendMessage('${otherId}')
+                ">
 
                 Envoyer
 
@@ -2362,43 +3359,66 @@ function renderChat(otherId){
 
 function sendMessage(otherId){
 
-    const input=document.getElementById("chatInput");
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
 
-    const text=input.value.trim();
+    const text =
+        input?.value.trim();
 
     if(!text) return;
 
-    const c=getConversation(otherId);
 
-    c.messages.push({
+    const conversation =
+        getConversation(otherId);
+
+
+    conversation.messages.push({
 
         id:uid("message"),
-        userId:currentUserId(),
+
+        userId:currentUserId,
+
         text,
+
         createdAt:now()
 
     });
+
 
     input.value="";
 
     renderMessages();
 
-    const other=getUser(otherId);
+
+    const other =
+        getUser(otherId);
+
 
     if(other?.ai){
 
         setTimeout(()=>{
 
-            const reply=aiReply(other,text);
+            const reply =
+                aiReply(
+                    other,
+                    text
+                );
 
-            c.messages.push({
+
+            conversation.messages.push({
 
                 id:uid("message"),
+
                 userId:other.id,
+
                 text:reply,
+
                 createdAt:now()
 
             });
+
 
             renderMessages();
 
@@ -2409,42 +3429,77 @@ function sendMessage(otherId){
 }
 
 
-/* =====================================================
+/* =========================================================
    IA
-===================================================== */
+========================================================= */
 
 function aiReply(user,message){
 
-    const text=message.toLowerCase();
+    const text =
+        message.toLowerCase();
+
 
     if(user.id==="alex"){
 
-        if(text.includes("arduino")){
-            return "Pour Arduino, je te conseillerais plutôt de discuter avec Noah. Moi, je peux surtout t'aider avec la programmation et le web.";
+        if(
+            text.includes("arduino") ||
+            text.includes("servo") ||
+            text.includes("led")
+        ){
+
+            return "Pour Arduino et l'électronique, Noah pourra probablement mieux t'aider. Moi, je suis surtout spécialisé en programmation et en projets web.";
+
         }
 
-        if(text.includes("html") || text.includes("web")){
-            return premium
-                ? "Pour un projet web, commence par séparer HTML, CSS et JavaScript. Définis une petite fonctionnalité, construis-la, puis teste-la avant de passer à la suivante."
-                : "Pour un projet web, commence par HTML, CSS et JavaScript. Essaie de construire une petite fonctionnalité à la fois.";
+
+        if(
+            text.includes("html") ||
+            text.includes("javascript") ||
+            text.includes("css") ||
+            text.includes("web")
+        ){
+
+            if(premium){
+
+                return "Pour un projet web, je te conseille de séparer clairement HTML, CSS et JavaScript. Commence par construire une petite fonctionnalité, teste-la, puis ajoute la suivante. Ça évite de créer beaucoup de problèmes en même temps.";
+
+            }
+
+            return "Pour un projet web, commence par HTML, CSS et JavaScript. Construis une petite fonctionnalité à la fois.";
+
         }
 
-        return premium
-            ? "Bonne question ! Commence par définir exactement ce que ton programme doit faire, puis divise le problème en petites étapes."
-            : "Bonne question ! Essaie de décrire le problème et on peut le diviser en petites étapes.";
+
+        if(premium){
+
+            return "Bonne question. Une bonne méthode consiste à décrire exactement le résultat attendu, découper le problème en petites parties, puis tester chaque partie séparément.";
+
+        }
+
+        return "Décris ton problème et on peut essayer de le diviser en petites étapes.";
 
     }
 
 
     if(user.id==="sophie"){
 
-        if(text.includes("dessin")){
-            return "Pour progresser en dessin, pratique régulièrement les formes simples, les proportions et les ombres.";
+        if(
+            text.includes("dessin") ||
+            text.includes("dessiner")
+        ){
+
+            return "Pour progresser en dessin, pratique les formes simples, les proportions, les ombres et essaie de dessiner régulièrement.";
+
         }
 
-        return premium
-            ? "Pour le design, pense à la hiérarchie visuelle, à l'espace entre les éléments et à garder une interface simple."
-            : "Pour le design, commence par garder une interface simple et facile à comprendre.";
+
+        if(premium){
+
+            return "En design, pense surtout à la hiérarchie visuelle, aux espaces entre les éléments, à la lisibilité et à la simplicité. Une bonne interface n'a pas besoin d'être compliquée.";
+
+        }
+
+        return "Pour le design, garde ton interface simple et facile à comprendre.";
 
     }
 
@@ -2452,55 +3507,111 @@ function aiReply(user,message){
     if(user.id==="noah"){
 
         if(text.includes("led")){
-            return "Une LED est un excellent premier projet. Pense à utiliser une résistance pour limiter le courant.";
+
+            return "Une LED est un excellent premier projet Arduino. N'oublie pas d'utiliser une résistance avec la LED pour limiter le courant.";
+
         }
+
 
         if(text.includes("servo")){
-            return "Pour un servo, vérifie son alimentation et commence avec un petit programme qui contrôle progressivement sa position.";
+
+            return "Pour un servo, vérifie d'abord son alimentation et teste-le avec un programme très simple avant de l'intégrer dans le reste du projet.";
+
         }
 
-        return premium
-            ? "Pour un projet Arduino, teste chaque composant séparément avant de tout connecter. Ça rend le dépannage beaucoup plus facile."
-            : "Teste chaque composant séparément avant de construire tout ton projet.";
+
+        if(text.includes("arduino")){
+
+            if(premium){
+
+                return "Pour apprendre Arduino, je te conseille de commencer par des projets très simples : LED, bouton, buzzer, potentiomètre, puis capteurs et servos. Teste toujours un composant à la fois.";
+
+            }
+
+            return "Commence par une LED et un bouton, puis ajoute progressivement de nouveaux composants.";
+
+        }
+
+
+        return "Explique-moi ton projet Arduino et on pourra essayer de trouver une solution ensemble.";
 
     }
 
 
     if(user.id==="maya"){
 
-        return premium
-            ? "Pour apprendre la musique, pratique une petite section à la fois et augmente progressivement la difficulté."
-            : "Pratique régulièrement de petites sections plutôt que d'essayer de tout apprendre en même temps.";
+        if(premium){
+
+            return "Pour apprendre la musique, pratique régulièrement de petites sections, travaille lentement au début et augmente progressivement la difficulté.";
+
+        }
+
+        return "Pratique régulièrement de petites sections plutôt que d'essayer d'apprendre tout d'un coup.";
 
     }
+
 
     return "Je peux essayer de t'aider avec ça !";
 
 }
 
 
-/* =====================================================
+/* =========================================================
    NOTIFICATIONS
-===================================================== */
+========================================================= */
 
 function renderNotifications(){
 
-    const content=document.getElementById("content");
+    const content =
+        document.getElementById(
+            "content"
+        );
 
-    const notifications=data.notifications.filter(
-        n=>n.userId===currentUserId()
-    );
+
+    const notifications =
+        data.notifications.filter(
+            n=>n.userId===currentUserId
+        );
+
 
     content.innerHTML=`
 
         <div class="card">
 
-            <h2>Notifications</h2>
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:10px;
+            ">
+
+                <h2>
+                    Notifications
+                </h2>
+
+                ${
+                    notifications.length
+                    ?
+                    `
+                    <button
+                        class="btn secondary small"
+                        onclick="clearNotifications()">
+
+                        Tout effacer
+
+                    </button>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
 
             ${
                 notifications.length
                 ?
-                notifications.map(n=>`
+                notifications.map(notification=>`
 
                     <div class="notification">
 
@@ -2508,10 +3619,12 @@ function renderNotifications(){
 
                         <div>
 
-                            ${escapeHTML(n.text)}
+                            <div>
+                                ${escapeHTML(notification.text)}
+                            </div>
 
-                            <div class="muted">
-                                ${formatDate(n.createdAt)}
+                            <div class="muted small-text">
+                                ${formatDate(notification.createdAt)}
                             </div>
 
                         </div>
@@ -2534,17 +3647,31 @@ function renderNotifications(){
 }
 
 
-/* =====================================================
+function clearNotifications(){
+
+    data.notifications =
+        data.notifications.filter(
+            n=>n.userId!==currentUserId
+        );
+
+    renderNotifications();
+
+}
+
+
+/* =========================================================
    PROFIL
-===================================================== */
+========================================================= */
 
 function renderProfile(){
 
     const user=currentUser();
 
-    const posts=data.posts.filter(
-        p=>p.userId===user.id
-    );
+    const posts =
+        data.posts.filter(
+            p=>p.userId===user.id
+        );
+
 
     document.getElementById("content").innerHTML=`
 
@@ -2564,23 +3691,29 @@ function renderProfile(){
 
                     </h2>
 
+
                     <p class="muted">
                         ${escapeHTML(user.description)}
                     </p>
 
+
                     <div>
 
-                        ${user.skills.map(s=>`
+                        ${user.skills.map(skill=>`
+
                             <span class="pill">
-                                ${escapeHTML(s)}
+                                ${escapeHTML(skill)}
                             </span>
+
                         `).join("")}
 
                     </div>
 
-                    <p class="muted">
-                        Niveau : ${escapeHTML(user.level)}
-                    </p>
+
+                    <div class="muted">
+                        Niveau :
+                        ${escapeHTML(user.level)}
+                    </div>
 
                 </div>
 
@@ -2599,6 +3732,7 @@ function renderProfile(){
 
                 </div>
 
+
                 <div class="stat">
 
                     <strong>
@@ -2608,6 +3742,21 @@ function renderProfile(){
                     Talents
 
                 </div>
+
+
+                <div class="stat">
+
+                    <strong>
+                        ${posts.reduce(
+                            (sum,p)=>sum+p.likes.length,
+                            0
+                        )}
+                    </strong>
+
+                    J'aime
+
+                </div>
+
 
                 <div class="stat">
 
@@ -2626,6 +3775,7 @@ function renderProfile(){
 
             <br>
 
+
             <button
                 class="btn"
                 onclick="openEditProfile()">
@@ -2643,7 +3793,9 @@ function renderProfile(){
             `
             <div class="card premium-card">
 
-                <h2>Statistiques Premium</h2>
+                <h2>
+                    ⭐ Statistiques Premium
+                </h2>
 
                 <div class="profile-stats">
 
@@ -2660,6 +3812,7 @@ function renderProfile(){
 
                     </div>
 
+
                     <div class="stat">
 
                         <strong>
@@ -2673,13 +3826,29 @@ function renderProfile(){
 
                     </div>
 
+
                     <div class="stat">
 
                         <strong>
-                            ${user.skills.length}
+                            ${posts.filter(
+                                p=>p.boosted
+                            ).length}
                         </strong>
 
-                        Talents
+                        Publications mises en avant
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        <strong>
+                            ${data.conversations.filter(
+                                c=>c.users.includes(user.id)
+                            ).length}
+                        </strong>
+
+                        Conversations
 
                     </div>
 
@@ -2691,10 +3860,12 @@ function renderProfile(){
             `
             <div class="card locked">
 
-                <h2>Statistiques avancées</h2>
+                <h2>
+                    Statistiques avancées
+                </h2>
 
                 <p class="muted">
-                    Découvre plus de statistiques avec Premium.
+                    Débloque plus de statistiques avec Premium.
                 </p>
 
                 <button
@@ -2710,36 +3881,35 @@ function renderProfile(){
         }
 
 
-        <h2>Mes publications</h2>
+        <h2>
+            Mes publications
+        </h2>
 
-        <div>
 
-            ${
-                posts.length
-                ?
-                posts.map(renderPost).join("")
-                :
-                `
-                <div class="card empty">
-                    Tu n'as encore aucune publication.
-                </div>
-                `
-            }
-
-        </div>
+        ${
+            posts.length
+            ?
+            posts.map(renderPost).join("")
+            :
+            `
+            <div class="card empty">
+                Tu n'as encore aucune publication.
+            </div>
+            `
+        }
 
     `;
 
 }
 
 
-/* =====================================================
-   MODIFIER PROFIL
-===================================================== */
+/* =========================================================
+   MODIFICATION DU PROFIL
+========================================================= */
 
 function openEditProfile(){
 
-    const u=currentUser();
+    const user=currentUser();
 
     openModal(`
 
@@ -2751,56 +3921,84 @@ function openEditProfile(){
 
         </button>
 
-        <h2>Modifier mon profil</h2>
+
+        <h2>
+            Modifier mon profil
+        </h2>
+
 
         <div class="form">
 
             <input
                 class="input"
                 id="editName"
-                value="${escapeHTML(u.name)}"
+                value="${escapeHTML(user.name)}"
                 placeholder="Nom"
             >
 
+
             <textarea
                 id="editDescription"
-                placeholder="Description">${escapeHTML(u.description)}</textarea>
+                placeholder="Description">${escapeHTML(user.description)}</textarea>
+
 
             <select id="editLevel">
 
-                ${["Débutant","Intermédiaire","Avancé"]
-                    .map(l=>`
-                        <option ${u.level===l?"selected":""}>
-                            ${l}
-                        </option>
-                    `).join("")}
+                ${[
+                    "Débutant",
+                    "Intermédiaire",
+                    "Avancé"
+                ].map(level=>`
+
+                    <option
+                        value="${level}"
+                        ${user.level===level ? "selected" : ""}>
+
+                        ${level}
+
+                    </option>
+
+                `).join("")}
 
             </select>
 
+
             <label>
-                Talents
+                Mes talents
             </label>
+
 
             <div>
 
-                ${SKILLS.map(s=>`
+                ${SKILLS.map(skill=>`
 
-                    <label style="display:block;margin:6px 0">
+                    <label
+                        style="
+                            display:block;
+                            padding:6px 0;
+                        ">
 
                         <input
                             type="checkbox"
-                            value="${escapeHTML(s)}"
                             class="skill-check"
-                            ${u.skills.includes(s)?"checked":""}
+                            value="${escapeHTML(skill)}"
+                            ${
+                                user.skills.includes(skill)
+                                ?
+                                "checked"
+                                :
+                                ""
+                            }
                         >
 
-                        ${escapeHTML(s)}
+                        ${escapeHTML(skill)}
 
                     </label>
 
                 `).join("")}
 
             </div>
+
 
             <button
                 class="btn"
@@ -2819,57 +4017,95 @@ function openEditProfile(){
 
 function saveProfile(){
 
-    const u=currentUser();
+    const user=currentUser();
 
-    u.name=document.getElementById("editName").value.trim();
+    const name =
+        document.getElementById(
+            "editName"
+        ).value.trim();
 
-    u.description=
-        document.getElementById("editDescription").value.trim();
 
-    u.level=
-        document.getElementById("editLevel").value;
+    if(!name){
 
-    u.skills=[
-        ...document.querySelectorAll(".skill-check:checked")
-    ].map(x=>x.value);
+        showToast(
+            "Le nom ne peut pas être vide."
+        );
 
-    u.premium=premium;
+        return;
+    }
+
+
+    user.name=name;
+
+    user.description =
+        document.getElementById(
+            "editDescription"
+        ).value.trim();
+
+
+    user.level =
+        document.getElementById(
+            "editLevel"
+        ).value;
+
+
+    user.skills = [
+        ...document.querySelectorAll(
+            ".skill-check:checked"
+        )
+    ].map(
+        checkbox=>checkbox.value
+    );
+
+
+    user.premium=premium;
 
     closeModal();
 
-    showToast("Profil sauvegardé !");
+    showToast(
+        "Profil sauvegardé !"
+    );
 
     render();
 
 }
 
 
-/* =====================================================
+/* =========================================================
    PARAMÈTRES
-===================================================== */
+========================================================= */
 
 function renderSettings(){
+
+    const user=currentUser();
+
 
     document.getElementById("content").innerHTML=`
 
         <div class="card premium-card">
 
-            <h2>⭐ Skillink Premium</h2>
+            <h2>
+                ⭐ Skillink Premium
+            </h2>
+
 
             ${
                 premium
                 ?
                 `
                 <p>
-                    Ton compte possède actuellement
-                    <strong>Skillink Premium</strong>.
+                    Ton compte possède
+                    <strong>Premium</strong>.
                 </p>
+
 
                 <span class="pill premium">
                     ⭐ Premium actif
                 </span>
 
+
                 <br><br>
+
 
                 <button
                     class="btn danger"
@@ -2882,54 +4118,101 @@ function renderSettings(){
                 :
                 `
                 <p class="muted">
-                    Débloque des fonctionnalités supplémentaires.
+
+                    Débloque des fonctionnalités exclusives.
+
                 </p>
 
-                <div class="premium-feature">
-                    <div>⭐</div>
-                    <div>
-                        <strong>Badge Premium</strong>
-                        <div class="muted">
-                            Affiche ton statut Premium.
-                        </div>
-                    </div>
-                </div>
 
                 <div class="premium-feature">
-                    <div>IA</div>
+
+                    <div>⭐</div>
+
                     <div>
-                        <strong>IA Premium</strong>
+
+                        <strong>
+                            Badge Premium
+                        </strong>
+
+                        <div class="muted">
+                            Badge spécial sur ton profil.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="premium-feature">
+
+                    <div>IA</div>
+
+                    <div>
+
+                        <strong>
+                            IA Premium
+                        </strong>
+
                         <div class="muted">
                             Réponses plus détaillées.
                         </div>
+
                     </div>
+
                 </div>
 
+
                 <div class="premium-feature">
+
                     <div>Stats</div>
+
                     <div>
-                        <strong>Statistiques avancées</strong>
+
+                        <strong>
+                            Statistiques avancées
+                        </strong>
+
                         <div class="muted">
                             Analyse ton activité.
                         </div>
+
                     </div>
+
                 </div>
 
+
                 <div class="premium-feature">
+
                     <div>Boost</div>
+
                     <div>
-                        <strong>Publications mises en avant</strong>
+
+                        <strong>
+                            Publications mises en avant
+                        </strong>
+
                         <div class="muted">
-                            Mets tes publications en avant.
+                            Donne plus de visibilité à tes posts.
                         </div>
+
                     </div>
+
                 </div>
+
 
                 <br>
 
-                <h2>
-                    4,99 $ / mois
-                </h2>
+
+                <div class="price">
+
+                    4,99 $
+
+                    <span>
+                        / mois
+                    </span>
+
+                </div>
+
 
                 <button
                     class="btn"
@@ -2946,13 +4229,22 @@ function renderSettings(){
 
         <div class="card">
 
-            <h2>Apparence</h2>
+            <h2>
+                Apparence
+            </h2>
+
 
             <button
                 class="btn secondary"
                 onclick="toggleTheme()">
 
-                Changer le thème
+                ${
+                    darkMode
+                    ?
+                    "Passer au mode clair"
+                    :
+                    "Passer au mode sombre"
+                }
 
             </button>
 
@@ -2961,27 +4253,72 @@ function renderSettings(){
 
         <div class="card">
 
-            <h2>Compte</h2>
+            <h2>
+                Mon compte
+            </h2>
 
-            <button
-                class="btn"
-                onclick="openEditProfile()">
-
-                Modifier mon profil
-
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <h2>Règles de communauté</h2>
 
             <p class="muted">
-                Sois respectueux envers les autres utilisateurs.
-                Ne partage pas d'informations personnelles sensibles.
-                Signale les contenus qui ne respectent pas les règles.
+
+                Connecté en tant que
+                <strong>${escapeHTML(user.name)}</strong>.
+
+            </p>
+
+
+            <div class="actions">
+
+                <button
+                    class="btn"
+                    onclick="openEditProfile()">
+
+                    Modifier mon profil
+
+                </button>
+
+
+                <button
+                    class="btn danger"
+                    onclick="logout()">
+
+                    Se déconnecter
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>
+                Communauté
+            </h2>
+
+            <p class="muted">
+
+                Respecte les autres utilisateurs.
+                Ne partage pas d'informations personnelles sensibles
+                et signale les contenus problématiques.
+
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>
+                Version de démonstration
+            </h2>
+
+            <p class="muted">
+
+                Toutes les données de cette application
+                sont temporaires et disparaissent après
+                un actualisation de la page.
+
             </p>
 
         </div>
@@ -2991,9 +4328,9 @@ function renderSettings(){
 }
 
 
-/* =====================================================
+/* =========================================================
    PREMIUM
-===================================================== */
+========================================================= */
 
 function openPremium(){
 
@@ -3009,23 +4346,33 @@ function openPremium(){
 
             </button>
 
+
             <div style="text-align:center">
 
-                <h2>⭐ Skillink Premium</h2>
+                <h2>
+                    ⭐ Skillink Premium
+                </h2>
+
 
                 <span class="pill premium">
                     Premium actif
                 </span>
 
+
                 <p class="muted">
-                    Toutes les fonctions Premium sont activées.
+                    Ton compte a déjà accès aux fonctions Premium.
                 </p>
+
 
                 <br>
 
+
                 <button
                     class="btn"
-                    onclick="closeModal();navigate('profile')">
+                    onclick="
+                        closeModal();
+                        navigate('profile')
+                    ">
 
                     Voir mes statistiques
 
@@ -3036,7 +4383,6 @@ function openPremium(){
         `);
 
         return;
-
     }
 
 
@@ -3050,9 +4396,12 @@ function openPremium(){
 
         </button>
 
+
         <div style="text-align:center">
 
-            <h2>⭐ Skillink Premium</h2>
+            <h2>
+                ⭐ Skillink Premium
+            </h2>
 
             <p class="muted">
                 Plus de possibilités pour partager
@@ -3067,10 +4416,15 @@ function openPremium(){
             <div>⭐</div>
 
             <div>
-                <strong>Badge Premium</strong>
+
+                <strong>
+                    Badge Premium
+                </strong>
+
                 <div class="muted">
-                    Badge exclusif sur ton profil.
+                    Affiche un badge spécial sur ton profil.
                 </div>
+
             </div>
 
         </div>
@@ -3081,10 +4435,15 @@ function openPremium(){
             <div>IA</div>
 
             <div>
-                <strong>IA Premium</strong>
+
+                <strong>
+                    IA Premium
+                </strong>
+
                 <div class="muted">
-                    Réponses plus détaillées des profils IA.
+                    Réponses plus détaillées avec les profils IA.
                 </div>
+
             </div>
 
         </div>
@@ -3095,10 +4454,15 @@ function openPremium(){
             <div>Stats</div>
 
             <div>
-                <strong>Statistiques avancées</strong>
+
+                <strong>
+                    Statistiques avancées
+                </strong>
+
                 <div class="muted">
-                    Analyse ton activité.
+                    Découvre plus de statistiques.
                 </div>
+
             </div>
 
         </div>
@@ -3109,10 +4473,34 @@ function openPremium(){
             <div>Boost</div>
 
             <div>
-                <strong>Publications mises en avant</strong>
+
+                <strong>
+                    Publications mises en avant
+                </strong>
+
                 <div class="muted">
-                    Mets tes publications en avant.
+                    Mets une publication en avant.
                 </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="premium-feature">
+
+            <div>Recherche</div>
+
+            <div>
+
+                <strong>
+                    Recherche avancée
+                </strong>
+
+                <div class="muted">
+                    Recherche plus précisément dans les talents.
+                </div>
+
             </div>
 
         </div>
@@ -3120,19 +4508,23 @@ function openPremium(){
 
         <br>
 
-        <div class="card" style="box-shadow:none">
 
-            <h2>
-                4,99 $ / mois
-            </h2>
+        <div class="card"
+            style="box-shadow:none">
+
+            <div class="price">
+                4,99 $
+                <span>/ mois</span>
+            </div>
+
 
             <p class="muted">
-                Version de démonstration.
+                Ceci est uniquement une démonstration.
             </p>
 
+
             <button
-                class="btn"
-                style="width:100%"
+                class="btn full"
                 onclick="fakePremiumPayment()">
 
                 Payer 4,99 $ · Démo
@@ -3143,8 +4535,8 @@ function openPremium(){
 
 
         <p
-            class="muted"
-            style="text-align:center;font-size:12px">
+            class="muted small-text"
+            style="text-align:center">
 
             Aucun paiement réel ne sera effectué.
 
@@ -3159,6 +4551,7 @@ function fakePremiumPayment(){
 
     closeModal();
 
+
     openModal(`
 
         <button
@@ -3169,19 +4562,26 @@ function fakePremiumPayment(){
 
         </button>
 
+
         <div style="text-align:center">
 
-            <h2>💳 Paiement de démonstration</h2>
+            <h2>
+                Paiement de démonstration
+            </h2>
 
             <p class="muted">
-                Cette page simule un paiement.
+                Cette page simule un achat Premium.
             </p>
 
         </div>
 
 
-        <div class="card"
-            style="background:var(--primary-light);box-shadow:none">
+        <div
+            class="card"
+            style="
+                background:var(--primary-light);
+                box-shadow:none;
+            ">
 
             <strong>
                 Skillink Premium
@@ -3202,18 +4602,19 @@ function fakePremiumPayment(){
                 value="Utilisateur Skillink"
             >
 
+
             <input
                 class="input"
-                placeholder="Paiement de démonstration"
-                value="DEMO PAYMENT"
+                value="PAIEMENT DE DEMO"
                 readonly
             >
+
 
             <div class="two">
 
                 <input
                     class="input"
-                    value="12 / 30"
+                    value="DEMO"
                     readonly
                 >
 
@@ -3227,7 +4628,7 @@ function fakePremiumPayment(){
 
 
             <button
-                class="btn"
+                class="btn full"
                 onclick="activatePremium()">
 
                 Confirmer le paiement de démo
@@ -3238,8 +4639,8 @@ function fakePremiumPayment(){
 
 
         <p
-            class="muted"
-            style="text-align:center;font-size:12px">
+            class="muted small-text"
+            style="text-align:center;margin-top:15px">
 
             Ne saisis aucune vraie information bancaire.
 
@@ -3258,7 +4659,9 @@ function activatePremium(){
 
     closeModal();
 
-    showToast("Skillink Premium est maintenant actif !");
+    showToast(
+        "⭐ Skillink Premium est maintenant actif !"
+    );
 
     render();
 
@@ -3267,103 +4670,478 @@ function activatePremium(){
 
 function cancelPremium(){
 
+    if(!confirm(
+        "Désactiver Premium dans cette démo ?"
+    )) return;
+
     premium=false;
 
     currentUser().premium=false;
 
-    showToast("Premium désactivé.");
+    showToast(
+        "Premium désactivé."
+    );
 
     render();
 
 }
 
 
-/* =====================================================
-   MODAL
-===================================================== */
+/* =========================================================
+   MODE SOMBRE
+========================================================= */
+
+function toggleTheme(){
+
+    darkMode=!darkMode;
+
+    document.body.classList.toggle(
+        "dark",
+        darkMode
+    );
+
+    render();
+
+}
+
+
+/* =========================================================
+   MODALE
+========================================================= */
 
 function openModal(html){
 
-    const div=document.createElement("div");
+    closeModal();
 
-    div.id="modal";
-    div.className="modal-overlay";
 
-    div.innerHTML=`
+    const overlay =
+        document.createElement("div");
+
+    overlay.id="modal";
+
+    overlay.className=
+        "modal-overlay";
+
+
+    overlay.innerHTML=`
+
         <div class="modal">
+
             ${html}
+
         </div>
+
     `;
 
-    document.body.appendChild(div);
+
+    overlay.addEventListener(
+        "click",
+        event=>{
+
+            if(event.target===overlay){
+                closeModal();
+            }
+
+        }
+    );
+
+
+    document.body.appendChild(
+        overlay
+    );
 
 }
 
 
 function closeModal(){
 
-    document.getElementById("modal")?.remove();
+    document
+        .getElementById("modal")
+        ?.remove();
 
 }
 
 
-/* =====================================================
-   THÈME
-===================================================== */
+/* =========================================================
+   RECHERCHE GLOBALE
+========================================================= */
 
-function toggleTheme(){
+function openGlobalSearch(){
 
-    document.body.classList.toggle("dark");
+    openModal(`
+
+        <button
+            class="modal-close"
+            onclick="closeModal()">
+
+            ×
+
+        </button>
+
+
+        <h2>
+            Recherche globale
+        </h2>
+
+
+        <p class="muted">
+            Recherche parmi les utilisateurs,
+            publications et demandes d'aide.
+        </p>
+
+
+        <input
+            class="input"
+            id="globalSearchInput"
+            placeholder="Rechercher..."
+            oninput="globalSearch(this.value)"
+            autofocus
+        >
+
+
+        <div
+            id="globalResults"
+            class="global-results">
+
+            <div class="empty">
+                Commence à écrire une recherche.
+            </div>
+
+        </div>
+
+    `);
 
 }
 
 
-/* =====================================================
-   SIGNALER
-===================================================== */
+function globalSearch(value){
 
-function reportItem(){
+    const container =
+        document.getElementById(
+            "globalResults"
+        );
+
+    if(!container) return;
+
+
+    const query =
+        value.toLowerCase().trim();
+
+
+    if(!query){
+
+        container.innerHTML=`
+
+            <div class="empty">
+                Commence à écrire une recherche.
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    const users =
+        data.users.filter(user=>{
+
+            const text=[
+                user.name,
+                user.description,
+                user.level,
+                ...user.skills
+            ]
+            .join(" ")
+            .toLowerCase();
+
+            return text.includes(query);
+
+        });
+
+
+    const posts =
+        data.posts.filter(post=>{
+
+            const text=[
+                post.text,
+                post.category
+            ]
+            .join(" ")
+            .toLowerCase();
+
+            return text.includes(query);
+
+        });
+
+
+    const helps =
+        data.helps.filter(help=>{
+
+            const text=[
+                help.title,
+                help.description,
+                help.category
+            ]
+            .join(" ")
+            .toLowerCase();
+
+            return text.includes(query);
+
+        });
+
+
+    if(
+        !users.length &&
+        !posts.length &&
+        !helps.length
+    ){
+
+        container.innerHTML=`
+
+            <div class="empty">
+                Aucun résultat.
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML=`
+
+        ${
+            users.length
+            ?
+            `
+            <h3>
+                Utilisateurs
+            </h3>
+
+            ${users.map(user=>`
+
+                <div
+                    class="result-item"
+                    onclick="
+                        closeModal();
+                        viewProfile('${user.id}')
+                    ">
+
+                    ${avatar(user)}
+
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(user.name)}
+                        </strong>
+
+                        <div class="muted small-text">
+                            ${escapeHTML(user.description)}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `).join("")}
+            `
+            :
+            ""
+        }
+
+
+        ${
+            posts.length
+            ?
+            `
+            <h3 style="margin-top:20px">
+                Publications
+            </h3>
+
+            ${posts.slice(0,10).map(post=>`
+
+                <div
+                    class="result-item"
+                    onclick="
+                        closeModal();
+                        navigate('home')
+                    ">
+
+                    <div>
+
+                        <strong>
+                            ${userName(post.userId)}
+                        </strong>
+
+                        <div>
+                            ${escapeHTML(post.text)}
+                        </div>
+
+                        <span class="pill">
+                            ${escapeHTML(post.category)}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `).join("")}
+            `
+            :
+            ""
+        }
+
+
+        ${
+            helps.length
+            ?
+            `
+            <h3 style="margin-top:20px">
+                Demandes d'aide
+            </h3>
+
+            ${helps.slice(0,10).map(help=>`
+
+                <div
+                    class="result-item"
+                    onclick="
+                        closeModal();
+                        navigate('help')
+                    ">
+
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(help.title)}
+                        </strong>
+
+                        <div class="muted small-text">
+                            ${escapeHTML(help.category)}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `).join("")}
+            `
+            :
+            ""
+        }
+
+    `;
+
+}
+
+
+/* =========================================================
+   SIGNALEMENT
+========================================================= */
+
+function reportItem(type){
+
+    openModal(`
+
+        <button
+            class="modal-close"
+            onclick="closeModal()">
+
+            ×
+
+        </button>
+
+
+        <h2>
+            Signaler ce contenu
+        </h2>
+
+
+        <p class="muted">
+            Pourquoi veux-tu signaler ce ${type} ?
+        </p>
+
+
+        <div class="form">
+
+            <button
+                class="btn secondary"
+                onclick="submitReport('Contenu inapproprié')">
+
+                Contenu inapproprié
+
+            </button>
+
+
+            <button
+                class="btn secondary"
+                onclick="submitReport('Harcèlement')">
+
+                Harcèlement
+
+            </button>
+
+
+            <button
+                class="btn secondary"
+                onclick="submitReport('Spam')">
+
+                Spam
+
+            </button>
+
+
+            <button
+                class="btn secondary"
+                onclick="submitReport('Autre')">
+
+                Autre
+
+            </button>
+
+        </div>
+
+    `);
+
+}
+
+
+function submitReport(reason){
+
+    closeModal();
 
     showToast(
-        "Merci. Ton signalement a été enregistré dans la démo."
+        "Signalement envoyé : "+reason
     );
 
 }
 
 
-/* =====================================================
-   INITIALISATION
-===================================================== */
+/* =========================================================
+   DÉCONNEXION
+========================================================= */
 
-/*
-    IMPORTANT :
+function logout(){
 
-    Aucune donnée n'est sauvegardée.
-    Chaque fois que la page est rechargée,
-    createInitialData() est exécuté de nouveau.
+    currentUserId=null;
 
-    Donc :
-    - publications supprimées -> reviennent
-    - nouveaux posts -> disparaissent
-    - messages -> disparaissent
-    - profil modifié -> revient à l'original
-    - Premium -> désactivé
-    - likes -> reviennent à leur état initial
-    - commentaires -> reviennent à leur état initial
-*/
+    premium=false;
 
-data=createInitialData();
+    currentPage="home";
 
-premium=false;
+    selectedConversation=null;
 
-currentPage="home";
+    showAuth();
 
-selectedConversation=null;
+}
 
-render();
+
+/* =========================================================
+   DÉMARRAGE
+========================================================= */
+
+showAuth();
 
 </script>
 
 </body>
 </html>
-```
